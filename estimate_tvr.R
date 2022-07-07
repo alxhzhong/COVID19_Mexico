@@ -1,5 +1,5 @@
 
-
+source("data_read.R")
 
 # set the mean serial interval
 serial_interval = 3.96
@@ -8,20 +8,24 @@ serial_interval = 3.96
 t_start = seq(2, nrow(mexico) - 4)
 t_end = t_start + 4
 
+# function
 
-res <- EpiEstim::estimate_R(
-  incid = mexico$I,
-  method = "parametric_si",
-  config = EpiEstim::make_config(list(
-    mean_si             = serial_interval,
-    std_si              = 4.75,
-    si_parametric_distr = "G",
-    t_start             = t_start,
-    t_end               = t_end,
-    seed                = 46342))
-)
+estimatetvr <- function(data, t_start, t_end){
+  res <- EpiEstim::estimate_R(
+    incid = mexico$I,
+    method = "parametric_si",
+    config = EpiEstim::make_config(list(
+      mean_si             = serial_interval,
+      std_si              = 4.75,
+      si_parametric_distr = "G",
+      t_start             = t_start,
+      t_end               = t_end,
+      seed                = 46342))
+  )
+  
+  plot(res)
 
-plot(res)
+}
 
 start_date = mexico$date[1]
 
