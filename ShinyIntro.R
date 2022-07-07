@@ -1,15 +1,8 @@
-adder <- function(x) {
-  y <- 2*x + 1
-  return(y)
-}
-
-adder2 <- function(x) {
-  y <- 2*x + 1
-  z <- 1:5
-  return(c(y,z))
-}
-
 library(shiny)
+
+source("data_read.R")
+# source("SIR_function.R")
+# source("estimate_tvr.R")
 
 # Define UI for application that draws a histogram
 ui <- fluidPage(
@@ -38,12 +31,11 @@ ui <- fluidPage(
 server <- function(input, output) {
 
   output$distPlot <- renderPlot({
-    # generate bins based on input$bins from ui.R
-    x    <- faithful[, 2]
-    bins <- seq(min(x), max(x), length.out = input$bins + 1)
-
-    # draw the histogram with the specified number of bins
-    hist(x, breaks = bins, col = 'darkblue', border = 'white')
+    
+    ggplot(mexico) +
+      aes(x = date, y = I) +
+      geom_col()
+    
   })
 }
 
@@ -102,11 +94,9 @@ server <- function(input, output) {
 
   output$distPlot <- renderPlot({
 
-    hist(dataInput(),xlab = "x",ylab="Counts",main="")
-
-    xtitle <- paste("Distribution: ",input$dist1,sep="")
-
-    title(xtitle)
+    ggplot(mexico) +
+      aes(x = date, y = I) +
+      geom_col()
 
   })
 
