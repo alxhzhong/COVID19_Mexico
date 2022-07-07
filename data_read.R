@@ -61,5 +61,6 @@ mexico = mexico %>% filter(R > -1e4 & I < 8e5)
 # remove useless vars
 rm(case_url, death_url, recovered_url)
 
+# hi
 
 
