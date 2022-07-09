@@ -56,7 +56,9 @@ mexico =
          R = total_removed)
 
 # remove outlier/impossible data
-mexico = mexico %>% filter(R > -1e4 & I < 8e5)
+mexico = mexico %>% 
+  filter(R > -1e4 & I < 8e5) %>% 
+  filter(daily_recoveries > -1e4)
 
 # remove useless vars
 rm(case_url, death_url, recovered_url)
