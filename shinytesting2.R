@@ -21,30 +21,47 @@ ui <- fluidPage(
   sidebarPanel(
     selectInput(inputId =  "y", label = "label",
                 choices = names(plotMexico)),
-    checkboxGroupInput("data", "data:", 
-                       choices=unique(stack$name), selected = unique(stack$name)),
-    checkboxInput(inputId = "show_data", label = "Show data table", value = TRUE)
+    checkboxGroupInput("name", "data:",
+                       choices=unique(stack$name), selected = unique(stack$name))
   ),
-  
-  titlePanel("graph"),
+
+  titlePanel("graphZ"),
   
   mainPanel(
-    mainPanel(
-      plotlyOutput("graphR")
-    )
+    # mainPanel(
+    #   plotlyOutput("graph"),
+    #   plotlyOutput("graph2"),
+    # ),
+    navbarPage("Main",
+       tabPanel("Stacked Plotly 1", plotlyOutput("graph")),
+       tabPanel("Stacked Plotly 2", plotlyOutput("graph2")),
+       navbarMenu("Cumulative",
+            tabPanel("Plotly Cumulative Infections", plotlyOutput("graph3")),
+            tabPanel("Plotly Cumulative Recoveries", plotlyOutput("graph4"))
+            )
+       )
   )
+    
   
+  # navlistPanel(
+  #   tabPanel("Stacked Plotly 1", plotlyOutput("graph")),
+  #   tabPanel("Stacked Plotly 2", plotlyOutput("graph2")),
+  #   tabPanel("Plotly Cumulative Recoveries", plotlyOutput(("graph3")),
+  #   tabPanel("Plotly Cumulative Infections", plotlyOutput("graph4"))
+  #   )
+  # )
+
 )
 
+
+
 server <- function(input, output, session){
-  
-  stackPlot = reactive({
-    filter(stack, name %in% input$data)
+ 
+  dataplot <- eventReactive(input$name, {
+    stack <- stack %>% filter(as.factor(name) %in% c(input$name))
   })
-  
-  
-  output$graphR <- renderPlotly({
-    plot_ly(stack, x = ~date, y =~val, color = ~name,
+  output$graph <- renderPlotly({
+    plot_ly(dataplot(), x = ~date, y =~val, color = ~name,
             type = "bar", hoverinfo = "text") %>%
       layout(barmode = "stack", title = list(xanchor = "left", x = 0), legend =
                list(orientation = "h", font = list(size = 16))) %>%
@@ -52,13 +69,26 @@ server <- function(input, output, session){
 
   })
 
-  output$graph2 <- renderPlot({
-    ggplot(stackPlot(), aes(fill=as.factor(name), y=val, x=date)) + 
-      geom_bar(position="stack")
+  output$graph2 <- renderPlotly({
+    ggplot(dataplot(), aes(fill= name, y=val, x=date)) +
+      geom_bar(position="stack", stat = "identity")
 
   })
   
+  output$graph3 <- renderPlotly({
+    plot_ly(mexico, x = ~date, y = ~I, type = "bar", hoverinfo = "text") %>%
+    layout(barmode = "stack", title = list(xanchor = "left", x = 0), legend =
+             list(orientation = "h", font = list(size = 16))) 
+  })
+    
+  output$graph4 <- renderPlotly({ 
+    plot_ly(mexico, x = ~date, y = ~R, type = "bar", hoverinfo = "text") %>%
+    layout(barmode = "stack", title = list(xanchor = "right", x = 0), legend =
+             list(orientation = "h", font = list(size = 16)))
+  })
  
 }
 
 shinyApp(ui=ui, server=server)
+
+
