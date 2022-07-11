@@ -3,7 +3,7 @@
 # Authors: Emily Bach, Lauren He, Alex Zhong
 
 # Packages ----
-library(tidyverse)
+librarian::shelf(tidyverse)
 
 
 # confirmed
@@ -18,16 +18,17 @@ recoveries = read_csv(recovered_url)
 death_url = "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_deaths_global.csv"
 deaths = read_csv(death_url)
 
+
 # clean data function
 clean_data <- function(data, country, col_name){
   data %>%
     filter(`Country/Region` == country) %>%
     filter(is.na(`Province/State`)) %>%
-    dplyr::select( -Lat, -Long, -`Country/Region`) %>%
+    dplyr::select(-Lat, -Long, -`Country/Region`) %>%
     pivot_longer(cols = !`Province/State`, names_to = "date", values_to = "count") %>%
+    dplyr::select(-`Province/State`) %>%
     mutate(date = as.Date(date, format = "%m/%d/%y")) %>%
-    group_by(date) %>%
-    summarize({{col_name}} := sum(count)) %>%
+    rename({{col_name}} := count) %>%
     return()
 }
 
@@ -56,14 +57,7 @@ mexico =
          R = total_removed)
 
 # remove outlier/impossible data
-mexico = mexico %>% 
-  filter(R > -1e4 & I < 8e5) %>% 
-  filter(daily_recoveries > -1e4)
+mexico = mexico %>% filter(R > -1e4 & I < 8e5)
 
 # remove useless vars
 rm(case_url, death_url, recovered_url)
-
-# hi
-# hello!
-
-
