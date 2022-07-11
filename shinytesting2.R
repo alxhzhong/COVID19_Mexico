@@ -56,7 +56,7 @@ ui <- fluidPage(
             tabPanel("Plotly Cumulative Infections", plotlyOutput("graph3")),
             tabPanel("Plotly Cumulative Recoveries", plotlyOutput("graph4")),
             ),
-       tabPanel("SIR Graphs", plotlyOutput("graph5")),
+       tabPanel("SIR Graphs", plotOutput("graph5")),
        tabPanel("R Estimation", plotlyOutput("graph6")),
        id = "navbar"
        )
@@ -108,7 +108,7 @@ server <- function(input, output, session){
              list(orientation = "h", font = list(size = 16)))
   })
   
-  output$graph5 <- renderPlotly({
+  output$graph5 <- renderPlot({
     mn = c("#7C0000")
     date_breaks = "1 month"
   
@@ -190,17 +190,17 @@ server <- function(input, output, session){
     p
   })
  
-  observeEvent(input[["navbar"]], {
-    if(input[["navbar"]] == "Stacked Plotly 1"){
-      dashboardSidebar(collapsed = FALSE)
-      removeCssClass("main", "col-sm-8")
-      addCssClass("main", "col-sm-12")
-    }else{
-      hideElement(selector = "#sidebar")
-      removeCssClass("main", "col-sm-12")
-      addCssClass("main", "col-sm-8")
-    }
-  })
+  # observeEvent(input[["navbar"]], {
+  #   if(input[["navbar"]] == "Stacked Plotly 1"){
+  #     dashboardSidebar(collapsed = FALSE)
+  #     removeCssClass("main", "col-sm-8")
+  #     addCssClass("main", "col-sm-12")
+  #   }else{
+  #     hideElement(selector = "#sidebar")
+  #     removeCssClass("main", "col-sm-12")
+  #     addCssClass("main", "col-sm-8")
+    # }
+  # })
   
 }
 
