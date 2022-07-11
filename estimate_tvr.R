@@ -1,31 +1,50 @@
+# Title: SIR function
 
-source("data_read.R")
+# Authors: Emily Bach, Lauren He, Alex Zhong
+
+# Packages ----
+
+if(!exists("mexico")){
+  source("data_read.R")
+}
 
 # function
 
-estimatetvr <- function(data, t_start, t_end, serial_interval){
+estimatetvr <- function(data, date_initial, date_final, mean_si, std_si){
+  data <- data %>% 
+    filter(date >= as.Date(date_initial),
+           date <= as.Date(date_final))
+  
+  t_start = seq(2, nrow(data) - 4)
+  t_end = t_start + 4
+  
   res <- EpiEstim::estimate_R(
-    incid = mexico$I,
+    incid = data$daily_infected,
     method = "parametric_si",
     config = EpiEstim::make_config(list(
-      mean_si             = serial_interval,
-      std_si              = 4.75,
-      si_parametric_distr = "G",
+      mean_si             = mean_si,
+      std_si              = std_si,
+      si_parametric_distr = "W",
       t_start             = t_start,
       t_end               = t_end,
       seed                = 46342))
   )
   
-  plot(res)
+  return(res)
 
 }
 
 
-estimatetvr(mexico, seq(2, nrow(mexico) - 4), t_start + 4, 3.96)
+date_initial = as.Date("2020-11-22")
+date_final = as.Date("2021-03-01")
 
+mexico_filt <- mexico %>% 
+  filter(date >= as.Date(date_initial),
+         date <= as.Date(date_final))
 
+res <- estimatetvr(mexico, date_initial, date_final, 4.8, 2.3)
 
-start_date = mexico$date[1]
+start_date = mexico_filt$date[1]
 
 # fancy plot
 plt_data <- tibble(
@@ -36,7 +55,7 @@ plt_data <- tibble(
   dplyr::select(
     date_num, t_start, r = `Mean(R)`, lower = `Quantile.0.025(R)`, upper = `Quantile.0.975(R)`
   ) %>%
-  add_column(date = mexico$date) %>%
+  add_column(date = mexico_filt$date) %>%
   mutate(
     text = paste0("Date: ", format(date, format = '%b %d'), "<br>R: ",
                   format(round(r, 2), nsmall = 2), "<br>CI: ",
@@ -45,8 +64,8 @@ plt_data <- tibble(
   ) %>%
   filter(!is.na(r))
 
-cap <- paste0("\uA9 COV-IND-19 Study Group. Last updated: ",
-              format(Sys.Date(), format = "%b %e"), sep = ' ')
+cap <- paste0("Mexico. Last updated: ",
+               format(Sys.Date(), format = "%b %e"), sep = ' ')
 axis_title_font <- list(size = 16)
 tickfont        <- list(size = 16)
 
