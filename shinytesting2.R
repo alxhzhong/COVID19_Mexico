@@ -1,6 +1,7 @@
 library(shiny)
 library(plotly)
 library(dplyr)
+library(shinythemes)
 
 source("data_read.R")
 source("SIR_intervals.R")
@@ -25,7 +26,8 @@ mexicoSmall = mexico %>%
 
 
 
-ui <- fluidPage(
+ui <- fluidPage(theme = shinytheme("darkly"),
+  
 
   # titlePanel("graphZ"),
   
@@ -57,8 +59,13 @@ ui <- fluidPage(
                             tabPanel("SIR Active", plotlyOutput("graph5")),
                             tabPanel("SIR Recoveries", plotlyOutput("graphSIR2"))
                             ),
-              
-                 tabPanel("R Estimation", plotlyOutput("graph6")),
+                 
+                 navbarMenu("SEIR Estimations",
+                            tabPanel("SEIR Active"),
+                            tabPanel("SEIR Recoveries")),
+                 
+                 tabPanel("R Estimation", plotlyOutput("graph6"))
+                 
                
     )
    
@@ -76,8 +83,10 @@ server <- function(input, output, session){
   output$graph <- renderPlotly({
     plot_ly(dataplot(), x = ~date, y =~val, color = ~name,
             type = "bar") %>%
-      layout(barmode = "stack", title = list(xanchor = "left", x = 0), legend =
-               list(orientation = "h", font = list(size = 16)), hovermode = "x unified") %>%
+      layout(barmode = "stack", title = list(xanchor = "left", x = 0),
+             xaxis = list(title = "Date", titlefont = axis_title_font),
+             yaxis = list(title = "Daily Counts", titlefont = axis_title_font),
+             legend = list(orientation = "v", font = list(size = 16)), hovermode = "x unified") %>%
       plotly::config(toImageButtonOptions = list(width = NULL, height = NULL))
 
 
@@ -135,7 +144,7 @@ server <- function(input, output, session){
       ) +
       xlim(date_initial, date_final)
 
-    p1 <- p1 + labs(y = "Active Cases")
+    p1 <- p1 + labs(y = "Active Cases", x = "Date")
     ggplotly(p1) %>% 
       layout(
         hovermode = "x unified")
@@ -162,8 +171,7 @@ server <- function(input, output, session){
     plot_ly(mexicoSmall, x = ~date, y = ~R, type = "bar", name = "Actual") %>% 
       add_trace(y = ~pred_R$pred_R_med, type = 'scatter', mode = 'lines', name = "Predicted") %>% 
       layout(
-        xaxis = list(
-          range=c(date_initial,date_final)),
+        range=c(date_initial,date_final),
         hovermode = "x unified")
     
   })
