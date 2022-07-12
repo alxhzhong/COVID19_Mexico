@@ -1,7 +1,7 @@
 
 source("SIR_function.R")
 source("SEIR_function.R")
-
+# test
 
 sir_intervals = function(method){
   # run SIR fitting for 4 specified periods
