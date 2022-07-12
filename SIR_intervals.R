@@ -1,5 +1,5 @@
 
-source("SIR_function2.R")
+source("SIR_function.R")
 
 # run SIR fitting for 1-month periods
 starting_param_val = log(c(1e-2,1e-5))
@@ -13,3 +13,5 @@ t4 <- sir_all(mexico, "2021-01-23", "2021-03-01", t3[[3]])
 
 pred_I <- rbind(t1[[1]], t2[[1]], t3[[1]], t4[[1]]) ## bind by row
 pred_R <- rbind(t1[[2]], t2[[2]], t3[[2]], t4[[2]])
+
+
