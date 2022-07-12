@@ -6,7 +6,6 @@ library(shinythemes)
 source("data_read.R")
 source("SIR_intervals.R")
 source("estimate_tvr.R")
-#hewwo
 
 mexicoDescriptives <- mexico %>% 
   filter(date <= "2021-08-04")
@@ -95,8 +94,10 @@ server <- function(input, output, session){
 
   output$graph3 <- renderPlotly({
     plot_ly(mexicoDescriptives, x = ~date, y = ~cases_total, type = "bar") %>%
-    layout(barmode = "stack", title = list(xanchor = "left", x = 0), legend =
-             list(font = list(size = 16)), hovermode = "x unified") 
+    layout(barmode = "stack", title = list(xanchor = "left", x = 0),
+           xaxis = list(title = "Date", titlefont = axis_title_font),
+           yaxis = list(title = "Cumulative Cases Total", titlefont = axis_title_font),
+           legend = list(font = list(size = 16)), hovermode = "x unified") 
   })
     
   output$graph4 <- renderPlotly({ 
