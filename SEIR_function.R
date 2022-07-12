@@ -89,7 +89,7 @@ seir_all <- function(data, date_initial, date_final, starting_param_val){
   
   if(method == "ls"){
     # set starting values ----
-    starting_param_val = log(c(1e-2,1e-5))                               ## why need starting_param here when also above in function
+    starting_param_val = starting_param_val                            ## why need starting_param here when also above in function
     N = 128900000                                 # population size
     lambda = mu = 1/(75.05*365)                            # birth/death rate
     # set the data set
@@ -108,7 +108,7 @@ seir_all <- function(data, date_initial, date_final, starting_param_val){
     lambda=mu= 1/(75.05*365)  
     sigma = 1/5.1
     
-    starting_param_val = starting_param_val
+    starting_param_val = list(exp(starting_param_val[1]), gamma = exp(starting_param_val[2]))
     estimates_pois = mle2(minuslogl = logli,
                           start = lapply(starting_param_val, log), method = "Nelder-Mead",
                           data=list(dat = data, N = N, lambda = lambda, mu = mu, sigma = sigma))
