@@ -6,11 +6,18 @@ source("data_read.R")
 source("SIR_intervals.R")
 source("estimate_tvr.R")
 
-
+# for descriptive plots, to truncate timeframe to where recoveries stop reporting
 mexicoDescriptives <- mexico %>% 
   filter(date <= "2021-08-04")
 
+# for SIR I graph, to smooth line
+pred_I_graph <- pred_I %>% 
+  mutate(index = 1:n()) %>% 
+  mutate(loess = fitted(loess(pred_I_med ~ index, data = pred_I, span = 0.3))) %>% 
+  mutate(upper = fitted(loess(uprI ~ index, data = pred_I, span = 0.3))) %>% 
+  mutate(lower = fitted(loess(lwrI ~ index, data = pred_I, span = 0.3)))
 
+# for cumulative plotly graph
 stack = bind_rows(
   mexicoDescriptives %>% dplyr::select(date, val = daily_deaths) %>%
     mutate(name = "Deaths"),
@@ -20,10 +27,14 @@ stack = bind_rows(
     mutate(name = "Recovered")
 )
 
+# for SIR graphs, to plot in correct timeframe
 mexicoSmall = mexico %>% 
   right_join(pred_I, by = "date")
+date_initial = "2020-11-22"
+date_final = "2021-03-01"
 
 
+# start of app
 
 ui <- fluidPage(
 
@@ -37,7 +48,7 @@ ui <- fluidPage(
       navbarPage("Mexico",
                  tabPanel("Stacked Plotly", 
                           mainPanel(
-                            plotlyOutput("graph")
+                            plotlyOutput("graphStacked")
                             ),
                           sidebarPanel(
                             # selectInput(inputId =  "y", label = "label",
@@ -48,17 +59,17 @@ ui <- fluidPage(
                           )),
                 
                   navbarMenu("Cumulative",
-                            tabPanel("Cumulative Infections", plotlyOutput("graph3")),
-                            tabPanel("Cumulative Recoveries", plotlyOutput("graph4")),
-                            tabPanel("Daily Active Cases", plotlyOutput("graphInfections")),
+                            tabPanel("Cumulative Infections", plotlyOutput("graphCumulativeI")),
+                            tabPanel("Cumulative Recoveries", plotlyOutput("graphCumulativeR")),
+                            tabPanel("Daily Active Cases", plotlyOutput("graphActiveI")),
                  ),
                  
                  navbarMenu("SIR Estimations",
-                            tabPanel("SIR Active", plotlyOutput("graph5")),
-                            tabPanel("SIR Recoveries", plotlyOutput("graphSIR2"))
+                            tabPanel("SIR Active", plotlyOutput("graphSIRActive")),
+                            tabPanel("SIR Recoveries", plotlyOutput("graphSIRRecov"))
                             ),
               
-                 tabPanel("R Estimation", plotlyOutput("graph6")),
+                 tabPanel("R Estimation", plotlyOutput("graphR0")),
                
     )
    
@@ -73,7 +84,7 @@ server <- function(input, output, session){
   dataplot <- eventReactive(input$name, {
     stack <- stack %>% filter(as.factor(name) %in% c(input$name))
   })
-  output$graph <- renderPlotly({
+  output$graphStacked <- renderPlotly({
     plot_ly(dataplot(), x = ~date, y =~val, color = ~name,
             type = "bar") %>%
       layout(barmode = "stack", title = list(xanchor = "left", x = 0), legend =
@@ -84,19 +95,19 @@ server <- function(input, output, session){
   })
 
 
-  output$graph3 <- renderPlotly({
+  output$graphCumulativeI <- renderPlotly({
     plot_ly(mexicoDescriptives, x = ~date, y = ~cases_total, type = "bar") %>%
     layout(barmode = "stack", title = list(xanchor = "left", x = 0), legend =
              list(font = list(size = 16)), hovermode = "x unified") 
   })
     
-  output$graph4 <- renderPlotly({ 
+  output$graphCumulativeR <- renderPlotly({ 
     plot_ly(mexicoDescriptives, x = ~date, y = ~R, type = "bar", hovermode = "x unified") %>%
     layout(barmode = "stack", title = list(xanchor = "right", x = 0), legend =
              list(orientation = "h", font = list(size = 16)))
   })
   
-  output$graphInfections <- renderPlotly({
+  output$graphActiveI <- renderPlotly({
     plot_ly(mexicoDescriptives, x = ~date, y = ~I, type = "bar") %>%
       layout(barmode = "stack", title = list(xanchor = "left", x = 0), legend =
                list(font = list(size = 16)), hovermode = "x unified") 
@@ -104,7 +115,7 @@ server <- function(input, output, session){
     
   })
   
-  output$graph5 <- renderPlotly({
+  output$graphSIRActive <- renderPlotly({
     # date_breaks = "1 month"
     # 
     # base = ggplot() +
@@ -121,28 +132,36 @@ server <- function(input, output, session){
     #   ) +
     #   theme(legend.position = "right")
   
-    p1 <- #base +
-      ggplot() +
-      geom_smooth(mapping = aes(x = date, y = pred_I_med),
-                  data = pred_I, size = 0.5, span = 0.3) +
-      geom_ribbon(
-        aes(x = date, ymin = lwrI, ymax = uprI),
-        data = pred_I,
-        #size = 1, fill = ci, alpha = 0.8,
-      ) +
-      geom_bar(mapping = aes(x = date, y = I), stat = "identity",
-               data = mexico, width = 0.5, fill = 'steelblue', alpha = 0.7,
-      ) +
-      xlim(date_initial, date_final)
-
-    p1 <- p1 + labs(y = "Active Cases")
-    ggplotly(p1) %>% 
+    # p1 <- #base +
+    #   ggplot() +
+    #   geom_smooth(mapping = aes(x = date, y = pred_I_med),
+    #               data = pred_I, size = 0.5, span = 0.3) +
+    #   # geom_ribbon(
+    #   #   aes(x = date, ymin = lwrI, ymax = uprI),
+    #   # data = pred_I,
+    #   #   #size = 1, fill = ci, alpha = 0.8,
+    #   # ) +
+    #   geom_bar(mapping = aes(x = date, y = I), stat = "identity",
+    #            data = mexico, width = 0.5, fill = 'steelblue', alpha = 0.7,
+    #   ) +
+    #   xlim(date_initial, date_final)
+    # 
+    # p1 <- p1 + labs(y = "Active Cases")
+    # ggplotly(p1) %>% 
+    #   layout(
+    #     hovermode = "x unified")
+    
+    plot_ly(mexicoSmall, x = ~date, y = ~I, type = "bar", name = "Actual") %>% 
+      add_trace(y = ~pred_I_graph$loess, type = 'scatter', mode = 'lines', name = "Predicted") %>%
+      add_trace(y = ~pred_I_graph$upper, type = 'scatter', mode = 'lines', name = "Upper", showlegend = FALSE) %>% 
+      add_trace(y = ~pred_I_graph$lower, type = 'scatter', mode = 'lines', fill = 'tonexty', name = "Lower", showlegend = FALSE) %>% 
       layout(
+        xaxis = list(
+          range=c(date_initial,date_final)),
         hovermode = "x unified")
-
   })
   
-  output$graphSIR2 <- renderPlotly({
+  output$graphSIRRecov <- renderPlotly({
     
     # p = ggplot() +
     #   geom_line(mapping = aes(x = date, y = pred_R_med),
@@ -160,15 +179,23 @@ server <- function(input, output, session){
     # ggplotly(p)
     
     plot_ly(mexicoSmall, x = ~date, y = ~R, type = "bar", name = "Actual") %>% 
-      add_trace(y = ~pred_R$pred_R_med, type = 'scatter', mode = 'lines', name = "Predicted") %>% 
+      add_trace(y = ~pred_R$pred_R_med, type = 'scatter', mode = 'lines', name = "Predicted") %>%
+      # add_trace(y = ~pred_R$uprR, type = 'scatter', mode = 'lines', name = "Upper", showlegend = FALSE) %>% 
+      # add_trace(y = ~pred_R$lwrR, type = 'scatter', mode = 'lines', fill = 'tonexty', name = "Lower", showlegend = FALSE)
+      add_ribbons(ymin = ~pred_R$lwrR,
+                  ymax = ~pred_R$uprR,
+                  line = list(color = 'rgba(54, 163, 11, 0.05)'),
+                  fillcolor = 'rgba(54, 163, 11, 0.2)',
+                  hoverinfo = "none") %>% 
+      
       layout(
         xaxis = list(
-          range=c(date_initial,date_final)),
+          range=c(date_initial, date_final)),
         hovermode = "x unified")
     
   })
   
-  output$graph6 <- renderPlotly({
+  output$graphR0 <- renderPlotly({
     plot_ly(plt_data, x = ~date, y = ~r, type = "scatter", mode = "lines",
             line = list(color = "rgb(54, 163, 11)", width = 5),
             hoverinfo = "text",

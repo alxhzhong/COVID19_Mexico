@@ -9,7 +9,7 @@ if(!exists("mexico")){
 }
 
 # function
-
+data=mexico
 estimatetvr <- function(data, date_initial, date_final, mean_si, std_si){
   data <- data %>% 
     filter(date >= as.Date(date_initial),
@@ -34,15 +34,14 @@ estimatetvr <- function(data, date_initial, date_final, mean_si, std_si){
 
 }
 
-
-date_initial = as.Date("2020-11-22")
-date_final = as.Date("2021-03-01")
-
-mexico_filt <- mexico %>% 
+mexico_filt <- mexico %>%
   filter(date >= as.Date(date_initial),
          date <= as.Date(date_final))
 
-res <- estimatetvr(mexico, date_initial, date_final, 4.8, 2.3)
+date_initial = as.Date("2020-04-01")
+date_final = as.Date("2021-07-01")
+
+res <- estimatetvr(mexico_filt, date_initial, date_final, 4.8, 2.3)
 
 start_date = mexico_filt$date[1]
 
