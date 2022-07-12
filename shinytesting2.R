@@ -169,8 +169,7 @@ server <- function(input, output, session){
     plot_ly(mexicoSmall, x = ~date, y = ~R, type = "bar", name = "Actual") %>% 
       add_trace(y = ~pred_R$pred_R_med, type = 'scatter', mode = 'lines', name = "Predicted") %>% 
       layout(
-        xaxis = list(title="Date", yaxis = list(title="Recoveries"),
-          range=c(date_initial,date_final)),
+        range=c(date_initial,date_final),
         hovermode = "x unified")
     
   })
