@@ -7,13 +7,16 @@ source("SIR_intervals.R")
 source("estimate_tvr.R")
 
 
+mexicoDescriptives <- mexico %>% 
+  filter(date <= "2021-08-04")
+
 
 stack = bind_rows(
-  mexico %>% dplyr::select(date, val = daily_deaths) %>%
+  mexicoDescriptives %>% dplyr::select(date, val = daily_deaths) %>%
     mutate(name = "Deaths"),
-  mexico %>% dplyr::select(date, val = daily_infected) %>%
+  mexicoDescriptives %>% dplyr::select(date, val = daily_infected) %>%
     mutate(name = "Infected"),
-  mexico %>% dplyr::select(date, val = daily_recoveries) %>%
+  mexicoDescriptives %>% dplyr::select(date, val = daily_recoveries) %>%
     mutate(name = "Recovered")
 )
 
@@ -82,19 +85,19 @@ server <- function(input, output, session){
 
 
   output$graph3 <- renderPlotly({
-    plot_ly(mexico, x = ~date, y = ~cases_total, type = "bar") %>%
+    plot_ly(mexicoDescriptives, x = ~date, y = ~cases_total, type = "bar") %>%
     layout(barmode = "stack", title = list(xanchor = "left", x = 0), legend =
              list(font = list(size = 16)), hovermode = "x unified") 
   })
     
   output$graph4 <- renderPlotly({ 
-    plot_ly(mexico, x = ~date, y = ~R, type = "bar", hovermode = "x unified") %>%
+    plot_ly(mexicoDescriptives, x = ~date, y = ~R, type = "bar", hovermode = "x unified") %>%
     layout(barmode = "stack", title = list(xanchor = "right", x = 0), legend =
              list(orientation = "h", font = list(size = 16)))
   })
   
   output$graphInfections <- renderPlotly({
-    plot_ly(mexico, x = ~date, y = ~I, type = "bar") %>%
+    plot_ly(mexicoDescriptives, x = ~date, y = ~I, type = "bar") %>%
       layout(barmode = "stack", title = list(xanchor = "left", x = 0), legend =
                list(font = list(size = 16)), hovermode = "x unified") 
     
