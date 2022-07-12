@@ -1,7 +1,7 @@
 library(shiny)
 library(plotly)
 library(dplyr)
- 
+
 source("data_read.R")
 source("SIR_intervals.R")
 source("estimate_tvr.R")
@@ -37,42 +37,42 @@ date_final = "2021-03-01"
 # start of app
 
 ui <- fluidPage(
-
+  
   # titlePanel("graphZ"),
   
   fluidRow(
-      # mainPanel(
-      #   plotlyOutput("graph"),
-      #   plotlyOutput("graph2"),
-      # ),
-      navbarPage("Mexico",
-                 tabPanel("Stacked Plotly", 
-                          mainPanel(
-                            plotlyOutput("graphStacked")
-                            ),
-                          sidebarPanel(
-                            # selectInput(inputId =  "y", label = "label",
-                            #             choices = names(plotMexico)),
-                            checkboxGroupInput("name", "data:",
-                                               choices=unique(stack$name), selected = unique(stack$name)),
-                            id = "sidebar"
-                          )),
-                
-                  navbarMenu("Cumulative",
-                            tabPanel("Cumulative Infections", plotlyOutput("graphCumulativeI")),
-                            tabPanel("Cumulative Recoveries", plotlyOutput("graphCumulativeR")),
-                            tabPanel("Daily Active Cases", plotlyOutput("graphActiveI")),
-                 ),
-                 
-                 navbarMenu("SIR Estimations",
-                            tabPanel("SIR Active", plotlyOutput("graphSIRActive")),
-                            tabPanel("SIR Recoveries", plotlyOutput("graphSIRRecov"))
-                            ),
-              
-                 tabPanel("R Estimation", plotlyOutput("graphR0")),
+    # mainPanel(
+    #   plotlyOutput("graph"),
+    #   plotlyOutput("graph2"),
+    # ),
+    navbarPage("Mexico",
+               tabPanel("Stacked Plotly", 
+                        mainPanel(
+                          plotlyOutput("graphStacked")
+                        ),
+                        sidebarPanel(
+                          # selectInput(inputId =  "y", label = "label",
+                          #             choices = names(plotMexico)),
+                          checkboxGroupInput("name", "data:",
+                                             choices=unique(stack$name), selected = unique(stack$name)),
+                          id = "sidebar"
+                        )),
+               
+               navbarMenu("Cumulative",
+                          tabPanel("Cumulative Infections", plotlyOutput("graphCumulativeI")),
+                          tabPanel("Cumulative Recoveries", plotlyOutput("graphCumulativeR")),
+                          tabPanel("Daily Active Cases", plotlyOutput("graphActiveI")),
+               ),
+               
+               navbarMenu("SIR Estimations",
+                          tabPanel("SIR Active", plotlyOutput("graphSIRActive")),
+                          tabPanel("SIR Recoveries", plotlyOutput("graphSIRRecov"))
+               ),
+               
+               tabPanel("R Estimation", plotlyOutput("graphR0")),
                
     )
-   
+    
   )
   
 )
@@ -80,7 +80,7 @@ ui <- fluidPage(
 
 
 server <- function(input, output, session){
- 
+  
   dataplot <- eventReactive(input$name, {
     stack <- stack %>% filter(as.factor(name) %in% c(input$name))
   })
@@ -90,21 +90,21 @@ server <- function(input, output, session){
       layout(barmode = "stack", title = list(xanchor = "left", x = 0), legend =
                list(orientation = "h", font = list(size = 16)), hovermode = "x unified") %>%
       plotly::config(toImageButtonOptions = list(width = NULL, height = NULL))
-
-
+    
+    
   })
-
-
+  
+  
   output$graphCumulativeI <- renderPlotly({
     plot_ly(mexicoDescriptives, x = ~date, y = ~cases_total, type = "bar") %>%
-    layout(barmode = "stack", title = list(xanchor = "left", x = 0), legend =
-             list(font = list(size = 16)), hovermode = "x unified") 
+      layout(barmode = "stack", title = list(xanchor = "left", x = 0), legend =
+               list(font = list(size = 16)), hovermode = "x unified") 
   })
-    
+  
   output$graphCumulativeR <- renderPlotly({ 
     plot_ly(mexicoDescriptives, x = ~date, y = ~R, type = "bar", hovermode = "x unified") %>%
-    layout(barmode = "stack", title = list(xanchor = "right", x = 0), legend =
-             list(orientation = "h", font = list(size = 16)))
+      layout(barmode = "stack", title = list(xanchor = "right", x = 0), legend =
+               list(orientation = "h", font = list(size = 16)))
   })
   
   output$graphActiveI <- renderPlotly({
@@ -131,7 +131,7 @@ server <- function(input, output, session){
     #     axis.title = element_text(size = 12)
     #   ) +
     #   theme(legend.position = "right")
-  
+    
     # p1 <- #base +
     #   ggplot() +
     #   geom_smooth(mapping = aes(x = date, y = pred_I_med),
@@ -221,7 +221,7 @@ server <- function(input, output, session){
         showlegend = FALSE
       ) %>%
       plotly::config(toImageButtonOptions = list(width = NULL, height = NULL))
-
+    
     
   })
   
