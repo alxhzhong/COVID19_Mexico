@@ -137,7 +137,7 @@ server <- function(input, output, session){
       ) +
       xlim(date_initial, date_final)
 
-    p1 <- p1 + labs(y = "Active Cases")
+    p1 <- p1 + labs(y = "Active Cases", x = "Date")
     ggplotly(p1) %>% 
       layout(
         hovermode = "x unified")
