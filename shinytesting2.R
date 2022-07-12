@@ -59,10 +59,13 @@ ui <- fluidPage(theme = shinytheme("darkly"),
                             tabPanel("SIR Active", plotlyOutput("graph5")),
                             tabPanel("SIR Recoveries", plotlyOutput("graphSIR2"))
                             ),
-              
-                 tabPanel("R Estimation", plotlyOutput("graph6")),
                  
-                 tabPanel("SEIR Estimations")
+                 navbarMenu("SEIR Estimations",
+                            tabPanel("SEIR Active"),
+                            tabPanel("SEIR Recoveries")),
+                 
+                 tabPanel("R Estimation", plotlyOutput("graph6"))
+                 
                
     )
    
