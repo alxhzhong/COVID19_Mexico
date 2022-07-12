@@ -1,6 +1,7 @@
 library(shiny)
 library(plotly)
 library(dplyr)
+library(shinythemes)
 
 source("data_read.R")
 source("SIR_intervals.R")
@@ -25,7 +26,8 @@ mexicoSmall = mexico %>%
 
 
 
-ui <- fluidPage(
+ui <- fluidPage(theme = shinytheme("darkly"),
+  
 
   # titlePanel("graphZ"),
   
