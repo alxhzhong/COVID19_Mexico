@@ -3,7 +3,7 @@
 # Authors: Emily Bach, Lauren He, Alex Zhong
 
 # Packages ----
-librarian::shelf(tidyverse)
+librarian::shelf(readr, tidyr, dplyr)
 
 
 # confirmed
@@ -87,4 +87,4 @@ mexico =
          R = total_removed)
 
 # remove useless vars
-rm(case_url, death_url, recovered_url)
+rm(case_url, death_url, recovered_url, mxfixed, problem_dates, date_i, count, i, pdate, target)
