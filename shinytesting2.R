@@ -84,7 +84,7 @@ server <- function(input, output, session){
     plot_ly(dataplot(), x = ~date, y =~val, color = ~name,
             type = "bar") %>%
       layout(barmode = "stack", title = list(xanchor = "left", x = 0), legend =
-               list(orientation = "h", font = list(size = 16)), hovermode = "x unified") %>%
+               list(orientation = "v", font = list(size = 16)), hovermode = "x unified") %>%
       plotly::config(toImageButtonOptions = list(width = NULL, height = NULL))
 
 
