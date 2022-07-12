@@ -83,8 +83,10 @@ server <- function(input, output, session){
   output$graph <- renderPlotly({
     plot_ly(dataplot(), x = ~date, y =~val, color = ~name,
             type = "bar") %>%
-      layout(barmode = "stack", title = list(xanchor = "left", x = 0), legend =
-               list(orientation = "v", font = list(size = 16)), hovermode = "x unified") %>%
+      layout(barmode = "stack", title = list(xanchor = "left", x = 0),
+             xaxis = list(title = "Date", titlefont = axis_title_font),
+             yaxis = list(title = "Daily Counts", titlefont = axis_title_font),
+             legend = list(orientation = "v", font = list(size = 16)), hovermode = "x unified") %>%
       plotly::config(toImageButtonOptions = list(width = NULL, height = NULL))
 
 
