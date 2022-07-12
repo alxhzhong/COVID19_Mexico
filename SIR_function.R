@@ -8,7 +8,9 @@ librarian::shelf(deSolve, outbreaks, gridExtra, arm, tidyverse, bbmle)
 
 # Import data ----
 
-source("data_read.R")
+if(!exists("mexico")){
+  source("data_read.R")
+}
 
 # Start of function!
 
@@ -84,7 +86,7 @@ sir_all <- function(data, date_initial, date_final, starting_param_val){
 
   if(method == "ls"){
     # set starting values ----
-    starting_param_val = log(c(1e-2,1e-5))                               ## why need starting_param here when also above in function
+    starting_param_val = starting_param_val                               ## why need starting_param here when also above in function
     N = 128900000                                 # population size
     lambda = mu = 0                            # birth/death rate
     data = mexico                               # set the data set
@@ -100,8 +102,8 @@ sir_all <- function(data, date_initial, date_final, starting_param_val){
   if(method == "mle"){
     N=128900000
     lambda=mu=0
-
-    starting_param_val = list(beta = 1e-2, gamma = 1e-5)
+    
+    starting_param_val = list(beta = exp(starting_param_val[1]), gamma = exp(starting_param_val[2]))
     estimates_pois = mle2(minuslogl = logli,
                           start = lapply(starting_param_val, log), method = "Nelder-Mead",
                           data=list(dat = data, N = N, lambda = lambda, mu = mu))
