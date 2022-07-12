@@ -6,16 +6,24 @@ source("data_read.R")
 source("SIR_intervals.R")
 source("estimate_tvr.R")
 
+pred_SIR = sir_intervals("SIR")
+pred_I_SIR = pred_SIR[[1]]
+pred_R_SIR = pred_SIR[[2]]
+
+pred_SEIR = sir_intervals("SEIR")
+pred_I_SEIR = pred_SEIR[[1]]
+pred_R_SEIR = pred_SEIR[[2]]
+
 # for descriptive plots, to truncate timeframe to where recoveries stop reporting
 mexicoDescriptives <- mexico %>% 
   filter(date <= "2021-08-04")
 
 # for SIR I graph, to smooth line
-pred_I_graph <- pred_I %>% 
+pred_I_graph <- pred_I_SIR %>% 
   mutate(index = 1:n()) %>% 
-  mutate(loess = fitted(loess(pred_I_med ~ index, data = pred_I, span = 0.3))) %>% 
-  mutate(upper = fitted(loess(uprI ~ index, data = pred_I, span = 0.3))) %>% 
-  mutate(lower = fitted(loess(lwrI ~ index, data = pred_I, span = 0.3)))
+  mutate(loess = fitted(loess(pred_I_med ~ index, data = pred_I_SIR, span = 0.3))) %>% 
+  mutate(upper = fitted(loess(uprI ~ index, data = pred_I_SIR, span = 0.3))) %>% 
+  mutate(lower = fitted(loess(lwrI ~ index, data = pred_I_SIR, span = 0.3)))
 
 # for cumulative plotly graph
 stack = bind_rows(
@@ -29,7 +37,7 @@ stack = bind_rows(
 
 # for SIR graphs, to plot in correct timeframe
 mexicoSmall = mexico %>% 
-  right_join(pred_I, by = "date")
+  right_join(pred_I_SIR, by = "date")
 date_initial = "2020-11-22"
 date_final = "2021-03-01"
 
@@ -179,11 +187,11 @@ server <- function(input, output, session){
     # ggplotly(p)
     
     plot_ly(mexicoSmall, x = ~date, y = ~R, type = "bar", name = "Actual") %>% 
-      add_trace(y = ~pred_R$pred_R_med, type = 'scatter', mode = 'lines', name = "Predicted") %>%
+      add_trace(y = ~pred_R_SIR$pred_R_med, type = 'scatter', mode = 'lines', name = "Predicted") %>%
       # add_trace(y = ~pred_R$uprR, type = 'scatter', mode = 'lines', name = "Upper", showlegend = FALSE) %>% 
       # add_trace(y = ~pred_R$lwrR, type = 'scatter', mode = 'lines', fill = 'tonexty', name = "Lower", showlegend = FALSE)
-      add_ribbons(ymin = ~pred_R$lwrR,
-                  ymax = ~pred_R$uprR,
+      add_ribbons(ymin = ~pred_R_SIR$lwrR,
+                  ymax = ~pred_R_SIR$uprR,
                   line = list(color = 'rgba(54, 163, 11, 0.05)'),
                   fillcolor = 'rgba(54, 163, 11, 0.2)',
                   hoverinfo = "none") %>% 
