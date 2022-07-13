@@ -29,6 +29,6 @@ sir_intervals = function(method){
     pred_R <- rbind(t1[[2]], t2[[2]], t3[[2]], t4[[2]])
   }
   
-  return(list(pred_I, pred_R))
+  return(list(pred_I, pred_R, t4[[3]]))
   
 }
