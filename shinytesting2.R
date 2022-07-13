@@ -20,12 +20,18 @@ pred_R_SEIR = pred_SEIR[[2]]
 mexicoDescriptives <- mexico %>% 
   filter(date <= "2021-08-04")
 
-# for SIR I graph, to smooth line
-pred_I_graph <- pred_I_SIR %>% 
+# for SIR and SEIR I graphs, to smooth line
+pred_I_SIR_graph <- pred_I_SIR %>% 
   mutate(index = 1:n()) %>% 
   mutate(loess = fitted(loess(pred_I_med ~ index, data = pred_I_SIR, span = 0.3))) %>% 
   mutate(upper = fitted(loess(uprI ~ index, data = pred_I_SIR, span = 0.3))) %>% 
   mutate(lower = fitted(loess(lwrI ~ index, data = pred_I_SIR, span = 0.3)))
+
+pred_I_SEIR_graph <- pred_I_SEIR %>% 
+  mutate(index = 1:n()) %>% 
+  mutate(loess = fitted(loess(pred_I_med ~ index, data = pred_I_SEIR, span = 0.3))) %>% 
+  mutate(upper = fitted(loess(uprI ~ index, data = pred_I_SEIR, span = 0.3))) %>% 
+  mutate(lower = fitted(loess(lwrI ~ index, data = pred_I_SEIR, span = 0.3)))
 
 # for cumulative plotly graph
 stack = bind_rows(
@@ -83,8 +89,8 @@ ui <- fluidPage(theme = shinytheme("darkly"),
                              ),
                              
                              navbarMenu("SEIR Estimations",
-                                        tabPanel("SEIR Active"),
-                                        tabPanel("SEIR Recoveries")),
+                                        tabPanel("SEIR Active", plotlyOutput("graphSEIRActive")),
+                                        tabPanel("SEIR Recoveries", plotlyOutput("graphSEIRRecov"))),
                              
                              tabPanel("R Estimation", plotlyOutput("graphR0"))
                              
@@ -119,9 +125,9 @@ server <- function(input, output, session){
   })
   
   output$graphCumulativeR <- renderPlotly({ 
-    plot_ly(mexicoDescriptives, x = ~date, y = ~R, type = "bar", hovermode = "x unified") %>%
+    plot_ly(mexicoDescriptives, x = ~date, y = ~R, type = "bar") %>%
       layout(barmode = "stack", title = list(xanchor = "right", x = 0), legend =
-               list(orientation = "h", font = list(size = 16)))
+               list(orientation = "h", font = list(size = 16)), hovermode = "x unified")
   })
   
   output$graphActiveI <- renderPlotly({
@@ -170,12 +176,12 @@ server <- function(input, output, session){
     #     hovermode = "x unified")
     
     plot_ly(mexicoSmall, x = ~date, y = ~I, type = "bar", name = "Actual") %>% 
-      add_trace(y = ~pred_I_graph$loess, type = 'scatter', mode = 'lines', name = "Predicted") %>%
-      add_trace(y = ~pred_I_graph$upper, type = 'scatter', mode = 'lines', name = "Upper", showlegend = FALSE) %>% 
-      add_trace(y = ~pred_I_graph$lower, type = 'scatter', mode = 'lines', fill = 'tonexty', name = "Lower", showlegend = FALSE) %>% 
+      add_trace(y = ~pred_I_SIR_graph$loess, type = 'scatter', mode = 'lines', name = "Predicted") %>%
+      add_trace(y = ~pred_I_SIR_graph$upper, type = 'scatter', mode = 'lines', name = "Upper", line = list(color = "salmon"), showlegend = FALSE) %>% 
+      add_trace(y = ~pred_I_SIR_graph$lower, type = 'scatter', mode = 'lines', fill = 'tonexty', name = "Lower", line = list(color = "salmon"), showlegend = FALSE) %>% 
       layout(
         xaxis = list(
-          range=c(date_initial,date_final)),
+          range=c(date_initial, date_final)),
         hovermode = "x unified")
   })
   
@@ -197,21 +203,54 @@ server <- function(input, output, session){
     # ggplotly(p)
     
     plot_ly(mexicoSmall, x = ~date, y = ~R, type = "bar", name = "Actual") %>% 
-      add_trace(y = ~pred_R_SIR$pred_R_med, type = 'scatter', mode = 'lines', name = "Predicted") %>% 
       add_trace(y = ~pred_R_SIR$pred_R_med, type = 'scatter', mode = 'lines', name = "Predicted") %>%
       # add_trace(y = ~pred_R$uprR, type = 'scatter', mode = 'lines', name = "Upper", showlegend = FALSE) %>% 
       # add_trace(y = ~pred_R$lwrR, type = 'scatter', mode = 'lines', fill = 'tonexty', name = "Lower", showlegend = FALSE)
       add_ribbons(ymin = ~pred_R_SIR$lwrR,
                   ymax = ~pred_R_SIR$uprR,
-                  line = list(color = 'rgba(54, 163, 11, 0.05)'),
+                  #line = list(color = 'rgba(54, 163, 11, 0.05)'),
                   fillcolor = 'rgba(54, 163, 11, 0.2)',
-                  hoverinfo = "none") %>% 
+                  showlegend = FALSE) %>% 
       layout(
         xaxis = list(
           range=c(date_initial,date_final)),
         hovermode = "x unified")
     
   })
+  
+  
+  output$graphSEIRActive <- renderPlotly({
+    
+    plot_ly(mexicoSmall, x = ~date, y = ~I, type = "bar", name = "Actual") %>% 
+      add_trace(y = ~pred_I_SEIR_graph$loess, type = 'scatter', mode = 'lines', name = "Predicted") %>%
+      add_trace(y = ~pred_I_SEIR_graph$upper, type = 'scatter', mode = 'lines', name = "Upper", line = list(color = 'plum'), showlegend = FALSE) %>% 
+      add_trace(y = ~pred_I_SEIR_graph$lower, type = 'scatter', mode = 'lines', fill = 'tonexty', fillcolor = list(color = 'plum'), name = "Lower", line = list(color = 'plum'), showlegend = FALSE) %>% 
+      layout(
+        xaxis = list(
+          range=c(date_initial,date_final)),
+        hovermode = "x unified")
+  })
+  
+  output$graphSEIRRecov <- renderPlotly({
+    
+    plot_ly(mexicoSmall, x = ~date, y = ~R, type = "bar", name = "Actual") %>% 
+      add_trace(y = ~pred_R_SEIR$pred_R_med, type = 'scatter', mode = 'lines', name = "Predicted")%>%
+      # add_trace(y = ~pred_R$uprR, type = 'scatter', mode = 'lines', name = "Upper", showlegend = FALSE) %>% 
+      # add_trace(y = ~pred_R$lwrR, type = 'scatter', mode = 'lines', fill = 'tonexty', name = "Lower", showlegend = FALSE)
+      add_ribbons(ymin = ~pred_R_SEIR$lwrR,
+                  ymax = ~pred_R_SEIR$uprR,
+                  line = list(color = 'rgba(54, 163, 11, 0.05)'),
+                  fillcolor = 'rgba(54, 163, 11, 0.2)',
+                  showlegend = FALSE, hoverinfo = "none") %>% 
+      layout(
+        xaxis = list(
+          range=c(date_initial,date_final)),
+        hovermode = "x unified")
+    
+  })
+  
+  
+  
   
   output$graphR0 <- renderPlotly({
     
