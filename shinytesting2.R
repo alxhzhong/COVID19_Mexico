@@ -74,7 +74,7 @@ ui <- fluidPage(theme = shinytheme("darkly"),
                navbarMenu("Cumulative",
                           tabPanel("Cumulative Infections", plotlyOutput("graphCumulativeI")),
                           tabPanel("Cumulative Recoveries", plotlyOutput("graphCumulativeR")),
-                          tabPanel("Daily Active Cases", plotlyOutput("graphActiveI")),
+                          tabPanel("Daily Active Cases", plotlyOutput("graphActiveI"))
                ),
                
                navbarMenu("SIR Estimations",
@@ -86,26 +86,24 @@ ui <- fluidPage(theme = shinytheme("darkly"),
                             tabPanel("SEIR Active"),
                             tabPanel("SEIR Recoveries")),
                
-               tabPanel("R Estimation", plotlyOutput("graphR0")),
+               tabPanel("R Estimation", plotlyOutput("graphR0"))
                
     )
 
   )
   
 )
-
-
-
 server <- function(input, output, session){
   
   dataplot <- eventReactive(input$name, {
     stack <- stack %>% filter(as.factor(name) %in% c(input$name))
   })
+  
   output$graphStacked <- renderPlotly({
     plot_ly(dataplot(), x = ~date, y =~val, color = ~name,
             type = "bar") %>%
       layout(barmode = "stack", title = list(xanchor = "left", x = 0), 
-      xaxis = list(title = "Date", titlefont = axis_title_font),
+             xaxis = list(title = "Date", titlefont = axis_title_font),
              yaxis = list(title = "Daily Counts", titlefont = axis_title_font),
              legend = list(orientation = "v", font = list(size = 16)), hovermode = "x unified") %>%
       plotly::config(toImageButtonOptions = list(width = NULL, height = NULL))
@@ -134,7 +132,7 @@ server <- function(input, output, session){
     
   })
   
-
+  
   output$graphSIRActive <- renderPlotly({
     # date_breaks = "1 month"
     # 
@@ -199,30 +197,32 @@ server <- function(input, output, session){
     # ggplotly(p)
     
     plot_ly(mexicoSmall, x = ~date, y = ~R, type = "bar", name = "Actual") %>% 
-
+      
       add_trace(y = ~pred_R$pred_R_med, type = 'scatter', mode = 'lines', name = "Predicted") %>% 
       layout(
         range=c(date_initial,date_final),
-
-      add_trace(y = ~pred_R_SIR$pred_R_med, type = 'scatter', mode = 'lines', name = "Predicted") %>%
-      # add_trace(y = ~pred_R$uprR, type = 'scatter', mode = 'lines', name = "Upper", showlegend = FALSE) %>% 
-      # add_trace(y = ~pred_R$lwrR, type = 'scatter', mode = 'lines', fill = 'tonexty', name = "Lower", showlegend = FALSE)
-      add_ribbons(ymin = ~pred_R_SIR$lwrR,
-                  ymax = ~pred_R_SIR$uprR,
-                  line = list(color = 'rgba(54, 163, 11, 0.05)'),
-                  fillcolor = 'rgba(54, 163, 11, 0.2)',
-                  hoverinfo = "none") %>% 
-      
-      layout(
-        xaxis = list(
-          range=c(date_initial, date_final)),
-
-        hovermode = "x unified")
+        
+        add_trace(y = ~pred_R_SIR$pred_R_med, type = 'scatter', mode = 'lines', name = "Predicted") %>%
+          # add_trace(y = ~pred_R$uprR, type = 'scatter', mode = 'lines', name = "Upper", showlegend = FALSE) %>% 
+          # add_trace(y = ~pred_R$lwrR, type = 'scatter', mode = 'lines', fill = 'tonexty', name = "Lower", showlegend = FALSE)
+          add_ribbons(ymin = ~pred_R_SIR$lwrR,
+                      ymax = ~pred_R_SIR$uprR,
+                      line = list(color = 'rgba(54, 163, 11, 0.05)'),
+                      fillcolor = 'rgba(54, 163, 11, 0.2)',
+                      hoverinfo = "none") %>% 
+          
+          layout(
+            xaxis = list(
+              range=c(date_initial, date_final)),
+            
+            hovermode = "x unified")
+        
+      )
     
   })
   
   output$graphR0 <- renderPlotly({
-
+    
     plot_ly(plt_data, x = ~date, y = ~r, type = "scatter", mode = "lines",
             line = list(color = "rgb(54, 163, 11)", width = 5),
             hoverinfo = "text",
@@ -248,10 +248,15 @@ server <- function(input, output, session){
         showlegend = FALSE
       ) %>%
       plotly::config(toImageButtonOptions = list(width = NULL, height = NULL))
-
+    
     
   })
   
 }
 
+
+
 shinyApp(ui=ui, server=server)
+
+
+

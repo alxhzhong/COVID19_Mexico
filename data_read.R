@@ -85,7 +85,6 @@ mexico =
   mxfixed %>%
   mutate(recoveries_total = cumsum(daily_recoveries),
          total_removed = deaths_total + recoveries_total,
-
          total_active_infected = cases_total - total_removed,
          day = 1:n(),
          daily_removed = total_removed - lag(total_removed),
