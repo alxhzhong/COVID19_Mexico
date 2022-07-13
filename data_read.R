@@ -59,32 +59,38 @@ problem_dates = mexico %>%
 
 mxfixed = mexico
 
+# replace decr. with 6-day rolling avg (3 days before/after)
 for(i in 1:nrow(problem_dates)){
   date_i = problem_dates[i,]
   pdate = date_i$date
-  target = mxfixed[mxfixed$date == pdate - 1,]$recoveries_total #count before drop
-  count = mxfixed[mxfixed$date == pdate,]$recoveries_total
   
-  while(count < target){
-    mxfixed[mxfixed$date == pdate,]$recoveries_total = target
-    pdate = pdate + 1
-    count = mxfixed[mxfixed$date == pdate,]$recoveries_total
-  }
-  
+  mean_val = mexico %>%
+    filter(date > pdate - 4, 
+           date < pdate + 4,
+           date != pdate) %>% 
+    dplyr::select(daily_recoveries) %>%
+    pull(daily_recoveries) %>% 
+    mean() %>% 
+    round()
+    
+  mxfixed[mxfixed$date == pdate,]$daily_recoveries = mean_val
 }
+
+mxfixed = mxfixed %>% 
+  replace(is.na(.), 0)
+
 
 # recalculate daily num, I, R on fixed values
 mexico =
   mxfixed %>%
-  mutate(total_removed = deaths_total + recoveries_total,
+  mutate(recoveries_total = cumsum(daily_recoveries),
+         total_removed = deaths_total + recoveries_total,
+
          total_active_infected = cases_total - total_removed,
          day = 1:n(),
          daily_removed = total_removed - lag(total_removed),
-         daily_infected = cases_total - lag(cases_total),
-         daily_deaths = deaths_total - lag(deaths_total),
-         daily_recoveries = recoveries_total - lag(recoveries_total),
          I = total_active_infected,
          R = total_removed)
 
 # remove useless vars
-rm(case_url, death_url, recovered_url, mxfixed, problem_dates, date_i, count, i, pdate, target)
+rm(case_url, death_url, recovered_url, mxfixed, problem_dates, date_i, i, pdate, mean_val)

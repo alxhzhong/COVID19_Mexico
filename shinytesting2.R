@@ -1,10 +1,12 @@
 library(shiny)
 library(plotly)
 library(dplyr)
+library(shinythemes)
 
 source("data_read.R")
 source("SIR_intervals.R")
 source("estimate_tvr.R")
+
 
 pred_SIR = sir_intervals("SIR")
 pred_I_SIR = pred_SIR[[1]]
@@ -35,6 +37,7 @@ stack = bind_rows(
     mutate(name = "Recovered")
 )
 
+
 # for SIR graphs, to plot in correct timeframe
 mexicoSmall = mexico %>% 
   right_join(pred_I_SIR, by = "date")
@@ -44,7 +47,7 @@ date_final = "2021-03-01"
 
 # start of app
 
-ui <- fluidPage(
+ui <- fluidPage(theme = shinytheme("darkly"),
   
   # titlePanel("graphZ"),
   
@@ -65,6 +68,8 @@ ui <- fluidPage(
                                              choices=unique(stack$name), selected = unique(stack$name)),
                           id = "sidebar"
                         )),
+                        
+               tabPanel("Test Positivity Rate"),
                
                navbarMenu("Cumulative",
                           tabPanel("Cumulative Infections", plotlyOutput("graphCumulativeI")),
@@ -77,10 +82,14 @@ ui <- fluidPage(
                           tabPanel("SIR Recoveries", plotlyOutput("graphSIRRecov"))
                ),
                
+               navbarMenu("SEIR Estimations",
+                            tabPanel("SEIR Active"),
+                            tabPanel("SEIR Recoveries")),
+               
                tabPanel("R Estimation", plotlyOutput("graphR0")),
                
     )
-    
+
   )
   
 )
@@ -95,8 +104,10 @@ server <- function(input, output, session){
   output$graphStacked <- renderPlotly({
     plot_ly(dataplot(), x = ~date, y =~val, color = ~name,
             type = "bar") %>%
-      layout(barmode = "stack", title = list(xanchor = "left", x = 0), legend =
-               list(orientation = "h", font = list(size = 16)), hovermode = "x unified") %>%
+      layout(barmode = "stack", title = list(xanchor = "left", x = 0), 
+      xaxis = list(title = "Date", titlefont = axis_title_font),
+             yaxis = list(title = "Daily Counts", titlefont = axis_title_font),
+             legend = list(orientation = "v", font = list(size = 16)), hovermode = "x unified") %>%
       plotly::config(toImageButtonOptions = list(width = NULL, height = NULL))
     
     
@@ -123,6 +134,7 @@ server <- function(input, output, session){
     
   })
   
+
   output$graphSIRActive <- renderPlotly({
     # date_breaks = "1 month"
     # 
@@ -154,7 +166,7 @@ server <- function(input, output, session){
     #   ) +
     #   xlim(date_initial, date_final)
     # 
-    # p1 <- p1 + labs(y = "Active Cases")
+    # p1 <- p1 + labs(y = "Active Cases", x = "Date")
     # ggplotly(p1) %>% 
     #   layout(
     #     hovermode = "x unified")
@@ -187,6 +199,11 @@ server <- function(input, output, session){
     # ggplotly(p)
     
     plot_ly(mexicoSmall, x = ~date, y = ~R, type = "bar", name = "Actual") %>% 
+
+      add_trace(y = ~pred_R$pred_R_med, type = 'scatter', mode = 'lines', name = "Predicted") %>% 
+      layout(
+        range=c(date_initial,date_final),
+
       add_trace(y = ~pred_R_SIR$pred_R_med, type = 'scatter', mode = 'lines', name = "Predicted") %>%
       # add_trace(y = ~pred_R$uprR, type = 'scatter', mode = 'lines', name = "Upper", showlegend = FALSE) %>% 
       # add_trace(y = ~pred_R$lwrR, type = 'scatter', mode = 'lines', fill = 'tonexty', name = "Lower", showlegend = FALSE)
@@ -199,11 +216,13 @@ server <- function(input, output, session){
       layout(
         xaxis = list(
           range=c(date_initial, date_final)),
+
         hovermode = "x unified")
     
   })
   
   output$graphR0 <- renderPlotly({
+
     plot_ly(plt_data, x = ~date, y = ~r, type = "scatter", mode = "lines",
             line = list(color = "rgb(54, 163, 11)", width = 5),
             hoverinfo = "text",
@@ -229,7 +248,7 @@ server <- function(input, output, session){
         showlegend = FALSE
       ) %>%
       plotly::config(toImageButtonOptions = list(width = NULL, height = NULL))
-    
+
     
   })
   
