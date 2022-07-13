@@ -9,7 +9,7 @@ source("estimate_tvr.R")
 
 mexicoDescriptives <- mexico %>% 
   filter(date <= "2021-08-04")
-
+#kjkj
 
 stack = bind_rows(
   mexicoDescriptives %>% dplyr::select(date, val = daily_deaths) %>%
@@ -36,6 +36,7 @@ ui <- fluidPage(theme = shinytheme("darkly"),
       #   plotlyOutput("graph2"),
       # ),
       navbarPage("Mexico",
+                 
                  tabPanel("Stacked Plotly", 
                           mainPanel(
                             plotlyOutput("graph")
@@ -47,6 +48,9 @@ ui <- fluidPage(theme = shinytheme("darkly"),
                                                choices=unique(stack$name), selected = unique(stack$name)),
                             id = "sidebar"
                           )),
+                 
+                 tabPanel("Test Positivity Rate"),
+                 
                 
                   navbarMenu("Cumulative",
                             tabPanel("Cumulative Infections", plotlyOutput("graph3")),
