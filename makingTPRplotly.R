@@ -43,26 +43,28 @@ mxgov <- mx_cl_all %>%
     tpr_rolavg = rollapply(tpr, 7, mean, fill = NA)
   )
 
+# ggplot
+
 # mxgov %>% 
 #  ggplot(mapping = aes(x = date, y = tpr_rolavg)) +
 #  geom_line()
 
-# new changes
+# plotly
 
-fig <- plot_ly(mxgov, type = 'scatter', mode = 'lines')%>%
-  add_trace(x = ~date, y = ~tpr_rolavg)%>%
+
+mxgov = mxgov %>% mutate(text = paste0("TPR: ", tpr_rolavg))
+fig <- plot_ly(mxgov, type = 'scatter', mode = 'lines', hoverlabel = list(align = "left"))%>%
+  add_trace(x = ~date, y = ~tpr_rolavg, name = "test", text = ~text, hoverinfo = 'text') %>%
   layout(showlegend = F)
 fig <- fig %>%
   layout(
     xaxis = list(title = "Date",
                 zerolinecolor = '#ffff',
                  zerolinewidth = 2,
-                 gridcolor = 'ffff'),
+                gridcolor = '#ffff'),
     yaxis = list(title = "Test Positivity Rate (7-day Ave.)",
                  zerolinecolor = '#ffff',
                  zerolinewidth = 2,
-                 gridcolor = 'ffff'),
+                 gridcolor = '#ffff'),
     plot_bgcolor='#e5ecf6', width = 900)
-
-
 fig
