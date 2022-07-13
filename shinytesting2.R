@@ -48,50 +48,50 @@ date_final = "2021-03-01"
 # start of app
 
 ui <- fluidPage(theme = shinytheme("darkly"),
-  
-  # titlePanel("graphZ"),
-  
-  fluidRow(
-    # mainPanel(
-    #   plotlyOutput("graph"),
-    #   plotlyOutput("graph2"),
-    # ),
-    navbarPage("Mexico",
-               tabPanel("Stacked Plotly", 
-                        mainPanel(
-                          plotlyOutput("graphStacked")
-                        ),
-                        sidebarPanel(
-                          # selectInput(inputId =  "y", label = "label",
-                          #             choices = names(plotMexico)),
-                          checkboxGroupInput("name", "data:",
-                                             choices=unique(stack$name), selected = unique(stack$name)),
-                          id = "sidebar"
-                        )),
-                        
-               tabPanel("Test Positivity Rate"),
-               
-               navbarMenu("Cumulative",
-                          tabPanel("Cumulative Infections", plotlyOutput("graphCumulativeI")),
-                          tabPanel("Cumulative Recoveries", plotlyOutput("graphCumulativeR")),
-                          tabPanel("Daily Active Cases", plotlyOutput("graphActiveI"))
-               ),
-               
-               navbarMenu("SIR Estimations",
-                          tabPanel("SIR Active", plotlyOutput("graphSIRActive")),
-                          tabPanel("SIR Recoveries", plotlyOutput("graphSIRRecov"))
-               ),
-               
-               navbarMenu("SEIR Estimations",
-                            tabPanel("SEIR Active"),
-                            tabPanel("SEIR Recoveries")),
-               
-               tabPanel("R Estimation", plotlyOutput("graphR0"))
-               
-    )
-
-  )
-  
+                
+                # titlePanel("graphZ"),
+                
+                fluidRow(
+                  # mainPanel(
+                  #   plotlyOutput("graph"),
+                  #   plotlyOutput("graph2"),
+                  # ),
+                  navbarPage("Mexico",
+                             tabPanel("Stacked Plotly", 
+                                      mainPanel(
+                                        plotlyOutput("graphStacked")
+                                      ),
+                                      sidebarPanel(
+                                        # selectInput(inputId =  "y", label = "label",
+                                        #             choices = names(plotMexico)),
+                                        checkboxGroupInput("name", "data:",
+                                                           choices=unique(stack$name), selected = unique(stack$name)),
+                                        id = "sidebar"
+                                      )),
+                             
+                             tabPanel("Test Positivity Rate"),
+                             
+                             navbarMenu("Cumulative",
+                                        tabPanel("Cumulative Infections", plotlyOutput("graphCumulativeI")),
+                                        tabPanel("Cumulative Recoveries", plotlyOutput("graphCumulativeR")),
+                                        tabPanel("Daily Active Cases", plotlyOutput("graphActiveI"))
+                             ),
+                             
+                             navbarMenu("SIR Estimations",
+                                        tabPanel("SIR Active", plotlyOutput("graphSIRActive")),
+                                        tabPanel("SIR Recoveries", plotlyOutput("graphSIRRecov"))
+                             ),
+                             
+                             navbarMenu("SEIR Estimations",
+                                        tabPanel("SEIR Active"),
+                                        tabPanel("SEIR Recoveries")),
+                             
+                             tabPanel("R Estimation", plotlyOutput("graphR0"))
+                             
+                  )
+                  
+                )
+                
 )
 server <- function(input, output, session){
   
@@ -197,27 +197,19 @@ server <- function(input, output, session){
     # ggplotly(p)
     
     plot_ly(mexicoSmall, x = ~date, y = ~R, type = "bar", name = "Actual") %>% 
-      
-      add_trace(y = ~pred_R$pred_R_med, type = 'scatter', mode = 'lines', name = "Predicted") %>% 
+      add_trace(y = ~pred_R_SIR$pred_R_med, type = 'scatter', mode = 'lines', name = "Predicted") %>% 
+      add_trace(y = ~pred_R_SIR$pred_R_med, type = 'scatter', mode = 'lines', name = "Predicted") %>%
+      # add_trace(y = ~pred_R$uprR, type = 'scatter', mode = 'lines', name = "Upper", showlegend = FALSE) %>% 
+      # add_trace(y = ~pred_R$lwrR, type = 'scatter', mode = 'lines', fill = 'tonexty', name = "Lower", showlegend = FALSE)
+      add_ribbons(ymin = ~pred_R_SIR$lwrR,
+                  ymax = ~pred_R_SIR$uprR,
+                  line = list(color = 'rgba(54, 163, 11, 0.05)'),
+                  fillcolor = 'rgba(54, 163, 11, 0.2)',
+                  hoverinfo = "none") %>% 
       layout(
-        range=c(date_initial,date_final),
-        
-        add_trace(y = ~pred_R_SIR$pred_R_med, type = 'scatter', mode = 'lines', name = "Predicted") %>%
-          # add_trace(y = ~pred_R$uprR, type = 'scatter', mode = 'lines', name = "Upper", showlegend = FALSE) %>% 
-          # add_trace(y = ~pred_R$lwrR, type = 'scatter', mode = 'lines', fill = 'tonexty', name = "Lower", showlegend = FALSE)
-          add_ribbons(ymin = ~pred_R_SIR$lwrR,
-                      ymax = ~pred_R_SIR$uprR,
-                      line = list(color = 'rgba(54, 163, 11, 0.05)'),
-                      fillcolor = 'rgba(54, 163, 11, 0.2)',
-                      hoverinfo = "none") %>% 
-          
-          layout(
-            xaxis = list(
-              range=c(date_initial, date_final)),
-            
-            hovermode = "x unified")
-        
-      )
+        xaxis = list(
+          range=c(date_initial,date_final)),
+        hovermode = "x unified")
     
   })
   
