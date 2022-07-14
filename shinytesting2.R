@@ -6,6 +6,7 @@ library(shinythemes)
 source("data_read.R")
 source("SIR_intervals.R")
 source("estimate_tvr.R")
+source("mexicocity_dataread.R")
 
 
 pred_SIR = sir_intervals("SIR")
