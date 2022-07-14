@@ -133,25 +133,28 @@ server <- function(input, output, session){
                      zerolinecolor = '#ffff',
                      zerolinewidth = 2,
                      gridcolor = '#ffff'),
-        plot_bgcolor='#e5ecf6', width = 900)
+        plot_bgcolor='#e5ecf6')
   })
   
   output$graphCumulativeI <- renderPlotly({
     plot_ly(mexicoDescriptives, x = ~date, y = ~cases_total, type = "bar") %>%
       layout(barmode = "stack", title = list(xanchor = "left", x = 0), legend =
-               list(font = list(size = 16)), hovermode = "x unified") 
+               list(font = list(size = 16)), hovermode = "x unified",
+             yaxis = list(title = 'Total Cases')) 
   })
   
   output$graphCumulativeR <- renderPlotly({ 
     plot_ly(mexicoDescriptives, x = ~date, y = ~R, type = "bar") %>%
       layout(barmode = "stack", title = list(xanchor = "right", x = 0), legend =
-               list(orientation = "h", font = list(size = 16)), hovermode = "x unified")
+               list(orientation = "h", font = list(size = 16)), hovermode = "x unified",
+             yaxis = list(title = 'Total Recoveries'))
   })
   
   output$graphActiveI <- renderPlotly({
     plot_ly(mexicoDescriptives, x = ~date, y = ~I, type = "bar") %>%
       layout(barmode = "stack", title = list(xanchor = "left", x = 0), legend =
-               list(font = list(size = 16)), hovermode = "x unified") 
+               list(font = list(size = 16)), hovermode = "x unified",
+             yaxis = list(title = 'Active Infections')) 
     
     
   })
@@ -200,6 +203,7 @@ server <- function(input, output, session){
       layout(
         xaxis = list(
           range=c(date_initial, date_final)),
+        yaxis = list(title = 'Active Infections'),
         hovermode = "x unified")
   })
   
@@ -232,6 +236,7 @@ server <- function(input, output, session){
       layout(
         xaxis = list(
           range=c(date_initial,date_final)),
+        yaxis = list(title = 'Total Recoveries'),
         hovermode = "x unified")
     
   })
@@ -246,6 +251,7 @@ server <- function(input, output, session){
       layout(
         xaxis = list(
           range=c(date_initial,date_final)),
+        yaxis = list(title = 'Active Infections'),
         hovermode = "x unified")
   })
   
@@ -263,6 +269,7 @@ server <- function(input, output, session){
       layout(
         xaxis = list(
           range=c(date_initial,date_final)),
+        yaxis = list(title = 'Total Recoveries'),
         hovermode = "x unified")
     
   })
