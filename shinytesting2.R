@@ -122,7 +122,8 @@ server <- function(input, output, session){
   
   output$TPRgraph <- renderPlotly({
     plot_ly(mxgov, type = 'scatter', mode = 'lines', hoverlabel = list(align = "left"))%>%
-      add_trace(x = ~date, y = ~tpr_rolavg, name = "test", text = ~text, hoverinfo = 'text') %>%
+      add_trace(x = ~date, y = ~tpr_rolavg, name = "test", text = ~text, hoverinfo = 'text',
+                color = "#56B4E9") %>%
       layout(showlegend = F) %>% 
       layout(
         xaxis = list(title = "Date",
@@ -147,7 +148,7 @@ server <- function(input, output, session){
     plot_ly(mexicoDescriptives, x = ~date, y = ~R, type = "bar") %>%
       layout(barmode = "stack", title = list(xanchor = "right", x = 0), legend =
                list(orientation = "h", font = list(size = 16)), hovermode = "x unified",
-             yaxis = list(title = 'Total Recoveries'))
+             yaxis = list(title = 'Total Recoveries', xaxis = list(title = 'Date')))
   })
   
   output$graphActiveI <- renderPlotly({
