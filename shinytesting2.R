@@ -52,6 +52,7 @@ date_final = "2021-03-01"
 
 
 # for TPR graph
+source("mexicocity_dataread.R")
 mxgov = mxgov %>% mutate(text = paste0("TPR: ", tpr_rolavg))
 
 # start of app
