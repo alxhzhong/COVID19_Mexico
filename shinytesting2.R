@@ -135,11 +135,11 @@ server <- function(input, output, session){
   })
   
   output$graphStacked <- renderPlotly({
-    plot_ly(dataplot(), x = ~date, y =~val, color = ~name,
+    plot_ly(dataplot(), x = ~date, y =~val, color = ~name, colors = c("#F5793A", "#60A5E8", "#A95AA1"),
             type = "bar") %>%
       layout(barmode = "stack", title = list(xanchor = "left", x = 0), #titlefont = axis_title_font,
              xaxis = list(title = "Date"),
-             yaxis = list(title = "Daily Counts"),
+             yaxis = list(title = "Daily Counts", range = list(0, 60000)),
              legend = list(orientation = "v", font = list(size = 16)), hovermode = "x unified") %>%
       plotly::config(toImageButtonOptions = list(width = NULL, height = NULL))
     
