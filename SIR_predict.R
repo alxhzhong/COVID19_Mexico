@@ -25,7 +25,7 @@ last_day = first_day + num_days - 1
 date = seq(first_day, last_day, by = 1)
 
 last_IR = mexico %>% 
-  filter(date == last_day) %>% 
+  filter(date == first_day) %>% 
   dplyr::select(date, I, R)
 
 N = 128900000
