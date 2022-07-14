@@ -74,7 +74,7 @@ ui <- fluidPage(theme = shinytheme("darkly"),
                                       sidebarPanel(
                                         # selectInput(inputId =  "y", label = "label",
                                         #             choices = names(plotMexico)),
-                                        checkboxGroupInput("name", "data:",
+                                        checkboxGroupInput("name", "Data:",
                                                            choices=unique(stack$name), selected = unique(stack$name)),
                                         id = "sidebar"
                                       )),
