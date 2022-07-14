@@ -208,7 +208,7 @@ server <- function(input, output, session){
       # add_trace(y = ~pred_R$lwrR, type = 'scatter', mode = 'lines', fill = 'tonexty', name = "Lower", showlegend = FALSE)
       add_ribbons(ymin = ~pred_R_SIR$lwrR,
                   ymax = ~pred_R_SIR$uprR,
-                  #line = list(color = 'rgba(54, 163, 11, 0.05)'),
+                  line = list(color = 'rgb(54, 163, 11, 0.05)'),
                   fillcolor = 'rgba(54, 163, 11, 0.2)',
                   showlegend = FALSE) %>% 
       layout(
@@ -233,14 +233,14 @@ server <- function(input, output, session){
   
   output$graphSEIRRecov <- renderPlotly({
     
-    plot_ly(mexicoSmall, x = ~date, y = ~R, type = "bar", name = "Actual") %>% 
-      add_trace(y = ~pred_R_SEIR$pred_R_med, type = 'scatter', mode = 'lines', name = "Predicted")%>%
+    plot_ly(mexicoSmall, x = ~date, y = ~R, type = "bar", name = "Actual", color = I('rgba(0, 99, 65, 1.0)')) %>% 
+      add_trace(y = ~pred_R_SEIR$pred_R_med, type = 'scatter', mode = 'lines', name = "Predicted", color = I("rgba(200, 16, 46, 1.0)"), line = list(width = 5))%>%
       # add_trace(y = ~pred_R$uprR, type = 'scatter', mode = 'lines', name = "Upper", showlegend = FALSE) %>% 
       # add_trace(y = ~pred_R$lwrR, type = 'scatter', mode = 'lines', fill = 'tonexty', name = "Lower", showlegend = FALSE)
       add_ribbons(ymin = ~pred_R_SEIR$lwrR,
                   ymax = ~pred_R_SEIR$uprR,
-                  line = list(color = 'rgba(54, 163, 11, 0.05)'),
-                  fillcolor = 'rgba(54, 163, 11, 0.2)',
+                  line = list(color = 'rgba(200, 16, 46, 0.05)'),
+                  fillcolor = 'rgba(200, 16, 46, 0.2)',
                   showlegend = FALSE, hoverinfo = "none") %>% 
       layout(
         xaxis = list(
@@ -255,15 +255,15 @@ server <- function(input, output, session){
   output$graphR0 <- renderPlotly({
     
     plot_ly(plt_data, x = ~date, y = ~r, type = "scatter", mode = "lines",
-            line = list(color = "rgb(54, 163, 11)", width = 5),
+            line = list(color = "rgb(0, 99, 65)", width = 5),
             hoverinfo = "text",
             text   = ~text) %>%
       add_markers(data = plt_data, x = ~date, y = ~r, mode = "marker",
                   marker = list(color = "rgb(38, 38, 38)", symbol = 3)) %>%
       add_ribbons(ymin = ~lower,
                   ymax = ~upper,
-                  line = list(color = 'rgba(54, 163, 11, 0.05)'),
-                  fillcolor = 'rgba(54, 163, 11, 0.2)',
+                  line = list(color = 'rgba(54, 163, 11, 0.3)'),
+                  fillcolor = 'rgba(0, 99, 65, 0.2)',
                   hoverinfo = "none") %>%
       layout(
         title = list(text = cap, xanchor = "left", x = 0),
@@ -274,7 +274,7 @@ server <- function(input, output, session){
         shapes = list(
           type = "line", xref = "paper", yref = "data",
           x0 = 0, x1 = 1, y0 = 1, y1 = 1,
-          line = list(color = "rgba(255, 153, 51, 0.5)")
+          line = list(color = "rgba(200, 16, 46, 0.5)")
         ),
         showlegend = FALSE
       ) %>%
