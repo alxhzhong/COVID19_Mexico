@@ -6,7 +6,7 @@ library(shinythemes)
 source("data_read.R")
 source("SIR_intervals.R")
 source("estimate_tvr.R")
-
+source("mexicocity_dataread.R")
 
 pred_SIR = sir_intervals("SIR")
 pred_I_SIR = pred_SIR[[1]]
@@ -121,7 +121,8 @@ server <- function(input, output, session){
   })
   
   output$TPRgraph <- renderPlotly({
-    plot_ly(mxgov, type = 'scatter', mode = 'lines', hoverlabel = list(align = "left"))%>%
+    plot_ly(mxgov, type = 'scatter', mode = 'lines', hoverlabel = list(align = "left",
+                            color = I("#F5793A")))%>%
       add_trace(x = ~date, y = ~tpr_rolavg, name = "test", text = ~text, hoverinfo = 'text') %>%
       layout(showlegend = F) %>% 
       layout(
@@ -133,25 +134,31 @@ server <- function(input, output, session){
                      zerolinecolor = '#ffff',
                      zerolinewidth = 2,
                      gridcolor = '#ffff'),
-        plot_bgcolor='#e5ecf6', width = 900)
+        plot_bgcolor='#e5ecf6')
   })
   
   output$graphCumulativeI <- renderPlotly({
-    plot_ly(mexicoDescriptives, x = ~date, y = ~cases_total, type = "bar") %>%
+    plot_ly(mexicoDescriptives, x = ~date, y = ~cases_total, type = "bar",
+            color = I("#60A5E8")) %>%
       layout(barmode = "stack", title = list(xanchor = "left", x = 0), legend =
-               list(font = list(size = 16)), hovermode = "x unified") 
+               list(font = list(size = 16)), hovermode = "x unified",
+             yaxis = list(title = 'Total Cases'), xaxis = list(title = 'Date')) 
   })
   
   output$graphCumulativeR <- renderPlotly({ 
-    plot_ly(mexicoDescriptives, x = ~date, y = ~R, type = "bar") %>%
+    plot_ly(mexicoDescriptives, x = ~date, y = ~R, type = "bar",
+            color = I("#A95AA1")) %>%
       layout(barmode = "stack", title = list(xanchor = "right", x = 0), legend =
-               list(orientation = "h", font = list(size = 16)), hovermode = "x unified")
+               list(orientation = "h", font = list(size = 16)), hovermode = "x unified",
+             yaxis = list(title = 'Total Recoveries'), xaxis = list(title = 'Date'))
   })
   
   output$graphActiveI <- renderPlotly({
-    plot_ly(mexicoDescriptives, x = ~date, y = ~I, type = "bar") %>%
+    plot_ly(mexicoDescriptives, x = ~date, y = ~I, type = "bar",
+            color = I("#0F2080")) %>%
       layout(barmode = "stack", title = list(xanchor = "left", x = 0), legend =
-               list(font = list(size = 16)), hovermode = "x unified") 
+               list(font = list(size = 16)), hovermode = "x unified",
+             yaxis = list(title = 'Active Infections'), xaxis = list(title = 'Date')) 
     
     
   })
@@ -193,13 +200,16 @@ server <- function(input, output, session){
     #   layout(
     #     hovermode = "x unified")
     
-    plot_ly(mexicoSmall, x = ~date, y = ~I, type = "bar", name = "Actual") %>% 
+    plot_ly(mexicoSmall, x = ~date, y = ~I, type = "bar", name = "Actual",
+            color = I("#60A5E8")) %>% 
       add_trace(y = ~pred_I_SIR_graph$loess, type = 'scatter', mode = 'lines', name = "Predicted") %>%
-      add_trace(y = ~pred_I_SIR_graph$upper, type = 'scatter', mode = 'lines', name = "Upper", line = list(color = "salmon"), showlegend = FALSE) %>% 
-      add_trace(y = ~pred_I_SIR_graph$lower, type = 'scatter', mode = 'lines', fill = 'tonexty', name = "Lower", line = list(color = "salmon"), showlegend = FALSE) %>% 
+      add_trace(y = ~pred_I_SIR_graph$upper, type = 'scatter', mode = 'lines', name = "Upper", line = list(color = "rgba(245, 121, 58, 1)"), showlegend = FALSE) %>% 
+      add_trace(y = ~pred_I_SIR_graph$lower, type = 'scatter', mode = 'lines', fill = 'tonexty', name = "Lower", line = list(color = "rgba(245, 121, 58, 1)"), showlegend = FALSE) %>% 
       layout(
         xaxis = list(
           range=c(date_initial, date_final)),
+        yaxis = list(title = 'Active Infections'),
+        xaxis = list(title = 'Date'),
         hovermode = "x unified")
   })
   
@@ -220,7 +230,8 @@ server <- function(input, output, session){
     #   labs(y = "Removed")
     # ggplotly(p)
     
-    plot_ly(mexicoSmall, x = ~date, y = ~R, type = "bar", name = "Actual") %>% 
+    plot_ly(mexicoSmall, x = ~date, y = ~R, type = "bar", name = "Actual",
+            color = I("#A95AA1")) %>% 
       add_trace(y = ~pred_R_SIR$pred_R_med, type = 'scatter', mode = 'lines', name = "Predicted") %>%
       # add_trace(y = ~pred_R$uprR, type = 'scatter', mode = 'lines', name = "Upper", showlegend = FALSE) %>% 
       # add_trace(y = ~pred_R$lwrR, type = 'scatter', mode = 'lines', fill = 'tonexty', name = "Lower", showlegend = FALSE)
@@ -232,6 +243,8 @@ server <- function(input, output, session){
       layout(
         xaxis = list(
           range=c(date_initial,date_final)),
+        yaxis = list(title = 'Total Recoveries'),
+        xaxis = list(title = 'Date'),
         hovermode = "x unified")
     
   })
@@ -239,19 +252,22 @@ server <- function(input, output, session){
   
   output$graphSEIRActive <- renderPlotly({
     
-    plot_ly(mexicoSmall, x = ~date, y = ~I, type = "bar", name = "Actual") %>% 
+    plot_ly(mexicoSmall, x = ~date, y = ~I, type = "bar", name = "Actual",
+            color = I("#60A5E8")) %>% 
       add_trace(y = ~pred_I_SEIR_graph$loess, type = 'scatter', mode = 'lines', name = "Predicted") %>%
       add_trace(y = ~pred_I_SEIR_graph$upper, type = 'scatter', mode = 'lines', name = "Upper", line = list(color = 'plum'), showlegend = FALSE) %>% 
       add_trace(y = ~pred_I_SEIR_graph$lower, type = 'scatter', mode = 'lines', fill = 'tonexty', fillcolor = list(color = 'plum'), name = "Lower", line = list(color = 'plum'), showlegend = FALSE) %>% 
       layout(
         xaxis = list(
           range=c(date_initial,date_final)),
+        yaxis = list(title = 'Active Infections'),
+        xaxis = list(title = 'Date'),
         hovermode = "x unified")
   })
   
   output$graphSEIRRecov <- renderPlotly({
     
-    plot_ly(mexicoSmall, x = ~date, y = ~R, type = "bar", name = "Actual", color = I('rgba(0, 99, 65, 1.0)')) %>% 
+    plot_ly(mexicoSmall, x = ~date, y = ~R, type = "bar", name = "Actual", color = I("#A95AA1")) %>% 
       add_trace(y = ~pred_R_SEIR$pred_R_med, type = 'scatter', mode = 'lines', name = "Predicted", color = I("rgba(200, 16, 46, 1.0)"), line = list(width = 5))%>%
       # add_trace(y = ~pred_R$uprR, type = 'scatter', mode = 'lines', name = "Upper", showlegend = FALSE) %>% 
       # add_trace(y = ~pred_R$lwrR, type = 'scatter', mode = 'lines', fill = 'tonexty', name = "Lower", showlegend = FALSE)
@@ -263,6 +279,8 @@ server <- function(input, output, session){
       layout(
         xaxis = list(
           range=c(date_initial,date_final)),
+        yaxis = list(title = 'Total Recoveries'),
+        xaxis = list(title = 'Date'),
         hovermode = "x unified")
     
   })
@@ -273,7 +291,8 @@ server <- function(input, output, session){
   output$graphR0 <- renderPlotly({
     
     plot_ly(plt_data, x = ~date, y = ~r, type = "scatter", mode = "lines",
-            line = list(color = "rgb(0, 99, 65)", width = 5),
+            line = list(width = 5),
+            # add line color?
             hoverinfo = "text",
             text   = ~text) %>%
       add_markers(data = plt_data, x = ~date, y = ~r, mode = "marker",
