@@ -55,8 +55,7 @@ mxgov <- mx_cl_all %>%
 mxgov = mxgov %>% mutate(text = paste0("TPR: ", tpr_rolavg))
 fig <- plot_ly(mxgov, type = 'scatter', mode = 'lines', hoverlabel = list(align = "left"))%>%
   add_trace(x = ~date, y = ~tpr_rolavg, name = "test", text = ~text, hoverinfo = 'text') %>%
-  layout(showlegend = F)
-fig <- fig %>%
+  layout(showlegend = F) %>% 
   layout(
     xaxis = list(title = "Date",
                 zerolinecolor = '#ffff',

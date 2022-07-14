@@ -51,6 +51,9 @@ date_initial = "2020-11-22"
 date_final = "2021-03-01"
 
 
+# for TPR graph
+mxgov = mxgov %>% mutate(text = paste0("TPR: ", tpr_rolavg))
+
 # start of app
 
 ui <- fluidPage(theme = shinytheme("darkly"),
@@ -75,7 +78,7 @@ ui <- fluidPage(theme = shinytheme("darkly"),
                                         id = "sidebar"
                                       )),
                              
-                             tabPanel("Test Positivity Rate"),
+                             tabPanel("Test Positivity Rate", plotlyOutput("TPRgraph")),
                              
                              navbarMenu("Cumulative",
                                         tabPanel("Cumulative Infections", plotlyOutput("graphCumulativeI")),
@@ -117,6 +120,21 @@ server <- function(input, output, session){
     
   })
   
+  output$TPRgraph <- renderPlotly({
+    plot_ly(mxgov, type = 'scatter', mode = 'lines', hoverlabel = list(align = "left"))%>%
+      add_trace(x = ~date, y = ~tpr_rolavg, name = "test", text = ~text, hoverinfo = 'text') %>%
+      layout(showlegend = F) %>% 
+      layout(
+        xaxis = list(title = "Date",
+                     zerolinecolor = '#ffff',
+                     zerolinewidth = 2,
+                     gridcolor = '#ffff'),
+        yaxis = list(title = "Test Positivity Rate (7-day Ave.)",
+                     zerolinecolor = '#ffff',
+                     zerolinewidth = 2,
+                     gridcolor = '#ffff'),
+        plot_bgcolor='#e5ecf6', width = 900)
+  })
   
   output$graphCumulativeI <- renderPlotly({
     plot_ly(mexicoDescriptives, x = ~date, y = ~cases_total, type = "bar") %>%
