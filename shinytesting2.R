@@ -66,7 +66,7 @@ ui <- fluidPage(theme = shinytheme("darkly"),
                   #   plotlyOutput("graph"),
                   #   plotlyOutput("graph2"),
                   # ),
-                  navbarPage("Mexico",
+                  navbarPage("Tracking COVID-19 in Mexico",
                              tabPanel("Stacked Plotly", 
                                       mainPanel(
                                         plotlyOutput("graphStacked")
@@ -255,9 +255,9 @@ server <- function(input, output, session){
     
     plot_ly(mexicoSmall, x = ~date, y = ~I, type = "bar", name = "Actual",
             color = I("#60A5E8")) %>% 
-      add_trace(y = ~pred_I_SEIR_graph$loess, type = 'scatter', mode = 'lines', name = "Predicted", line = list(color = 'rgb(245, 121, 58,, 1)')) %>%
-      add_trace(y = ~pred_I_SEIR_graph$upper, type = 'scatter', mode = 'lines', name = "Upper", line = list(color = 'rgb(245, 121, 58, 0.2)'), showlegend = FALSE) %>% 
-      add_trace(y = ~pred_I_SEIR_graph$lower, type = 'scatter', mode = 'lines', fill = 'tonexty', fillcolor = line = list(color = 'rgb(245, 121, 58, 0.2)'), name = "Lower", line = line = list(color = 'rgb(245, 121, 58, 0.2)'), showlegend = FALSE) %>% 
+      add_trace(y = ~pred_I_SEIR_graph$loess, type = 'scatter', mode = 'lines', name = "Predicted", line = list(color = 'rgba(245, 121, 58,, 1)')) %>%
+      add_trace(y = ~pred_I_SEIR_graph$upper, type = 'scatter', mode = 'lines', name = "Upper", line = list(color = 'rgba(245, 121, 58, 0.5)'), showlegend = FALSE) %>% 
+      add_trace(y = ~pred_I_SEIR_graph$lower, type = 'scatter', mode = 'lines', fill = 'tonexty', fillcolor = list(color = 'rgba(245, 121, 58, 0.5)'), name = "Lower", line = list(color = 'rgba(245, 121, 58, 0.5)'), showlegend = FALSE) %>% 
       layout(
         xaxis = list(
           range=c(date_initial,date_final)),
@@ -274,8 +274,8 @@ server <- function(input, output, session){
       # add_trace(y = ~pred_R$lwrR, type = 'scatter', mode = 'lines', fill = 'tonexty', name = "Lower", showlegend = FALSE)
       add_ribbons(ymin = ~pred_R_SEIR$lwrR,
                   ymax = ~pred_R_SEIR$uprR,
-                  line = list(color = 'rgba(245, 121, 58, 0.05)'),
-                  fillcolor = 'rgba(245, 121, 58, 0.05)',
+                  line = list(color = 'rgba(245, 121, 58, 0.5)'),
+                  fillcolor = 'rgba(245, 121, 58, 0.5)',
                   showlegend = FALSE, hoverinfo = "none") %>% 
       layout(
         xaxis = list(
@@ -300,8 +300,8 @@ server <- function(input, output, session){
                   marker = list(color = "rgb(38, 38, 38)", symbol = 3)) %>%
       add_ribbons(ymin = ~lower,
                   ymax = ~upper,
-                  line = list(color = 'rgba(245, 121, 58, 0.3)'),
-                  fillcolor = 'rgba(245, 121, 58, 0.2)',
+                  line = list(color = 'rgba(245, 121, 58, 0.5)'),
+                  fillcolor = 'rgba(245, 121, 58, 0.5)',
                   hoverinfo = "none") %>%
       layout(
         title = list(text = cap, xanchor = "left", x = 0),
