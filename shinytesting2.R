@@ -54,6 +54,7 @@ date_final = "2021-03-01"
 # for TPR graph
 mxgov = mxgov %>% mutate(text = paste0("TPR: ", tpr_rolavg))
 
+
 # start of app
 
 ui <- fluidPage(theme = shinytheme("darkly"),
@@ -274,7 +275,7 @@ server <- function(input, output, session){
       add_ribbons(ymin = ~pred_R_SEIR$lwrR,
                   ymax = ~pred_R_SEIR$uprR,
                   line = list(color = 'rgba(200, 16, 46, 0.05)'),
-                  fillcolor = 'rgba(200, 16, 46, 0.2)',
+                  fillcolor = 'rgba(200, 16, 46, 0.05)',
                   showlegend = FALSE, hoverinfo = "none") %>% 
       layout(
         xaxis = list(
@@ -291,7 +292,7 @@ server <- function(input, output, session){
   output$graphR0 <- renderPlotly({
     
     plot_ly(plt_data, x = ~date, y = ~r, type = "scatter", mode = "lines",
-            line = list(width = 5),
+            line = list(width = 3),
             # add line color?
             hoverinfo = "text",
             text   = ~text) %>%
@@ -299,19 +300,20 @@ server <- function(input, output, session){
                   marker = list(color = "rgb(38, 38, 38)", symbol = 3)) %>%
       add_ribbons(ymin = ~lower,
                   ymax = ~upper,
-                  line = list(color = 'rgba(54, 163, 11, 0.3)'),
-                  fillcolor = 'rgba(0, 99, 65, 0.2)',
+                  line = list(color = 'rgba(245, 121, 58, 0.3)'),
+                  fillcolor = 'rgba(245, 121, 58, 0.2)',
                   hoverinfo = "none") %>%
       layout(
         title = list(text = cap, xanchor = "left", x = 0),
         xaxis = list(title = "Date", titlefont = axis_title_font,
-                     tickfont = tickfont, zeroline = T),
+                     tickfont = tickfont, zeroline = T,
+                       range=c(date_initial,date_final)),
         yaxis = list(title = "R(t)", titlefont = axis_title_font,
                      tickfont = tickfont, zeroline = T),
         shapes = list(
           type = "line", xref = "paper", yref = "data",
           x0 = 0, x1 = 1, y0 = 1, y1 = 1,
-          line = list(color = "rgba(200, 16, 46, 0.5)")
+          line = list(color = "rgba(0, 0, 0, 0.5)")
         ),
         showlegend = FALSE
       ) %>%

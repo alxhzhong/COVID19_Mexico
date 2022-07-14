@@ -66,41 +66,42 @@ plt_data <- tibble(
                   paste0("[", format(round(lower, 2), nsmall = 2), ", ",
                          format(round(upper, 2), nsmall = 2), "]"))
   ) %>%
-  filter(!is.na(r))
+  filter(!is.na(r)) %>% 
+  filter(date >= "2020-11-22" & date <= "2021-03-01")
 
-cap <- paste0("Mexico. Last updated: ",
-               format(Sys.Date(), format = "%b %e"), sep = ' ')
-axis_title_font <- list(size = 16)
-tickfont        <- list(size = 16)
-
-plt_data = plt_data %>%
-  filter(r < 10)
-
-p <- plot_ly(plt_data, x = ~date, y = ~r, type = "scatter", mode = "lines",
-             line = list(color = "rgb(54, 163, 11)", width = 5),
-             hoverinfo = "text",
-             text   = ~text) %>%
-  add_markers(data = plt_data, x = ~date, y = ~r, mode = "marker",
-              marker = list(color = "rgb(38, 38, 38)", symbol = 3)) %>%
-  add_ribbons(ymin = ~lower,
-              ymax = ~upper,
-              line = list(color = 'rgba(54, 163, 11, 0.05)'),
-              fillcolor = 'rgba(54, 163, 11, 0.2)',
-              hoverinfo = "none") %>%
-  layout(
-    title = list(text = cap, xanchor = "left", x = 0),
-    xaxis = list(title = "Date", titlefont = axis_title_font,
-                 tickfont = tickfont, zeroline = T),
-    yaxis = list(title = "R(t)", titlefont = axis_title_font,
-                 tickfont = tickfont, zeroline = T),
-    shapes = list(
-      type = "line", xref = "paper", yref = "data",
-      x0 = 0, x1 = 1, y0 = 1, y1 = 1,
-      line = list(color = "rgba(255, 153, 51, 0.5)")
-    ),
-    showlegend = FALSE
-  ) %>%
-  plotly::config(toImageButtonOptions = list(width = NULL, height = NULL))
-
-p
-
+# cap <- paste0("Mexico. Last updated: ",
+#                format(Sys.Date(), format = "%b %e"), sep = ' ')
+# axis_title_font <- list(size = 16)
+# tickfont        <- list(size = 16)
+# 
+# plt_data = plt_data %>%
+#   filter(r < 10)
+# 
+# p <- plot_ly(plt_data, x = ~date, y = ~r, type = "scatter", mode = "lines",
+#              line = list(color = "rgb(54, 163, 11)", width = 5),
+#              hoverinfo = "text",
+#              text   = ~text) %>%
+#   add_markers(data = plt_data, x = ~date, y = ~r, mode = "marker",
+#               marker = list(color = "rgb(38, 38, 38)", symbol = 3)) %>%
+#   add_ribbons(ymin = ~lower,
+#               ymax = ~upper,
+#               line = list(color = 'rgba(54, 163, 11, 0.05)'),
+#               fillcolor = 'rgba(54, 163, 11, 0.2)',
+#               hoverinfo = "none") %>%
+#   layout(
+#     title = list(text = cap, xanchor = "left", x = 0),
+#     xaxis = list(title = "Date", titlefont = axis_title_font,
+#                  tickfont = tickfont, zeroline = T),
+#     yaxis = list(title = "R(t)", titlefont = axis_title_font,
+#                  tickfont = tickfont, zeroline = T),
+#     shapes = list(
+#       type = "line", xref = "paper", yref = "data",
+#       x0 = 0, x1 = 1, y0 = 1, y1 = 1,
+#       line = list(color = "rgba(255, 153, 51, 0.5)")
+#     ),
+#     showlegend = FALSE
+#   ) %>%
+#   plotly::config(toImageButtonOptions = list(width = NULL, height = NULL))
+# 
+# p
+# 
