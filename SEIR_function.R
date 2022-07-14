@@ -6,15 +6,9 @@
 librarian::shelf(deSolve, outbreaks, gridExtra, arm, tidyverse, bbmle)
 
 
-# Import data ----
-
-if(!exists("mexico")){
-  source("data_read.R")
-}
-
 # Start of function!
 
-seir_all <- function(data, date_initial, date_final, starting_param_val){
+seir_all <- function(data, date_initial, date_final, starting_param_val, k){
   # start/end dates can be string
   date_initial = as.Date(date_initial)
   date_final = as.Date(date_final)
@@ -23,7 +17,7 @@ seir_all <- function(data, date_initial, date_final, starting_param_val){
     data %>%
     filter(date >= date_initial, date <= date_final)
   
-  seir_1 = function(beta, gamma, sigma, I0, R0, times, N, lambda, mu) {
+  seir_1 = function(beta, gamma, sigma, I0, R0, times, N, lambda, mu,k) {
     # define SIR equations
     seir_equations = function(time, variables, parameters) {
       with(as.list(c(variables, parameters)), {
@@ -36,7 +30,7 @@ seir_all <- function(data, date_initial, date_final, starting_param_val){
     }
     # prepare input for ODE solver
     parameters_values = c(beta = beta, gamma = gamma)
-    E0 = 0.2*I0
+    E0 = k*I0
     S0 = N - E0 - I0 - R0
     initial_values = c(S = S0, E = E0, I = I0, R = R0)
     # solve system of ODEs
@@ -48,7 +42,7 @@ seir_all <- function(data, date_initial, date_final, starting_param_val){
   N = 128900000                                 # population size
   lambda = mu = 0                            # birth/death rate
   
-  ss = function(beta, gamma, sigma, N, data, lambda, mu) {
+  ss = function(beta, gamma, sigma, N, data, lambda, mu,k) {
     # starting cases and removals on day 1
     I0 = data$I[1]
     R0 = data$R[1]
@@ -59,20 +53,20 @@ seir_all <- function(data, date_initial, date_final, starting_param_val){
     # generate predictions using parameters, starting values
     predictions = seir_1(beta = beta, gamma = gamma, sigma = sigma,       # parameters
                          I0 = I0, R0 = R0,                        # variables' intial values
-                         times = times, N = N, lambda = lambda, mu = mu)    # time points
+                         times = times, N = N, lambda = lambda, mu = mu,k=k)    # time points
     # compute the sums of squares
     sum((predictions$I[-1] - data$I[-1])^2 + (predictions$R[-1] - data$R[-1])^2)
     #sum((predictions$I[-1] - data$I[-1])^2 )
   }
   
   # convenient wrapper to return sums of squares ----
-  ss2 = function(x, N, data, lambda, mu,sigma) {
-    ss(beta = x[1], gamma = x[2], N = N, data = data, lambda = lambda, mu = mu,sigma=sigma)
+  ss2 = function(x, N, data, lambda, mu,sigma,k) {
+    ss(beta = x[1], gamma = x[2], N = N, data = data, lambda = lambda, mu = mu,sigma=sigma,k=k)
   }
   
   logli = function(beta, gamma, sigma, N, dat, lambda, mu) {
     I0 = dat$I[1]
-    E0 = I0 * 3
+    E0 = I0 * k
     R0 = dat$R[1]
     times = dat$day
     beta = exp(beta)
@@ -89,7 +83,7 @@ seir_all <- function(data, date_initial, date_final, starting_param_val){
   
   if(method == "ls"){
     # set starting values ----
-    starting_param_val = log(c(1e-2,1e-5))                               ## why need starting_param here when also above in function
+    starting_param_val = starting_param_val                               ## why need starting_param here when also above in function
     N = 128900000                                 # population size
     lambda = mu = 1/(75.05*365)                            # birth/death rate
     # set the data set
@@ -97,10 +91,11 @@ seir_all <- function(data, date_initial, date_final, starting_param_val){
     
     # Optimization result ----
     ss_optim = optim(starting_param_val, ss2, N = N, data = data, lambda = lambda,
-                     mu = mu, sigma=sigma)
+                     mu = mu, sigma=sigma,k=k)
     
     # Obtain beta, gamma
     pars = ss_optim$par
+    sse = ss_optim$value
   }
   
   if(method == "mle"){
@@ -113,13 +108,14 @@ seir_all <- function(data, date_initial, date_final, starting_param_val){
                           start = lapply(starting_param_val, log), method = "Nelder-Mead",
                           data=list(dat = data, N = N, lambda = lambda, mu = mu, sigma = sigma))
     pars = as.numeric(coef(estimates_pois))
+    sse = 0 # CHANGE WHEN MLE WORKING
   }
   
   R = as.numeric((exp(pars[1])*(1/5.1)) / ((1/5.1)+mu)*(exp(pars[2])+mu)) # does this look ok?
   
   predictions = seir_1(beta = exp(pars[1]), gamma = exp(pars[2]), sigma = sigma, I0 = data$I[1],
                        R0 = data$R[1], times = data$day, N = N, lambda = lambda,
-                       mu = mu)              # generate predictions from the least
+                       mu = mu,k=k)              # generate predictions from the least
   # squares solution
   
   date = seq(date_initial, date_final, by = 1)
@@ -141,7 +137,7 @@ seir_all <- function(data, date_initial, date_final, starting_param_val){
   uprE = qpois(p = 1 - cl, lambda = pred_E_med)
   pred_E=data.frame(date,pred_E_med,lwrE,uprE)
   
-  return(list(pred_I, pred_R, pred_E, pars))
+  return(list(pred_I, pred_R, pred_E, pars, sse, method))
   
 }
 

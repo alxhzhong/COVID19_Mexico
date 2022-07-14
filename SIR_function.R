@@ -5,11 +5,6 @@
 # Packages ----
 librarian::shelf(deSolve, outbreaks, gridExtra, arm, tidyverse, bbmle)
 
-
-# Import data ----
-
-source("data_read.R")
-
 # Start of function!
 
 sir_all <- function(data, date_initial, date_final, starting_param_val){
@@ -132,12 +127,6 @@ sir_all <- function(data, date_initial, date_final, starting_param_val){
   return(list(pred_I, pred_R, pars))
 
 }
-
-starting_param_val = log(c(1e-2,1e-5))
-test <- sir_all(mexico, "2020-11-22", "2021-03-01", starting_param_val)
-
-
-
 
 
 
