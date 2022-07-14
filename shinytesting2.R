@@ -6,7 +6,7 @@ library(shinythemes)
 source("data_read.R")
 source("SIR_intervals.R")
 source("estimate_tvr.R")
-
+source("mexicocity_dataread.R")
 
 pred_SIR = sir_intervals("SIR")
 pred_I_SIR = pred_SIR[[1]]
@@ -52,7 +52,6 @@ date_final = "2021-03-01"
 
 
 # for TPR graph
-source("mexicocity_dataread.R")
 mxgov = mxgov %>% mutate(text = paste0("TPR: ", tpr_rolavg))
 
 # start of app
