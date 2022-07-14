@@ -67,9 +67,14 @@ ui <- fluidPage(theme = shinytheme("darkly"),
                   #   plotlyOutput("graph2"),
                   # ),
                   navbarPage("Tracking COVID-19 in Mexico",
-                             tabPanel("Stacked Plotly", 
+                            
+                             tabPanel("Stacked Plotly",
+                                      titlePanel("title of graph"),
                                       mainPanel(
-                                        plotlyOutput("graphStacked")
+                                        h3("Or could put title here"),
+                                        plotlyOutput("graphStacked"),
+                                        br(),
+                                        p("some descriptive text")
                                       ),
                                       sidebarPanel(
                                         # selectInput(inputId =  "y", label = "label",
@@ -79,24 +84,44 @@ ui <- fluidPage(theme = shinytheme("darkly"),
                                         id = "sidebar"
                                       )),
                              
-                             tabPanel("Test Positivity Rate", plotlyOutput("TPRgraph")),
+                             tabPanel("Test Positivity Rate",
+                                      titlePanel("title of graph"),
+                                      plotlyOutput("TPRgraph"),
+                                      br(),
+                                      p("some descriptive text")),
                              
                              navbarMenu("Cumulative",
-                                        tabPanel("Cumulative Infections", plotlyOutput("graphCumulativeI")),
-                                        tabPanel("Cumulative Removed", plotlyOutput("graphCumulativeR")),
-                                        tabPanel("Daily Active Cases", plotlyOutput("graphActiveI"))
+                                        tabPanel("Cumulative Infections", h3("title option"), plotlyOutput("graphCumulativeI"),
+                                                 br(),
+                                                 p("some descriptive text")),
+                                        tabPanel("Cumulative Removed", plotlyOutput("graphCumulativeR"),
+                                                 br(),
+                                                 p("some descriptive text")),
+                                        tabPanel("Daily Active Cases", plotlyOutput("graphActiveI"),
+                                                 br(),
+                                                 p("some descriptive text"))
                              ),
                              
                              navbarMenu("SIR Estimations",
-                                        tabPanel("SIR Active", plotlyOutput("graphSIRActive")),
-                                        tabPanel("SIR Removed", plotlyOutput("graphSIRRem"))
+                                        tabPanel("SIR Active", plotlyOutput("graphSIRActive"),
+                                                 br(),
+                                                 p("some descriptive text")),
+                                        tabPanel("SIR Removed", plotlyOutput("graphSIRRem"),
+                                                 br(),
+                                                 p("some descriptive text"))
                              ),
                              
                              navbarMenu("SEIR Estimations",
-                                        tabPanel("SEIR Active", plotlyOutput("graphSEIRActive")),
-                                        tabPanel("SEIR Removed", plotlyOutput("graphSEIRRem"))),
+                                        tabPanel("SEIR Active", plotlyOutput("graphSEIRActive"),
+                                                 br(),
+                                                 p("some descriptive text")),
+                                        tabPanel("SEIR Removed", plotlyOutput("graphSEIRRem"),
+                                                 br(),
+                                                 p("some descriptive text"))),
                              
-                             tabPanel("R Estimation", plotlyOutput("graphR0"))
+                             tabPanel("R Estimation", plotlyOutput("graphR0"),
+                                      br(),
+                                      p("some descriptive text"))
                              
                   )
                   
@@ -112,9 +137,9 @@ server <- function(input, output, session){
   output$graphStacked <- renderPlotly({
     plot_ly(dataplot(), x = ~date, y =~val, color = ~name,
             type = "bar") %>%
-      layout(barmode = "stack", title = list(xanchor = "left", x = 0), 
-             xaxis = list(title = "Date", titlefont = axis_title_font),
-             yaxis = list(title = "Daily Counts", titlefont = axis_title_font),
+      layout(barmode = "stack", title = list(xanchor = "left", x = 0), #titlefont = axis_title_font,
+             xaxis = list(title = "Date"),
+             yaxis = list(title = "Daily Counts"),
              legend = list(orientation = "v", font = list(size = 16)), hovermode = "x unified") %>%
       plotly::config(toImageButtonOptions = list(width = NULL, height = NULL))
     
@@ -304,11 +329,11 @@ server <- function(input, output, session){
                   fillcolor = 'rgba(245, 121, 58, 0.5)',
                   hoverinfo = "none") %>%
       layout(
-        title = list(text = cap, xanchor = "left", x = 0),
-        xaxis = list(title = "Date", titlefont = axis_title_font,
+        title = list(xanchor = "left", x = 0), #text = cap,
+        xaxis = list(title = "Date", #titlefont = axis_title_font,
                      tickfont = tickfont, zeroline = T,
                        range=c(date_initial,date_final)),
-        yaxis = list(title = "R(t)", titlefont = axis_title_font,
+        yaxis = list(title = "R(t)", #titlefont = axis_title_font,
                      tickfont = tickfont, zeroline = T),
         shapes = list(
           type = "line", xref = "paper", yref = "data",
