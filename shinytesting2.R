@@ -141,7 +141,7 @@ server <- function(input, output, session){
     plot_ly(mexicoDescriptives, x = ~date, y = ~cases_total, type = "bar") %>%
       layout(barmode = "stack", title = list(xanchor = "left", x = 0), legend =
                list(font = list(size = 16)), hovermode = "x unified",
-             yaxis = list(title = 'Total Cases')) 
+             yaxis = list(title = 'Total Cases'), xaxis = list(title = 'Date')) 
   })
   
   output$graphCumulativeR <- renderPlotly({ 
@@ -155,7 +155,7 @@ server <- function(input, output, session){
     plot_ly(mexicoDescriptives, x = ~date, y = ~I, type = "bar") %>%
       layout(barmode = "stack", title = list(xanchor = "left", x = 0), legend =
                list(font = list(size = 16)), hovermode = "x unified",
-             yaxis = list(title = 'Active Infections')) 
+             yaxis = list(title = 'Active Infections'), xaxis = list(title = 'Date')) 
     
     
   })
@@ -205,6 +205,7 @@ server <- function(input, output, session){
         xaxis = list(
           range=c(date_initial, date_final)),
         yaxis = list(title = 'Active Infections'),
+        xaxis = list(title = 'Date'),
         hovermode = "x unified")
   })
   
@@ -238,6 +239,7 @@ server <- function(input, output, session){
         xaxis = list(
           range=c(date_initial,date_final)),
         yaxis = list(title = 'Total Recoveries'),
+        xaxis = list(title = 'Date'),
         hovermode = "x unified")
     
   })
@@ -253,6 +255,7 @@ server <- function(input, output, session){
         xaxis = list(
           range=c(date_initial,date_final)),
         yaxis = list(title = 'Active Infections'),
+        xaxis = list(title = 'Date'),
         hovermode = "x unified")
   })
   
@@ -271,6 +274,7 @@ server <- function(input, output, session){
         xaxis = list(
           range=c(date_initial,date_final)),
         yaxis = list(title = 'Total Recoveries'),
+        xaxis = list(title = 'Date'),
         hovermode = "x unified")
     
   })
