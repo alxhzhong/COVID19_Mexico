@@ -6,20 +6,20 @@
 librarian::shelf(readr, tidyr, dplyr, zoo)
 
 # Data source ---
-mxcase_url = "https://datos.covid-19.conacyt.mx/Downloads/Files/Casos_Diarios_Estado_Nacional_Confirmados_20220712.csv"
+mxcase_url = "https://datos.covid-19.conacyt.mx/Downloads/Files/Casos_Diarios_Estado_Nacional_Confirmados_20220713.csv"
 mx_confirmed = read_csv(mxcase_url)
 
-mxneg_url = "https://datos.covid-19.conacyt.mx/Downloads/Files/Casos_Diarios_Estado_Nacional_Negativos_20220712.csv"
+mxneg_url = "https://datos.covid-19.conacyt.mx/Downloads/Files/Casos_Diarios_Estado_Nacional_Negativos_20220713.csv"
 mx_neg = read_csv(mxneg_url)
 
-mxdeaths_url = "https://datos.covid-19.conacyt.mx/Downloads/Files/Casos_Diarios_Estado_Nacional_Defunciones_20220712.csv"
+mxdeaths_url = "https://datos.covid-19.conacyt.mx/Downloads/Files/Casos_Diarios_Estado_Nacional_Defunciones_20220713.csv"
 mx_deaths = read_csv(mxdeaths_url)
 
 
 clean_mxgov = function(data, prov_name, col_name){
   data %>% 
     filter(nombre == prov_name) %>% 
-    select(-cve_ent, -poblacion, -nombre) %>% 
+    dplyr::select(-cve_ent, -poblacion, -nombre) %>% 
     pivot_longer(cols = everything(), names_to = "date", values_to = {{col_name}}) %>% 
     mutate(date = as.Date(date, format = "%d-%m-%Y")) %>% 
     return()
@@ -41,8 +41,4 @@ mxgov <- mx_cl_all %>%
     tpr = daily_infected / daily_tests,
     tpr_rolavg = rollapply(tpr, 7, mean, fill = NA)
   )
-  
-mxgov %>% 
-  ggplot(mapping = aes(x = date, y = tpr_rolavg)) +
-  geom_line()
 
