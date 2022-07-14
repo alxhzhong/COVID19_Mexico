@@ -148,7 +148,7 @@ server <- function(input, output, session){
     plot_ly(mexicoDescriptives, x = ~date, y = ~R, type = "bar") %>%
       layout(barmode = "stack", title = list(xanchor = "right", x = 0), legend =
                list(orientation = "h", font = list(size = 16)), hovermode = "x unified",
-             yaxis = list(title = 'Total Recoveries', xaxis = list(title = 'Date')))
+             yaxis = list(title = 'Total Recoveries'), xaxis = list(title = 'Date'))
   })
   
   output$graphActiveI <- renderPlotly({
