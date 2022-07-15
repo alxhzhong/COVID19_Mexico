@@ -168,7 +168,8 @@ server <- function(input, output, session){
             color = I("#60A5E8")) %>%
       layout(barmode = "stack", title = list(xanchor = "left", x = 0), legend =
                list(font = list(size = 16)), hovermode = "x unified",
-             yaxis = list(title = 'Total Cases'), xaxis = list(title = 'Date')) 
+             yaxis = list(title = 'Total Cases', hoverformat = ".2f"), 
+             xaxis = list(title = 'Date')) 
   })
   
   output$graphCumulativeR <- renderPlotly({ 
@@ -176,7 +177,8 @@ server <- function(input, output, session){
             color = I("#A95AA1")) %>%
       layout(barmode = "stack", title = list(xanchor = "right", x = 0), legend =
                list(orientation = "h", font = list(size = 16)), hovermode = "x unified",
-             yaxis = list(title = 'Total Removed'), xaxis = list(title = 'Date'))
+             yaxis = list(title = 'Total Removed', hoverformat = "0.2"), 
+             xaxis = list(title = 'Date'))
   })
   
   output$graphActiveI <- renderPlotly({
