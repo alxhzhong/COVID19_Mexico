@@ -17,7 +17,7 @@ seir_all <- function(data, date_initial, date_final, starting_param_val, k){
     data %>%
     filter(date >= date_initial, date <= date_final)
   
-  seir_1 = function(beta, gamma, sigma, I0, R0, times, N, lambda, mu,k) {
+  seir_1 = function(beta, gamma, sigma, I0, R0, times, N, lambda, mu, k) {
     # define SIR equations
     seir_equations = function(time, variables, parameters) {
       with(as.list(c(variables, parameters)), {
