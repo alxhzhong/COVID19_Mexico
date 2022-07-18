@@ -2,6 +2,7 @@
 
 # Authors: Ritoban Kundu, Emily Bach, Lauren He, Alex Zhong
 
+# copied SEIR function from the SEIR_all to use here
 seir_1 = function(beta, gamma, sigma, I0, R0, times, N, lambda, mu, k) {
   # define SIR equations
   seir_equations = function(time, variables, parameters) {
@@ -23,16 +24,21 @@ seir_1 = function(beta, gamma, sigma, I0, R0, times, N, lambda, mu, k) {
   return(as.data.frame(out))
 }
 
-
-ciband<-function(pred,sigma_l,sigma_u,sigma_m,beta,gamma,data,rep){
+# confidence interval estimation
+ciband <- function(pred, sigma_l, sigma_u, sigma_m, beta, gamma, data, rep){
+  # modifying pred to fit SIR_intervals/SEIR_all formatting
   date <- pred[[1]]$date
   I <- pred[[1]]$pred_I_med
   R <- pred[[2]]$pred_R_med
   pred <- data.frame(date, I, R) 
   
+  N = 128900000
+  lambda = mu = 0
+  
   beta = exp(beta)
   gamma = exp(gamma)
   
+  # filter mexico data to be within specified interval
   days = pred$date
   data = data %>% dplyr::filter(date %in% days)
   
@@ -41,9 +47,7 @@ ciband<-function(pred,sigma_l,sigma_u,sigma_m,beta,gamma,data,rep){
   sd=abs(1/sigma_l+1/sigma_u-2*(1/sigma_m))/(2*1.96)
   pred_I=matrix(0,nrow=nrow(pred),ncol=rep)
   pred_R=matrix(0,nrow=nrow(pred),ncol=rep)
-  
-  # N = 128900000
-  # lambda = mu = 0
+
   for(i in 1:rep){
     De=rnorm(1,mean=1/sigma_m, sd=sd)
     sigma=1/De
@@ -63,26 +67,3 @@ ciband<-function(pred,sigma_l,sigma_u,sigma_m,beta,gamma,data,rep){
   pred_R=data.frame(date,pred_R_med,lwrR,uprR)
   return(list(pred_I,pred_R))
 }
-
-# ci_results <- ciband(t1, sigma_l = 1/4.1, sigma_u = 1/5.8, sigma_m = 1/5.1, beta = beta, gamma = gamma, data = mexico, 500)
-# # pred_I_SEIR <- ci_results[[1]]
-# 
-# pred_I_SEIR_graph <- pred_I_SEIR %>% 
-#   mutate(index = 1:n()) %>% 
-#   mutate(loess = fitted(loess(pred_I_med ~ index, data = pred_I_SEIR, span = 0.3))) %>% 
-#   mutate(upper = fitted(loess(uprI ~ index, data = pred_I_SEIR, span = 0.3))) %>% 
-#   mutate(lower = fitted(loess(lwrI ~ index, data = pred_I_SEIR, span = 0.3)))
-# 
-# 
-# plot_ly(mexicoSmall, x = ~date, y = ~I, type = "bar", name = "Actual",
-#         color = I("#60A5E8")) %>% 
-#   add_trace(y = ~pred_I_SEIR$pred_I_med, type = 'scatter', mode = 'lines', name = "Predicted", line = list(color = 'rgba(245, 121, 58,, 1)')) %>%
-#   add_trace(y = ~pred_I_SEIR$uprI, type = 'scatter', mode = 'lines', name = "Upper", line = list(color = 'rgba(245, 121, 58, 0.5)'), showlegend = FALSE) %>% 
-#   add_trace(y = ~pred_I_SEIR$lwrI, type = 'scatter', mode = 'lines', fill = 'tonexty', fillcolor = list(color = 'rgba(245, 121, 58, 0.5)'), name = "Lower", line = list(color = 'rgba(245, 121, 58, 0.5)'), showlegend = FALSE) %>% 
-#   layout(
-#     xaxis = list(
-#       range=c(date_initial,date_final)),
-#     yaxis = list(title = 'Active Infections'),
-#     xaxis = list(title = 'Date'),
-#     hovermode = "x unified")
-# 
