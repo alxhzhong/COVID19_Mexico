@@ -6,13 +6,13 @@
 librarian::shelf(readr, tidyr, dplyr, zoo)
 
 # Data source ---
-mxcase_url = "https://datos.covid-19.conacyt.mx/Downloads/Files/Casos_Diarios_Estado_Nacional_Confirmados_20220716.csv"
+mxcase_url = "https://datos.covid-19.conacyt.mx/Downloads/Files/Casos_Diarios_Estado_Nacional_Confirmados_20220717.csv"
 mx_confirmed = read_csv(mxcase_url)
 
-mxneg_url = "https://datos.covid-19.conacyt.mx/Downloads/Files/Casos_Diarios_Estado_Nacional_Negativos_20220716.csv"
+mxneg_url = "https://datos.covid-19.conacyt.mx/Downloads/Files/Casos_Diarios_Estado_Nacional_Negativos_20220717.csv"
 mx_neg = read_csv(mxneg_url)
 
-mxdeaths_url = "https://datos.covid-19.conacyt.mx/Downloads/Files/Casos_Diarios_Estado_Nacional_Defunciones_20220716.csv"
+mxdeaths_url = "https://datos.covid-19.conacyt.mx/Downloads/Files/Casos_Diarios_Estado_Nacional_Defunciones_20220717.csv"
 mx_deaths = read_csv(mxdeaths_url)
 
 
@@ -42,3 +42,5 @@ mxgov <- mx_cl_all %>%
     tpr_rolavg = rollapply(tpr, 7, mean, fill = NA)
   )
 
+
+rm(mxcase_url, mxdeaths_url, mxneg_url)
