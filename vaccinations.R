@@ -21,4 +21,4 @@ plot_ly(vaccinations, x = ~date, y = ~tpr_rolavg, type = "scatter", mode = "line
     yaxis = list(range = c(0,1.0)),
     paper_bgcolor='rgba(0,0,0,0)',
     plot_bgcolor='rgba(0,0,0,0)'
-  )
+  ) 

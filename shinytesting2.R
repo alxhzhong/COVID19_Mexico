@@ -54,10 +54,21 @@ date_final = "2021-03-01"
 # for TPR graph
 mxgov = mxgov %>% mutate(text = paste0("TPR: ", tpr_rolavg))
 
+# #base <- layout(
+#   paper_bgcolor='rgba(0,0,0,0)',
+#   plot_bgcolor='rgba(0,0,0,0)',
+#   xaxis = list("white"),
+#   yaxis = list("white")
+# )
+
+
+css <- HTML(" body {
+    background-color: #2a2a2b;
+}")
 
 # start of app
 
-ui <- fluidPage(theme = shinytheme("darkly"),
+ui <- fluidPage(tags$head(tags$style(css)), theme = shinytheme("darkly"),
                 
                 # titlePanel("graphZ"),
                 
@@ -168,8 +179,8 @@ server <- function(input, output, session){
             color = I("#60A5E8")) %>%
       layout(barmode = "stack", title = list(xanchor = "left", x = 0), legend =
                list(font = list(size = 16)), hovermode = "x unified",
-             yaxis = list(title = 'Total Cases', hoverformat = ".2f"), 
-             xaxis = list(title = 'Date'),
+             yaxis = list(title = 'Total Cases', hoverformat = ".2f", color = "white"), 
+             xaxis = list(title = 'Date', color = "white"),
              paper_bgcolor='rgba(0,0,0,0)',
              plot_bgcolor='rgba(0,0,0,0)'
              )
@@ -189,7 +200,8 @@ server <- function(input, output, session){
             color = I("#0F2080")) %>%
       layout(barmode = "stack", title = list(xanchor = "left", x = 0), legend =
                list(font = list(size = 16)), hovermode = "x unified",
-             yaxis = list(title = 'Active Infections'), xaxis = list(title = 'Date')) 
+             yaxis = list(title = 'Active Infections'), xaxis = list(title = 'Date')) %>% 
+      base
     
     
   })
@@ -299,9 +311,9 @@ server <- function(input, output, session){
   output$graphSEIRRem <- renderPlotly({
     
     plot_ly(mexicoSmall, x = ~date, y = ~R, type = "bar", name = "Actual", color = I("#A95AA1")) %>% 
-      add_trace(y = ~pred_R_SEIR$pred_R_med, type = 'scatter', mode = 'lines', name = "Predicted", color = I("rgba(245, 121, 58, 1.0)"), line = list(width = 5))%>%
-      # add_trace(y = ~pred_R$uprR, type = 'scatter', mode = 'lines', name = "Upper", showlegend = FALSE) %>% 
-      # add_trace(y = ~pred_R$lwrR, type = 'scatter', mode = 'lines', fill = 'tonexty', name = "Lower", showlegend = FALSE)
+      add_trace(y = ~pred_R_SEIR$pred_R_med, type = 'scatter', mode = 'lines', name = "Predicted", color = I("rgba(245, 121, 58, 1.0)"))%>%
+      add_trace(y = ~pred_R$uprR, type = 'scatter', mode = 'lines', name = "Upper", showlegend = FALSE) %>%
+      add_trace(y = ~pred_R$lwrR, type = 'scatter', mode = 'lines', fill = 'tonexty', name = "Lower", showlegend = FALSE) %>% 
       add_ribbons(ymin = ~pred_R_SEIR$lwrR,
                   ymax = ~pred_R_SEIR$uprR,
                   line = list(color = 'rgba(245, 121, 58, 0.5)'),
@@ -336,10 +348,10 @@ server <- function(input, output, session){
       layout(
         title = list(xanchor = "left", x = 0), #text = cap,
         xaxis = list(title = "Date", #titlefont = axis_title_font,
-                     tickfont = tickfont, zeroline = T,
+                      zeroline = T, #tickfont = tickfont,
                        range=c(date_initial,date_final)),
         yaxis = list(title = "R(t)", #titlefont = axis_title_font,
-                     tickfont = tickfont, zeroline = T),
+                     zeroline = T), #tickfont = tickfont
         shapes = list(
           type = "line", xref = "paper", yref = "data",
           x0 = 0, x1 = 1, y0 = 1, y1 = 1,
