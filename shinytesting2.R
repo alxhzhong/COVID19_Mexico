@@ -169,7 +169,10 @@ server <- function(input, output, session){
       layout(barmode = "stack", title = list(xanchor = "left", x = 0), legend =
                list(font = list(size = 16)), hovermode = "x unified",
              yaxis = list(title = 'Total Cases', hoverformat = ".2f"), 
-             xaxis = list(title = 'Date')) 
+             xaxis = list(title = 'Date'),
+             paper_bgcolor='rgba(0,0,0,0)',
+             plot_bgcolor='rgba(0,0,0,0)'
+             )
   })
   
   output$graphCumulativeR <- renderPlotly({ 
