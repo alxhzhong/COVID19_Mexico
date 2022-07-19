@@ -8,10 +8,6 @@ if(!exists("mexico")){
   source("data_read.R")
 }
 
-# date_initial = as.Date("2020-11-22")
-# date_final = as.Date("2021-03-01")
-# f_days = as.Date(c("2020-11-22", "2020-12-15", "2021-01-06", "2021-01-23"))
-
 optimize_k = function(f_days, date_final){
   # setting up k value vector
   k_choices = seq(0.1, 2, by = 0.1)
@@ -43,4 +39,3 @@ optimize_k = function(f_days, date_final){
   return(best_k)
 }
 
-# optimize_k(f_days, date_final)

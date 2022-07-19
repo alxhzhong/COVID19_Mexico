@@ -1,10 +1,11 @@
-# Title: Loading + Cleaning Country Data
+# Title: SIR/SEIR predictions
 
 # Authors: Emily Bach, Lauren He, Alex Zhong
 
 # Packages ----
 source("SIR_function.R")
 source("SIR_intervals.R")
+source("SIR_SEIR_equations.R")
 
 pred_SIR = sir_intervals("SIR")
 pred_I_SIR = pred_SIR[[1]]
@@ -33,24 +34,6 @@ lambda = mu = 0
 
 
 # SIR function
-sir_1 = function(beta, gamma, I0, R0, times, N, lambda, mu) {
-  # define SIR equations
-  sir_equations = function(time, variables, parameters) {
-    with(as.list(c(variables, parameters)), {
-      dS = -beta * I * S/N + lambda * N - mu * S
-      dI =  beta * I * S/N - gamma * I -mu * I
-      dR =  gamma * I - mu*R
-      return(list(c(dS, dI, dR)))
-    })
-  }
-  # prepare input for ODE solver
-  parameters_values = c(beta = beta, gamma = gamma)
-  S0 = N - I0 - R0
-  initial_values = c(S = S0, I = I0, R = R0)
-  # solve system of ODEs
-  out = ode(initial_values, times, sir_equations, parameters_values, method = "rk4")
-  return(as.data.frame(out))
-}
 
 predictions = sir_1(beta = exp(last_pars[1]), gamma = exp(last_pars[2]), I0 = last_IR$I,
                     R0 = last_IR$R, times = c(1:num_days), N = N, lambda = lambda,
