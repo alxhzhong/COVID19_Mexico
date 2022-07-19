@@ -3,7 +3,12 @@
 # Authors: Emily Bach, Lauren He, Alex Zhong
 
 # Packages ----
-librarian::shelf(readr, httr, tidyr, dplyr, zoo)
+library(readr)
+library(httr)
+library(tidyr)
+library(dplyr)
+library(zoo)
+# librarian::shelf(readr, httr, tidyr, dplyr, zoo)
 
 # find date of last-published data on CONACYT; load data
 # Note: dependent on CONACYT using a consistent url format
