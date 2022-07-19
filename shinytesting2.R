@@ -91,13 +91,14 @@ ui <- fluidPage(tags$head(tags$style(css)), theme = shinytheme("darkly"),
                                         br(),
                                         p("some descriptive text")
                                       ),
-                                      sidebarPanel(
-                                        # selectInput(inputId =  "y", label = "label",
-                                        #             choices = names(plotMexico)),
-                                        checkboxGroupInput("name", "Data:",
-                                                           choices=unique(stack$name), selected = unique(stack$name)),
-                                        id = "sidebar"
-                                      )),
+                                      # sidebarPanel(
+                                      #   # selectInput(inputId =  "y", label = "label",
+                                      #   #             choices = names(plotMexico)),
+                                      #   checkboxGroupInput("name", "Data:",
+                                      #                      choices=unique(stack$name), selected = unique(stack$name)),
+                                      #   id = "sidebar"
+                                      # )
+                                      ),
                              
                              tabPanel("Test Positivity Rate",
                                       titlePanel("title of graph"),
@@ -169,7 +170,7 @@ server <- function(input, output, session){
   output$TPRgraph <- renderPlotly({
     plot_ly(mxgov, type = 'scatter', mode = 'lines', hoverlabel = list(align = "left",
                             color = I("#F5793A")))%>%
-      add_trace(x = ~date, y = ~tpr_rolavg, name = "test", text = ~text, hoverinfo = 'text') %>%
+      add_trace(x = ~date, y = ~tpr_rolavg, name = "test", text = ~text, hoverinfo = 'text', width = 3) %>%
       layout(showlegend = F) %>% 
       layout(
         xaxis = list(title = "Date",
@@ -183,7 +184,9 @@ server <- function(input, output, session){
         paper_bgcolor='rgba(0,0,0,0)',
         plot_bgcolor='rgba(0,0,0,0)', 
         font = t,
-        hoverlabel = list(bgcolor = 'rgba(0,0,0,0)')
+        hoverlabel = list(bgcolor = 'rgba(0,0,0,0)'),
+        hovermode = "x unified",
+        hoverlabel = list(bgcolor = 'rgba(0,0,0,0.5)')
         )
   })
   
@@ -216,7 +219,7 @@ server <- function(input, output, session){
   
   output$graphActiveI <- renderPlotly({
     plot_ly(mexicoDescriptives, x = ~date, y = ~I, type = "bar",
-            color = I("#0F2080")) %>%
+            color = I("#F5793A")) %>%
       layout(barmode = "stack", title = list(xanchor = "left", x = 0), legend =
                list(font = list(size = 16)), hovermode = "x unified",
              yaxis = list(title = 'Active Infections'), xaxis = list(title = 'Date'),
