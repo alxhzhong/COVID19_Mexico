@@ -3,17 +3,50 @@
 # Authors: Emily Bach, Lauren He, Alex Zhong
 
 # Packages ----
-librarian::shelf(readr, tidyr, dplyr, zoo)
+librarian::shelf(readr, httr, tidyr, dplyr, zoo)
+
+# find date of last-published data on CONACYT; load data
+# Note: dependent on CONACYT using a consistent url format
+find_mxdata = function(case_type){
+  file_base = "https://datos.covid-19.conacyt.mx/Downloads/Files/Casos_Diarios_Estado_Nacional"
+  file_date = Sys.Date() #today's date
+  
+  # look for file from last 60 days
+  for(i in 1:60){
+    date_text = format(file_date, "%Y%m%d")
+    url_test = paste(file_base, case_type, date_text, sep = "_") %>% 
+      paste(".csv", sep = "")
+    
+    # file not found
+    if(http_error(url_test)){
+      # print(date_text)
+      file_date = file_date - 1
+    }
+    
+    # file found (success!)
+    else if(!http_error(url_test)){
+      # print("file found!")
+      return(read_csv(url_test))
+      break
+    }
+  }
+}
+
 
 # Data source ---
-mxcase_url = "https://datos.covid-19.conacyt.mx/Downloads/Files/Casos_Diarios_Estado_Nacional_Confirmados_20220717.csv"
-mx_confirmed = read_csv(mxcase_url)
+mx_confirmed = find_mxdata("Confirmados")
+mx_neg = find_mxdata("Negativos")
+mx_deaths = find_mxdata("Defunciones")
 
-mxneg_url = "https://datos.covid-19.conacyt.mx/Downloads/Files/Casos_Diarios_Estado_Nacional_Negativos_20220717.csv"
-mx_neg = read_csv(mxneg_url)
 
-mxdeaths_url = "https://datos.covid-19.conacyt.mx/Downloads/Files/Casos_Diarios_Estado_Nacional_Defunciones_20220717.csv"
-mx_deaths = read_csv(mxdeaths_url)
+# mxcase_url = "https://datos.covid-19.conacyt.mx/Downloads/Files/Casos_Diarios_Estado_Nacional_Confirmados_20220717.csv"
+# mx_confirmed = read_csv(mxcase_url)
+# 
+# mxneg_url = "https://datos.covid-19.conacyt.mx/Downloads/Files/Casos_Diarios_Estado_Nacional_Negativos_20220717.csv"
+# mx_neg = read_csv(mxneg_url)
+# 
+# mxdeaths_url = "https://datos.covid-19.conacyt.mx/Downloads/Files/Casos_Diarios_Estado_Nacional_Defunciones_20220717.csv"
+# mx_deaths = read_csv(mxdeaths_url)
 
 
 clean_mxgov = function(data, prov_name, col_name){
@@ -43,4 +76,4 @@ mxgov <- mx_cl_all %>%
   )
 
 
-rm(mxcase_url, mxdeaths_url, mxneg_url)
+# rm(mxcase_url, mxdeaths_url, mxneg_url)
