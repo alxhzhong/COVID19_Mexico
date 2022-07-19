@@ -85,12 +85,12 @@ ui <- fluidPage(tags$head(tags$style(css)), theme = shinytheme("darkly"),
                             
                              tabPanel("Stacked Plotly",
                                       titlePanel("title of graph"),
-                                      mainPanel(
+                                      
                                         h3("Or could put title here"),
                                         plotlyOutput("graphStacked"),
                                         br(),
                                         p("some descriptive text")
-                                      ),
+                                      
                                       # sidebarPanel(
                                       #   # selectInput(inputId =  "y", label = "label",
                                       #   #             choices = names(plotMexico)),
@@ -146,12 +146,12 @@ ui <- fluidPage(tags$head(tags$style(css)), theme = shinytheme("darkly"),
 )
 server <- function(input, output, session){
   
-  dataplot <- eventReactive(input$name, {
-    stack <- stack %>% filter(as.factor(name) %in% c(input$name))
-  })
+  # dataplot <- eventReactive(input$name, {
+  #   stack <- stack %>% filter(as.factor(name) %in% c(input$name))
+  # })
   
   output$graphStacked <- renderPlotly({
-    plot_ly(dataplot(), x = ~date, y =~val, color = ~name, colors = c("#F5793A", "#60A5E8", "#A95AA1"),
+    plot_ly(stack, x = ~date, y =~val, color = ~name, colors = c("#F5793A", "#60A5E8", "#A95AA1"),
             type = "bar") %>%
       layout(barmode = "stack", title = list(xanchor = "left", x = 0), #titlefont = axis_title_font,
              xaxis = list(title = "Date"),
@@ -184,9 +184,8 @@ server <- function(input, output, session){
         paper_bgcolor='rgba(0,0,0,0)',
         plot_bgcolor='rgba(0,0,0,0)', 
         font = t,
-        hoverlabel = list(bgcolor = 'rgba(0,0,0,0)'),
-        hovermode = "x unified",
-        hoverlabel = list(bgcolor = 'rgba(0,0,0,0.5)')
+        hoverlabel = list(bgcolor = 'rgba(0,0,0,0.8)'),
+        hovermode = "x unified"
         )
   })
   
