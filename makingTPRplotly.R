@@ -3,7 +3,11 @@
 # Authors: Emily Bach, Lauren He, Alex Zhong
 
 # Packages ----
-librarian::shelf(readr, tidyr, dplyr, zoo)
+library(readr)
+library(tidyr)
+library(dplyr)
+library(zoo)
+# librarian::shelf(readr, tidyr, dplyr, zoo)
 library(plotly)
 
 # Data source ---

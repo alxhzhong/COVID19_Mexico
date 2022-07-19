@@ -3,7 +3,13 @@
 # Authors: Emily Bach, Lauren He, Alex Zhong
 
 # Packages ----
-librarian::shelf(deSolve, outbreaks, gridExtra, arm, tidyverse, bbmle)
+library(deSolve)
+library(outbreaks)
+library(gridExtra)
+library(arm)
+library(tidyverse)
+library(bbmle)
+# librarian::shelf(deSolve, outbreaks, gridExtra, arm, tidyverse, bbmle)
 
 
 # Start of function!

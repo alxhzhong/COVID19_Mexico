@@ -3,7 +3,7 @@
 # Authors: Emily Bach, Lauren He, Alex Zhong
 
 # Packages ----
-librarian::shelf(deSolve, outbreaks, gridExtra, arm, tidyverse, bbmle)
+# librarian::shelf(deSolve, outbreaks, gridExtra, arm, tidyverse)
 
 source("SIR_function2.R")
 
