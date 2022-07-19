@@ -68,6 +68,8 @@ css <- HTML(" body {
     background-color: #2a2a2b;
 }")
 
+
+
 # start of app
 
 ui <- fluidPage(tags$head(tags$style(css)), theme = shinytheme("darkly"),
@@ -156,7 +158,8 @@ server <- function(input, output, session){
              legend = list(orientation = "v", font = list(size = 16)), hovermode = "x unified",
              paper_bgcolor='rgba(0,0,0,0)',
              plot_bgcolor='rgba(0,0,0,0)',
-             font = t
+             font = t,
+             hoverlabel = list(bgcolor = 'rgba(0,0,0,0.5)')
              ) %>% 
       plotly::config(toImageButtonOptions = list(width = NULL, height = NULL))
     
@@ -178,7 +181,9 @@ server <- function(input, output, session){
                      zerolinewidth = 2,
                      gridcolor = '#ffff'),
         paper_bgcolor='rgba(0,0,0,0)',
-        plot_bgcolor='rgba(0,0,0,0)', font = t
+        plot_bgcolor='rgba(0,0,0,0)', 
+        font = t,
+        hoverlabel = list(bgcolor = 'rgba(0,0,0,0)')
         )
   })
   
@@ -191,6 +196,7 @@ server <- function(input, output, session){
              xaxis = list(title = 'Date'),
              paper_bgcolor='rgba(0,0,0,0)',
              plot_bgcolor='rgba(0,0,0,0)',
+             hoverlabel = list(bgcolor = 'rgba(0,0,0,0.5)'),
              font = t
              )
   })
@@ -204,8 +210,8 @@ server <- function(input, output, session){
              xaxis = list(title = 'Date'),
              paper_bgcolor='rgba(0,0,0,0)',
              plot_bgcolor='rgba(0,0,0,0)',
-             font = t) %>% 
-      layout(base)
+             hoverlabel = list(bgcolor = 'rgba(0,0,0,0.5)'),
+             font = t)
   })
   
   output$graphActiveI <- renderPlotly({
@@ -216,6 +222,7 @@ server <- function(input, output, session){
              yaxis = list(title = 'Active Infections'), xaxis = list(title = 'Date'),
              paper_bgcolor='rgba(0,0,0,0)',
              plot_bgcolor='rgba(0,0,0,0)',
+             hoverlabel = list(bgcolor = 'rgba(0,0,0,0.5)'),
              font = t
              )
     
@@ -270,7 +277,7 @@ server <- function(input, output, session){
         yaxis = list(title = 'Active Infections'),
         xaxis = list(title = 'Date'),
         hovermode = "x unified",
-        hoverlabel = list(bgcolor = 'rgba(0,0,0,0)'),
+        hoverlabel = list(bgcolor = 'rgba(0,0,0,0.5)'),
         paper_bgcolor='rgba(0,0,0,0)',
         plot_bgcolor='rgba(0,0,0,0)',
         font = t
@@ -310,7 +317,7 @@ server <- function(input, output, session){
         yaxis = list(title = 'Total Removed'),
         xaxis = list(title = 'Date'),
         hovermode = "x unified",
-        hoverlabel = list(bgcolor = 'rgba(0,0,0,0)'),
+        hoverlabel = list(bgcolor = 'rgba(0,0,0,0.5)'),
         paper_bgcolor='rgba(0,0,0,0)',
         plot_bgcolor='rgba(0,0,0,0)',
         font = t
@@ -332,7 +339,7 @@ server <- function(input, output, session){
         yaxis = list(title = 'Active Infections'),
         xaxis = list(title = 'Date'),
         hovermode = "x unified",
-        hoverlabel = list(bgcolor = 'rgba(0,0,0,0)'),
+        hoverlabel = list(bgcolor = 'rgba(0,0,0,0.5)'),
         paper_bgcolor='rgba(0,0,0,0)',
         plot_bgcolor='rgba(0,0,0,0)',
         font = t
@@ -343,12 +350,13 @@ server <- function(input, output, session){
     
     plot_ly(mexicoSmall, x = ~date, y = ~R, type = "bar", name = "Actual", color = I("#A95AA1")) %>% 
       add_trace(y = ~pred_R_SEIR$pred_R_med, type = 'scatter', mode = 'lines', name = "Predicted", color = I("rgba(245, 121, 58, 1.0)"))%>%
-      add_trace(y = ~pred_R_SEIR$uprR, type = 'scatter', mode = 'lines', name = "Upper", showlegend = FALSE) %>%
-      add_trace(y = ~pred_R_SEIR$lwrR, type = 'scatter', mode = 'lines', fill = 'tonexty', name = "Lower", showlegend = FALSE) %>% 
+      # add_trace(y = ~pred_R_SEIR$uprR, type = 'scatter', mode = 'lines', name = "Upper", showlegend = FALSE) %>%
+      # add_trace(y = ~pred_R_SEIR$lwrR, type = 'scatter', mode = 'lines', fill = 'tonexty', name = "Lower", showlegend = FALSE) %>% 
       add_ribbons(ymin = ~pred_R_SEIR$lwrR,
                   ymax = ~pred_R_SEIR$uprR,
-                  line = list(color = 'rgba(245, 121, 58, 0.3)'),
-                  fillcolor = 'rgba(245, 121, 58, 0.3)',
+                  # line = list(color = 'rgba(245, 121, 58, 0.1)'),
+                  # fillcolor = 'rgba(245, 121, 58, 0.3)',
+                  color = I('rgba(245, 121, 58, 0.5)'),
                   showlegend = FALSE, hoverinfo = "none") %>% 
       layout(
         xaxis = list(
@@ -356,7 +364,7 @@ server <- function(input, output, session){
         yaxis = list(title = 'Total Removed'),
         xaxis = list(title = 'Date'),
         hovermode = "x unified",
-        hoverlabel = list(bgcolor = 'rgba(0,0,0,0)'),
+        hoverlabel = list(bgcolor = 'rgba(0,0,0,0.5)'),
         paper_bgcolor='rgba(0,0,0,0)',
         plot_bgcolor='rgba(0,0,0,0)',
         font = t
@@ -391,13 +399,12 @@ server <- function(input, output, session){
         shapes = list(
           type = "line", xref = "paper", yref = "data",
           x0 = 0, x1 = 1, y0 = 1, y1 = 1,
-          line = list(color = "rgba(0, 0, 0, 0.5)")
+          line = list(color = "rgba(255, 255, 255, 1.0)", width = 3)
         ),
         showlegend = FALSE,
         paper_bgcolor='rgba(0,0,0,0)',
         plot_bgcolor='rgba(0,0,0,0)',
-        font = t
-      ) %>%
+        font = t) %>% 
       plotly::config(toImageButtonOptions = list(width = NULL, height = NULL))
     
     
