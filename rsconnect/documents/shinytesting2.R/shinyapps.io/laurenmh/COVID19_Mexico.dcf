@@ -1,0 +1,13 @@
+name: COVID19_Mexico
+title: COVID19_Mexico
+username:
+account: laurenmh
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 6664235
+bundleId: 6112840
+url: https://laurenmh.shinyapps.io/COVID19_Mexico/
+when: 1658255129.76267
+lastSyncTime: 1658255129.76268
+asMultiple: FALSE
+asStatic: FALSE
