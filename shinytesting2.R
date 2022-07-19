@@ -269,8 +269,8 @@ server <- function(input, output, session){
     plot_ly(mexicoSmall, x = ~date, y = ~I, type = "bar", name = "Actual",
             color = I("#60A5E8")) %>% 
       add_trace(y = ~pred_I_SIR_graph$loess, type = 'scatter', mode = 'lines', line = list(color = "rgba(245, 121, 58, 1)"), name = "Predicted") %>%
-      add_trace(y = ~pred_I_SIR_graph$upper, type = 'scatter', mode = 'lines', name = "Upper", line = list(color = "rgba(245, 121, 58, 0.2)"), showlegend = FALSE) %>% 
-      add_trace(y = ~pred_I_SIR_graph$lower, type = 'scatter', mode = 'lines', fill = 'tonexty', fillcolor = list(color = 'rgba(245, 121, 58, 0.2)'), name = "Lower", line = list(color = "rgba(245, 121, 58, 0.2)"), showlegend = FALSE) %>% 
+      add_trace(y = ~pred_I_SIR_graph$upper, type = 'scatter', mode = 'lines', name = "Upper", line = list(color = "rgba(245, 121, 58, 0.2)"), showlegend = FALSE, hoverinfo = 'skip') %>% 
+      add_trace(y = ~pred_I_SIR_graph$lower, type = 'scatter', mode = 'lines', fill = 'tonexty', fillcolor = list(color = 'rgba(245, 121, 58, 0.2)'), name = "Lower", line = list(color = "rgba(245, 121, 58, 0.2)"), hoverinfo = 'skip', showlegend = FALSE) %>% 
       layout(
         xaxis = list(
           range=c(date_initial, date_final)),
