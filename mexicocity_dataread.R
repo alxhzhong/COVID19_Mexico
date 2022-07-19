@@ -81,4 +81,13 @@ mxgov <- mx_cl_all %>%
   )
 
 
+# mexico city
+mxc_confirmed <- clean_mxgov(mx_confirmed, "DISTRITO FEDERAL", "daily_infected")
+mxc_neg <- clean_mxgov(mx_neg, "DISTRITO FEDERAL", "daily_negatives")
+mxc_deaths <- clean_mxgov(mx_deaths, "DISTRITO FEDERAL", "daily_deaths")
+
+mxc_cl_all <- mxc_neg %>% 
+  left_join(mxc_confirmed, by = "date") %>% 
+  left_join(mxc_deaths, by = "date")
+
 # rm(mxcase_url, mxdeaths_url, mxneg_url)

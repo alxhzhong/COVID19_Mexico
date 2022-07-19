@@ -18,7 +18,11 @@ pred_R_SEIR = pred_SEIR[[2]]
 
 # for descriptive plots, to truncate timeframe to where recoveries stop reporting
 mexicoDescriptives <- mexico %>% 
-  filter(date <= "2021-08-04")
+  filter(date <= "2021-08-04") 
+
+# mxcity vs mexico
+mx_mxc <- mxgov %>% 
+  left_join(mxc_cl_all, by = "date")
 
 # for SIR and SEIR I graphs, to smooth line
 pred_I_SIR_graph <- pred_I_SIR %>% 
@@ -53,6 +57,14 @@ date_final = "2021-03-01"
 
 # for TPR graph
 mxgov = mxgov %>% mutate(text = paste0("TPR: ", tpr_rolavg))
+
+
+# for vaccinations
+vaccinations <- read_csv("https://raw.githubusercontent.com/owid/covid-19-data/master/public/data/vaccinations/country_data/Mexico.csv")
+vaccinations <- vaccinations %>% 
+  mutate(prop_2doses = people_fully_vaccinated / 128.9e6) %>% 
+  mutate(prop_1dose = people_vaccinated / 128.9e6)
+  
 
 
 # general formatting
@@ -106,7 +118,7 @@ ui <- fluidPage(tags$head(tags$style(css)), theme = shinytheme("darkly"),
                                       br(),
                                       p("some descriptive text")),
                              
-                             navbarMenu("Cumulative",
+                             navbarMenu("Descriptive Graphs",
                                         tabPanel("Cumulative Infections", h3("title option"), plotlyOutput("graphCumulativeI"),
                                                  br(),
                                                  p("some descriptive text")),
@@ -115,7 +127,11 @@ ui <- fluidPage(tags$head(tags$style(css)), theme = shinytheme("darkly"),
                                                  p("some descriptive text")),
                                         tabPanel("Daily Active Cases", plotlyOutput("graphActiveI"),
                                                  br(),
-                                                 p("some descriptive text"))
+                                                 p("some descriptive text")),
+                                        tabPanel("Vaccinations", plotlyOutput("graphVax"),
+                                                 br(),
+                                                 p("some descriptive text")),
+                                        tabPanel("Mexico City Comparison", plotlyOutput("graphMXC"))
                              ),
                              
                              navbarMenu("SIR Estimations",
@@ -218,7 +234,7 @@ server <- function(input, output, session){
   
   output$graphActiveI <- renderPlotly({
     plot_ly(mexicoDescriptives, x = ~date, y = ~I, type = "bar",
-            color = I("#F5793A")) %>%
+            color = I("#F5793A")) %>% 
       layout(barmode = "stack", title = list(xanchor = "left", x = 0), legend =
                list(font = list(size = 16)), hovermode = "x unified",
              yaxis = list(title = 'Active Infections'), xaxis = list(title = 'Date'),
@@ -227,8 +243,35 @@ server <- function(input, output, session){
              hoverlabel = list(bgcolor = 'rgba(0,0,0,0.5)'),
              font = t
              )
-    
-    
+  })
+  
+  output$graphMXC <- renderPlotly({
+    plot_ly(mx_mxc, x = ~date, y = ~daily_deaths.x, type = "bar",
+            color = I("#F5793A"), name = "National") %>% 
+      add_trace(y = ~mx_mxc$daily_deaths.y, color = I("#60A5E8"), name = "Mexico City") %>% 
+    layout(barmode = "group", title = list(xanchor = "left", x = 0), legend =
+             list(font = list(size = 16)), hovermode = "x unified",
+           yaxis = list(title = 'Active Infections'), xaxis = list(title = 'Date'),
+           paper_bgcolor='rgba(0,0,0,0)',
+           plot_bgcolor='rgba(0,0,0,0)',
+           hoverlabel = list(bgcolor = 'rgba(0,0,0,0.5)'),
+           font = t
+    )
+  })
+  
+  
+  output$graphVax <- renderPlotly({
+    plot_ly(vaccinations, x = ~date, y = ~prop_2doses, type = "scatter", mode = "line", name = "2 doses", color = I("#F5793A")) %>%
+      add_trace(y = ~vaccinations$prop_1dose, type = "scatter", mode = "line", name = "1 dose", color = I("#60A5E8")) %>% 
+      layout(
+        yaxis = list(title = "proportion of vaccination", range = c(0,1.0), hoverformat = "0.2"),
+        paper_bgcolor='rgba(0,0,0,0)',
+        plot_bgcolor='rgba(0,0,0,0)',
+        hoverlabel = list(bgcolor = 'rgba(0,0,0,0.5)'),
+        hovermode = "x unified",
+        font = t
+      ) 
+      
   })
   
   
