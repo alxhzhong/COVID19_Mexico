@@ -3,7 +3,10 @@
 # Authors: Emily Bach, Lauren He, Alex Zhong
 
 # Packages ----
-librarian::shelf(readr, tidyr, dplyr)
+library(readr)
+library(tidyr)
+library(dplyr)
+# librarian::shelf(readr, tidyr, dplyr)
 
 
 # confirmed
