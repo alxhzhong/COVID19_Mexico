@@ -94,66 +94,76 @@ ui <- fluidPage(tags$head(tags$style(css)), theme = shinytheme("darkly"),
                   #   plotlyOutput("graph2"),
                   # ),
                   navbarPage("Tracking COVID-19 in Mexico",
-                            
-                             tabPanel("Stacked Plotly",
-                                      titlePanel("title of graph"),
-                                      
-                                        h3("Or could put title here"),
-                                        plotlyOutput("graphStacked"),
-                                        br(),
-                                        p("some descriptive text")
-                                      
-                                      # sidebarPanel(
-                                      #   # selectInput(inputId =  "y", label = "label",
-                                      #   #             choices = names(plotMexico)),
-                                      #   checkboxGroupInput("name", "Data:",
-                                      #                      choices=unique(stack$name), selected = unique(stack$name)),
-                                      #   id = "sidebar"
-                                      # )
-                                      ),
                              
-                             tabPanel("Test Positivity Rate",
-                                      titlePanel("title of graph"),
-                                      plotlyOutput("TPRgraph"),
+                             tabPanel("Home", titlePanel("Tracking and Predicting COVID-19 in Mexico"),
                                       br(),
-                                      p("some descriptive text")),
-                             
+                                      p("some text, image ??")
+                                      ),
+
+                
                              navbarMenu("Descriptive Graphs",
-                                        tabPanel("Cumulative Infections", h3("title option"), plotlyOutput("graphCumulativeI"),
+                                        tabPanel("Cumulative Infections", titlePanel("Cumulative Infections"), plotlyOutput("graphCumulativeI"),
                                                  br(),
                                                  p("some descriptive text")),
-                                        tabPanel("Cumulative Removed", plotlyOutput("graphCumulativeR"),
+                                        tabPanel("Cumulative Removed", titlePanel("Cumulative Removed"), plotlyOutput("graphCumulativeR"),
                                                  br(),
                                                  p("some descriptive text")),
-                                        tabPanel("Daily Active Cases", plotlyOutput("graphActiveI"),
+                                        tabPanel("Daily Active Cases", titlePanel("Daily Active Cases"), plotlyOutput("graphActiveI"),
                                                  br(),
                                                  p("some descriptive text")),
-                                        tabPanel("Vaccinations", plotlyOutput("graphVax"),
+                                        tabPanel("Stacked", titlePanel("Cumulative Infections"),
+                                                 plotlyOutput("graphStacked"),
+                                                 br(),
+                                                 p("some descriptive text")
+                                                 
+                                                 # sidebarPanel(
+                                                 #   # selectInput(inputId =  "y", label = "label",
+                                                 #   #             choices = names(plotMexico)),
+                                                 #   checkboxGroupInput("name", "Data:",
+                                                 #                      choices=unique(stack$name), selected = unique(stack$name)),
+                                                 #   id = "sidebar"
+                                                 # )
+                                        ),
+                                        tabPanel("Mexico City Comparison", titlePanel("Mexico City Compared with National"), plotlyOutput("graphMXC"))
+                             ),
+                             
+                             navbarMenu("Descriptive Statistics",
+                                        tabPanel("Test Positivity Rate",
+                                                 titlePanel("Test Positivity Rate (TPR)"),
+                                                 plotlyOutput("TPRgraph"),
                                                  br(),
                                                  p("some descriptive text")),
-                                        tabPanel("Mexico City Comparison", plotlyOutput("graphMXC"))
+                                        tabPanel("Vaccinations", titlePanel("Proportion of Population Vaccinated"),
+                                                 plotlyOutput("graphVax"),
+                                                 br(),
+                                                 p("some descriptive text")),
+                                        tabPanel("R Estimation", titlePanel("R Estimation"),
+                                                 plotlyOutput("graphR0"),
+                                                 br(),
+                                                 p("some descriptive text"))
+                                        
                              ),
                              
                              navbarMenu("SIR Estimations",
-                                        tabPanel("SIR Active", plotlyOutput("graphSIRActive"),
+                                        tabPanel("SIR Active", titlePanel("SIR Active Cases Estimation"),
+                                                 plotlyOutput("graphSIRActive"),
                                                  br(),
                                                  p("some descriptive text")),
-                                        tabPanel("SIR Removed", plotlyOutput("graphSIRRem"),
+                                        tabPanel("SIR Removed", titlePanel("SIR Removed Cases Estimation"),
+                                                 plotlyOutput("graphSIRRem"),
                                                  br(),
                                                  p("some descriptive text"))
                              ),
                              
                              navbarMenu("SEIR Estimations",
-                                        tabPanel("SEIR Active", plotlyOutput("graphSEIRActive"),
+                                        tabPanel("SEIR Active", titlePanel("SEIR Active Cases Estimation"),
+                                                 plotlyOutput("graphSEIRActive"),
                                                  br(),
                                                  p("some descriptive text")),
-                                        tabPanel("SEIR Removed", plotlyOutput("graphSEIRRem"),
+                                        tabPanel("SEIR Removed", titlePanel("SEIR Removed Cases Estimation"),
+                                                 plotlyOutput("graphSEIRRem"),
                                                  br(),
                                                  p("some descriptive text"))),
-                             
-                             tabPanel("R Estimation", plotlyOutput("graphR0"),
-                                      br(),
-                                      p("some descriptive text"))
                              
                   )
                   
