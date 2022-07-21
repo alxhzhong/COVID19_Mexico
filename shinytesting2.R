@@ -64,7 +64,7 @@ vaccinations <- read_csv("https://raw.githubusercontent.com/owid/covid-19-data/m
 vaccinations <- vaccinations %>% 
   mutate(prop_2doses = people_fully_vaccinated / 128.9e6) %>% 
   mutate(prop_1dose = people_vaccinated / 128.9e6)
-  
+
 
 
 # general formatting
@@ -73,7 +73,7 @@ base <- list(paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)')
 t <- list(
   color = "white"
   #, family = ""
-  )
+)
 
 
 css <- HTML(" body {
@@ -97,6 +97,7 @@ ui <- fluidPage(tags$head(tags$style(css)), theme = shinytheme("darkly"),
                              
                              tabPanel("Home", titlePanel("Tracking and Predicting COVID-19 in Mexico"),
                                       br(),
+                                      imageOutput("mexicoFlag.png"),
                                       p("Welcome to our page for tracking and predicting COVID-19 pandemic in Mexico. Our aim is to provide a resource for individuals to visualize the COVID-19 trends in Mexico in order to better understand the situation. 
                                         some text, image ??, info about time period, policy, how to use graphs ?"),
                                       br(),
@@ -105,10 +106,10 @@ ui <- fluidPage(tags$head(tags$style(css)), theme = shinytheme("darkly"),
                                       p("The descriptive plots and statistics are displayed for the entirety of the pandemic until [date], when data from our primary source, JHU, stops reporting recovered individuals. The predictive models are performed on a specific timeframe- November 20, 2020 to March 1, 2021."),
                                       br(),
                                       p("Information about datasources can be found at the bottom of the 'About us' page.")
-                                      ),
+                             ),
                              
-
-                
+                             
+                             
                              navbarMenu("Descriptive Graphs",
                                         tabPanel("Cumulative Infections", titlePanel("Cumulative Infections"), plotlyOutput("graphCumulativeI"),
                                                  br(),
@@ -118,7 +119,7 @@ ui <- fluidPage(tags$head(tags$style(css)), theme = shinytheme("darkly"),
                                                  p("This graph displays the cumulative number of removed individuals, which encompasses deaths and recoveries, since the start of the pandemic.")),
                                         tabPanel("Daily Active Cases", titlePanel("Daily Active Cases"), plotlyOutput("graphActiveI"),
                                                  br(),
-                                                 p("some descriptive text")),
+                                                 p("This graph displays the daily number of active cases, which is obtained by subtracting the total number of removed by the total number of cases.")),
                                         tabPanel("Stacked", titlePanel("Stacked Plot"),
                                                  plotlyOutput("graphStacked"),
                                                  br(),
@@ -156,22 +157,22 @@ ui <- fluidPage(tags$head(tags$style(css)), theme = shinytheme("darkly"),
                                         tabPanel("SIR Active", titlePanel("SIR Active Cases Estimation"),
                                                  plotlyOutput("graphSIRActive"),
                                                  br(),
-                                                 p("some descriptive text")),
+                                                 p("This graph displays the SIR prediction for active cases (the 'I' compartment in SIR), which is displayed as the orange line. The blue bars represent the actual number of active cases.")),
                                         tabPanel("SIR Removed", titlePanel("SIR Removed Cases Estimation"),
                                                  plotlyOutput("graphSIRRem"),
                                                  br(),
-                                                 p("some descriptive text"))
+                                                 p("This graph displays the SIR prediction for recovered cases (the 'R' compartment in SIR), which is displayed as the orange line. The blue bars represent the actual number of recovered cases."))
                              ),
                              
                              navbarMenu("SEIR Estimations",
                                         tabPanel("SEIR Active", titlePanel("SEIR Active Cases Estimation"),
                                                  plotlyOutput("graphSEIRActive"),
                                                  br(),
-                                                 p("some descriptive text")),
+                                                 p("This graph displays the SEIR prediction for active cases (the 'I' compartment in SEIR), which is displayed as the orange line. The blue bars represent the actual number of active cases.")),
                                         tabPanel("SEIR Removed", titlePanel("SEIR Removed Cases Estimation"),
                                                  plotlyOutput("graphSEIRRem"),
                                                  br(),
-                                                 p("some descriptive text"))),
+                                                 p("This graph displays the SEIR prediction for recovered cases (the 'R' compartment in SIR), which is displayed as the orange line. The blue bars represent the actual number of recovered cases."))),
                              tabPanel("About Us",
                                       titlePanel("About Us"),
                                       br(),
@@ -186,9 +187,25 @@ ui <- fluidPage(tags$head(tags$style(css)), theme = shinytheme("darkly"),
 )
 server <- function(input, output, session){
   
-  # dataplot <- eventReactive(input$name, {
-  #   stack <- stack %>% filter(as.factor(name) %in% c(input$name))
-  # })
+  output$mexicoFlag <- renderImage({
+    # A temp file to save the output.
+    # This file will be removed later by renderImage
+    outfile <- tempfile(fileext = '.png')
+    
+    # Generate the PNG
+    png(outfile, width = 400, height = 300)
+    hist(rnorm(input$obs), main = "Generated in renderImage()")
+    dev.off()
+    
+    # Return a list containing the filename
+    list(src = "mexicoFlag.png",
+         contentType = 'image/png',
+         width = 400,
+         height = 300,
+         alt = "This is alternate text")
+  }, deleteFile = TRUE)
+  
+  
   
   output$graphStacked <- renderPlotly({
     plot_ly(stack, x = ~date, y =~val, color = ~name, colors = c("#F5793A", "#60A5E8", "#A95AA1"),
@@ -201,7 +218,7 @@ server <- function(input, output, session){
              plot_bgcolor='rgba(0,0,0,0)',
              font = t,
              hoverlabel = list(bgcolor = 'rgba(0,0,0,0.5)')
-             ) %>% 
+      ) %>% 
       plotly::config(toImageButtonOptions = list(width = NULL, height = NULL))
     
     
@@ -209,7 +226,7 @@ server <- function(input, output, session){
   
   output$TPRgraph <- renderPlotly({
     plot_ly(mxgov, type = 'scatter', mode = 'lines', hoverlabel = list(align = "left",
-                            color = I("#F5793A")))%>%
+                                                                       color = I("#F5793A")))%>%
       add_trace(x = ~date, y = ~tpr_rolavg, name = "test", text = ~text, hoverinfo = 'text', width = 3) %>%
       layout(showlegend = F) %>% 
       layout(
@@ -220,13 +237,14 @@ server <- function(input, output, session){
         yaxis = list(title = "Test Positivity Rate (7-day Ave.)",
                      zerolinecolor = '#ffff',
                      zerolinewidth = 2,
-                     gridcolor = '#ffff'),
+                     gridcolor = '#ffff',
+                     hoverformat = "0.2f"),
         paper_bgcolor='rgba(0,0,0,0)',
         plot_bgcolor='rgba(0,0,0,0)', 
         font = t,
         hoverlabel = list(bgcolor = 'rgba(0,0,0,0.8)'),
         hovermode = "x unified"
-        )
+      )
   })
   
   output$graphCumulativeI <- renderPlotly({
@@ -240,7 +258,7 @@ server <- function(input, output, session){
              plot_bgcolor='rgba(0,0,0,0)',
              hoverlabel = list(bgcolor = 'rgba(0,0,0,0.5)'),
              font = t
-             )
+      )
   })
   
   output$graphCumulativeR <- renderPlotly({ 
@@ -266,21 +284,21 @@ server <- function(input, output, session){
              plot_bgcolor='rgba(0,0,0,0)',
              hoverlabel = list(bgcolor = 'rgba(0,0,0,0.5)'),
              font = t
-             )
+      )
   })
   
   output$graphMXC <- renderPlotly({
     plot_ly(mx_mxc, x = ~date, y = ~daily_deaths.x, type = "bar",
             color = I("#F5793A"), name = "National") %>% 
       add_trace(y = ~mx_mxc$daily_deaths.y, color = I("#60A5E8"), name = "Mexico City") %>% 
-    layout(barmode = "group", title = list(xanchor = "left", x = 0), legend =
-             list(font = list(size = 16)), hovermode = "x unified",
-           yaxis = list(title = 'Active Infections'), xaxis = list(title = 'Date'),
-           paper_bgcolor='rgba(0,0,0,0)',
-           plot_bgcolor='rgba(0,0,0,0)',
-           hoverlabel = list(bgcolor = 'rgba(0,0,0,0.5)'),
-           font = t
-    )
+      layout(barmode = "group", title = list(xanchor = "left", x = 0), legend =
+               list(font = list(size = 16)), hovermode = "x unified",
+             yaxis = list(title = 'Active Infections'), xaxis = list(title = 'Date'),
+             paper_bgcolor='rgba(0,0,0,0)',
+             plot_bgcolor='rgba(0,0,0,0)',
+             hoverlabel = list(bgcolor = 'rgba(0,0,0,0.5)'),
+             font = t
+      )
   })
   
   
@@ -295,7 +313,7 @@ server <- function(input, output, session){
         hovermode = "x unified",
         font = t
       ) 
-      
+    
   })
   
   
@@ -350,7 +368,7 @@ server <- function(input, output, session){
         paper_bgcolor='rgba(0,0,0,0)',
         plot_bgcolor='rgba(0,0,0,0)',
         font = t
-        )
+      )
   })
   
   output$graphSIRRem <- renderPlotly({
@@ -390,7 +408,7 @@ server <- function(input, output, session){
         paper_bgcolor='rgba(0,0,0,0)',
         plot_bgcolor='rgba(0,0,0,0)',
         font = t
-        )
+      )
     
   })
   
@@ -412,7 +430,7 @@ server <- function(input, output, session){
         paper_bgcolor='rgba(0,0,0,0)',
         plot_bgcolor='rgba(0,0,0,0)',
         font = t
-        )
+      )
   })
   
   output$graphSEIRRem <- renderPlotly({
@@ -437,7 +455,7 @@ server <- function(input, output, session){
         paper_bgcolor='rgba(0,0,0,0)',
         plot_bgcolor='rgba(0,0,0,0)',
         font = t
-        )
+      )
     
   })
   
@@ -461,8 +479,8 @@ server <- function(input, output, session){
       layout(
         title = list(xanchor = "left", x = 0), #text = cap,
         xaxis = list(title = "Date", #titlefont = axis_title_font,
-                      zeroline = T, #tickfont = tickfont,
-                       range=c(date_initial,date_final)),
+                     zeroline = T, #tickfont = tickfont,
+                     range=c(date_initial,date_final)),
         yaxis = list(title = "R(t)", #titlefont = axis_title_font,
                      zeroline = T), #tickfont = tickfont
         shapes = list(
