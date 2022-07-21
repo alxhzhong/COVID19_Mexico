@@ -97,24 +97,32 @@ ui <- fluidPage(tags$head(tags$style(css)), theme = shinytheme("darkly"),
                              
                              tabPanel("Home", titlePanel("Tracking and Predicting COVID-19 in Mexico"),
                                       br(),
-                                      p("some text, image ??")
+                                      p("Welcome to our page for tracking and predicting COVID-19 pandemic in Mexico. Our aim is to provide a resource for individuals to visualize the COVID-19 trends in Mexico in order to better understand the situation. 
+                                        some text, image ??, info about time period, policy, how to use graphs ?"),
+                                      br(),
+                                      p("Mexico suspended all nonessential activities at the beginning of the pandemic, in March 2020. At the end of May 2020, the national government's sanitary emergency expired, and Mexico shifted towards a stoplight system that operated at the state level. This is still the system that is currently in place. Indicators of COVID-19 are assessed weekly, and each state is assigned a color - green, yellow, orange, or red - based on the indicators."),
+                                      br(),
+                                      p("The descriptive plots and statistics are displayed for the entirety of the pandemic until [date], when data from our primary source, JHU, stops reporting recovered individuals. The predictive models are performed on a specific timeframe- November 20, 2020 to March 1, 2021."),
+                                      br(),
+                                      p("Information about datasources can be found at the bottom of the 'About us' page.")
                                       ),
+                             
 
                 
                              navbarMenu("Descriptive Graphs",
                                         tabPanel("Cumulative Infections", titlePanel("Cumulative Infections"), plotlyOutput("graphCumulativeI"),
                                                  br(),
-                                                 p("some descriptive text")),
+                                                 p("This graph displays the cumulative number of infections individuals since the start of the pandemic.")),
                                         tabPanel("Cumulative Removed", titlePanel("Cumulative Removed"), plotlyOutput("graphCumulativeR"),
                                                  br(),
-                                                 p("some descriptive text")),
+                                                 p("This graph displays the cumulative number of removed individuals, which encompasses deaths and recoveries, since the start of the pandemic.")),
                                         tabPanel("Daily Active Cases", titlePanel("Daily Active Cases"), plotlyOutput("graphActiveI"),
                                                  br(),
                                                  p("some descriptive text")),
-                                        tabPanel("Stacked", titlePanel("Cumulative Infections"),
+                                        tabPanel("Stacked", titlePanel("Stacked Plot"),
                                                  plotlyOutput("graphStacked"),
                                                  br(),
-                                                 p("some descriptive text")
+                                                 p("This graph displays the daily number of infections, deaths, and recoveries.")
                                                  
                                                  # sidebarPanel(
                                                  #   # selectInput(inputId =  "y", label = "label",
@@ -132,15 +140,15 @@ ui <- fluidPage(tags$head(tags$style(css)), theme = shinytheme("darkly"),
                                                  titlePanel("Test Positivity Rate (TPR)"),
                                                  plotlyOutput("TPRgraph"),
                                                  br(),
-                                                 p("some descriptive text")),
+                                                 p("This graph displays the TPR in Mexico. TPR is calculated by dividing the number of positive COVID-19 tests by the total number of COVID-19 tests performed.")),
                                         tabPanel("Vaccinations", titlePanel("Proportion of Population Vaccinated"),
                                                  plotlyOutput("graphVax"),
                                                  br(),
-                                                 p("some descriptive text")),
+                                                 p("This graph displays the proportion of vaccinated individuals, which is calculated by dividing the number of individuals who have received 1 or 2 doses by the total population in Mexico.")),
                                         tabPanel("R Estimation", titlePanel("R Estimation"),
                                                  plotlyOutput("graphR0"),
                                                  br(),
-                                                 p("some descriptive text"))
+                                                 p("This graph displays an estimation of the time varying reproduction number (Rt) over time using EpiEstim. Rt is a measure of the expected number of secondary cases produced by a single infection at a specific point in time."))
                                         
                              ),
                              
@@ -164,6 +172,12 @@ ui <- fluidPage(tags$head(tags$style(css)), theme = shinytheme("darkly"),
                                                  plotlyOutput("graphSEIRRem"),
                                                  br(),
                                                  p("some descriptive text"))),
+                             tabPanel("About Us",
+                                      titlePanel("About Us"),
+                                      br(),
+                                      p("text about us"),
+                                      br(),
+                                      p("info about data/sources"))
                              
                   )
                   
@@ -271,8 +285,8 @@ server <- function(input, output, session){
   
   
   output$graphVax <- renderPlotly({
-    plot_ly(vaccinations, x = ~date, y = ~prop_2doses, type = "scatter", mode = "line", name = "2 doses", color = I("#F5793A")) %>%
-      add_trace(y = ~vaccinations$prop_1dose, type = "scatter", mode = "line", name = "1 dose", color = I("#60A5E8")) %>% 
+    plot_ly(vaccinations, x = ~date, y = ~prop_1dose, type = "scatter", mode = "line", name = "1 dose", color = I("#F5793A"), fill = 'tozeroy') %>%
+      add_trace(y = ~vaccinations$prop_2doses, type = "scatter", mode = "line", name = "2 doses", color = I("#60A5E8")) %>% 
       layout(
         yaxis = list(title = "proportion of vaccination", range = c(0,1.0), hoverformat = "0.2"),
         paper_bgcolor='rgba(0,0,0,0)',
