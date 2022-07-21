@@ -39,7 +39,7 @@ estimatetvr <- function(data, date_initial, date_final, mean_si, std_si){
 
 }
 
-date_initial = as.Date("2020-04-01")
+date_initial = as.Date("2020-03-08")
 date_final = as.Date("2021-07-01")
 
 mexico_filt <- mexico %>%
