@@ -98,11 +98,20 @@ ui <- fluidPage(tags$head(tags$style(css)), theme = shinytheme("darkly"),
                              tabPanel("Home", titlePanel("Tracking and Predicting COVID-19 in Mexico"),
                                       br(),
                                       imageOutput("mexicoFlag"),
-                                      p("Welcome to our page for tracking and predicting COVID-19 pandemic in Mexico. Our aim is to provide a resource for individuals to visualize the COVID-19 trends in Mexico in order to better understand the situation. 
+                                      br(),
+                                      p("Welcome to our web app for tracking and predicting COVID-19 pandemic in Mexico. Our aim is to provide a resource for individuals to visualize the COVID-19 trends in Mexico in order to better understand the situation. 
                                         some text, image ??, info about time period, policy, how to use graphs ?"),
                                       br(),
+                                      h4("Policy overview"),
                                       p("Mexico suspended all nonessential activities at the beginning of the pandemic, in March 2020. At the end of May 2020, the national government's sanitary emergency expired, and Mexico shifted towards a stoplight system that operated at the state level. This is still the system that is currently in place. Indicators of COVID-19 are assessed weekly, and each state is assigned a color - green, yellow, orange, or red - based on the indicators."),
                                       br(),
+                                      h4("Stoplight policy information"),
+                                      p("Red: stay at home if possible, masking is mandatory in all public spaces, economic and social restrictions activities are dictated by local and federal authorities"),
+                                      p("orange: reduction in community movement, masking is mandatory in all public spaces, economic and social activities at 50% capacity"),
+                                      p("Yellow: slight decrease in community movement, masking is mandatory in indoor public spaces and public transportation and recommended in outdoor spaces in which social distancing is not possible, economic and social activities at 75% capacity"),
+                                      p("Green: no movement restrictions, masking is recommended in indoor public spaces and mandatory on public transportation"),
+                                      br(),
+                                      h4("Web app overview"),
                                       p("The descriptive plots and statistics are displayed for the entirety of the pandemic until [date], when data from our primary source, JHU, stops reporting recovered individuals. The predictive models are performed on a specific timeframe- November 20, 2020 to March 1, 2021."),
                                       br(),
                                       p("Information about datasources can be found at the bottom of the 'About us' page.")
@@ -191,8 +200,8 @@ server <- function(input, output, session){
     
     filename <- "mexicoFlag.png"
     list(src = filename, contentType = 'image/png', alt = paste("Mexico Flag"),
-         width = 400,
-         height = 400
+         width = 500,
+         height = 500
   
     )
   })
