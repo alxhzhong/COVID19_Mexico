@@ -102,17 +102,17 @@ cl = 0.95
 cl = (1 - cl) / 2
 lwrI = qpois(p = cl, lambda = pred_I_med)
 uprI = qpois(p = 1 - cl, lambda = pred_I_med)
-pred_I=data.frame(date,pred_I_med,lwrI,uprI)
+SEIR_pred_I=data.frame(date,pred_I_med,lwrI,uprI)
 
 lwrR = qpois(p = cl, lambda = pred_R_med)
 uprR = qpois(p = 1 - cl, lambda = pred_R_med)
-pred_R=data.frame(date,pred_R_med,lwrR,uprR)
+SEIR_pred_R=data.frame(date,pred_R_med,lwrR,uprR)
 
-pred_I=data.frame(date,pred_I_med)
-pred_R=data.frame(date,pred_R_med)
+SEIR_pred_I=data.frame(date,pred_I_med)
+SEIR_pred_R=data.frame(date,pred_R_med)
 
-ggplot() +
-  geom_bar(data = mexico, mapping = aes(x = date, y = I), stat = "identity") +
-  geom_line(data = pred_I, mapping = aes(x = date, y = pred_I_med)) +
-  xlim(first_day, last_day)
+# ggplot() +
+#   geom_bar(data = mexico, mapping = aes(x = date, y = I), stat = "identity") +
+#   geom_line(data = pred_I, mapping = aes(x = date, y = pred_I_med)) +
+#   xlim(first_day, last_day)
 
