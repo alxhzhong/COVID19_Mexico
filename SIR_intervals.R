@@ -4,9 +4,9 @@ source("optimize_k.R")
 source("predict_CI.R")
 # test
 
-date_initial = as.Date("2020-11-22")
+date_initial = as.Date("2020-11-24")
 date_final = as.Date("2021-03-01")
-f_days = as.Date(c("2020-11-22", "2020-12-15", "2021-01-06", "2021-01-23"))
+f_days = as.Date(c("2020-11-24", "2020-12-15", "2021-01-04", "2021-01-25"))
 
 if(!exists("best_k")){
   best_k = optimize_k(f_days, date_final)
@@ -15,7 +15,7 @@ if(!exists("best_k")){
 sir_intervals = function(method){
   # run SIR fitting for 4 specified periods
   starting_param_val = c(-2.5, -3)
-  date_initial = as.Date("2020-11-22")
+  date_initial = as.Date("2020-11-24")
   date_final = as.Date("2021-03-01")
   
   # choose method
