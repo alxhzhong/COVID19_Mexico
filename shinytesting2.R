@@ -57,8 +57,7 @@ date_final = "2021-03-01"
 
 # for TPR graph
 mxgov = mxgov %>% mutate(text = paste0("TPR: ", tpr_rolavg)) %>% 
-  mutate(percent = tpr_rolavg * 100) %>% 
-  mutate(percent = label_percent(tpr_rolavg))
+  mutate(percent = tpr_rolavg * 100) 
 
 
 # for vaccinations
@@ -230,7 +229,8 @@ server <- function(input, output, session){
   output$TPRgraph <- renderPlotly({
     plot_ly(mxgov, type = 'scatter', mode = 'lines', hoverlabel = list(align = "left",
                                                                        color = I("#F5793A")))%>%
-      add_trace(x = ~date, y = ~percent, name = "test", text = ~text, hoverinfo = 'text', 
+      add_trace(x = ~date, y = ~percent, name = "TPR", 
+                hovertemplate = "%{y} %",
                 line = list(width = 3)) %>%
       layout(
         xaxis = list(title = "Date",
@@ -273,7 +273,7 @@ server <- function(input, output, session){
             color = I("#A95AA1")) %>%
       layout(barmode = "stack", title = list(xanchor = "right", x = 0), legend =
                list(orientation = "h", font = list(size = 16)), hovermode = "x unified",
-             yaxis = list(title = 'Total Removed', hoverformat = "0.2"), 
+             yaxis = list(title = 'Total Removed', hoverformat = "2"), 
              xaxis = list(title = 'Date'),
              paper_bgcolor='rgba(0,0,0,0)',
              plot_bgcolor='rgba(0,0,0,0)',
@@ -310,10 +310,10 @@ server <- function(input, output, session){
   
   
   output$graphVax <- renderPlotly({
-    plot_ly(vaccinations, x = ~date, y = ~prop_1dose, type = "scatter", mode = "line", name = "1 dose", color = I("#F5793A"), fill = 'tozeroy', line = list(width = 3)) %>%
-      add_trace(y = ~vaccinations$prop_2doses, type = "scatter", mode = "line", name = "2 doses", color = I("#60A5E8"), line = list(width = 3)) %>% 
+    plot_ly(vaccinations, x = ~date, y = ~prop_1dose, type = "scatter", mode = "line", name = "1 dose", color = I("#F5793A"), fill = 'tozeroy', line = list(width = 3), hovertemplate = "%{y} %") %>%
+      add_trace(y = ~vaccinations$prop_2doses, type = "scatter", mode = "line", name = "2 doses", color = I("#60A5E8"), line = list(width = 3), hovertemplate = "%{y} %") %>% 
       layout(
-        yaxis = list(title = "Percentage of vaccination %", range = c(0,100), hoverformat = "0.2"),
+        yaxis = list(title = "Percentage of vaccinated population", range = c(0,100), hoverformat = "0.2f"),
         paper_bgcolor='rgba(0,0,0,0)',
         plot_bgcolor='rgba(0,0,0,0)',
         hoverlabel = list(bgcolor = 'rgba(0,0,0,0.5)'),
@@ -362,7 +362,7 @@ server <- function(input, output, session){
     
     plot_ly(mexicoSmall, x = ~date, y = ~I, type = "bar", name = "Actual",
             color = I("#60A5E8")) %>% 
-      add_trace(y = ~pred_I_SIR_graph$loess, type = 'scatter', mode = 'lines', line = list(color = "rgba(245, 121, 58, 1)", width = 3), name = "Predicted") %>%
+      add_trace(y = ~pred_I_SIR_graph$loess, type = 'scatter', mode = 'lines', line = list(color = "rgba(245, 121, 58, 1)", width = 3), name = "Model") %>%
       add_trace(y = ~pred_I_SIR_graph$upper, type = 'scatter', mode = 'lines', name = "Upper", line = list(color = "rgba(245, 121, 58, 0.2)"), showlegend = FALSE, hoverinfo = 'skip') %>% 
       add_trace(y = ~pred_I_SIR_graph$lower, type = 'scatter', mode = 'lines', fill = 'tonexty', fillcolor = list(color = 'rgba(245, 121, 58, 0.2)'), name = "Lower", line = list(color = "rgba(245, 121, 58, 0.2)"), hoverinfo = 'skip', showlegend = FALSE) %>% 
       layout(
@@ -397,7 +397,7 @@ server <- function(input, output, session){
     
     plot_ly(mexicoSmall, x = ~date, y = ~R, type = "bar", name = "Actual",
             color = I("#A95AA1")) %>% 
-      add_trace(y = ~pred_R_SIR$pred_R_med, type = 'scatter', mode = 'lines', line = list(color = 'rgb(245, 121, 58,, 1)', width = 3), name = "Predicted") %>%
+      add_trace(y = ~pred_R_SIR$pred_R_med, type = 'scatter', mode = 'lines', line = list(color = 'rgb(245, 121, 58,, 1)', width = 3), name = "Model") %>%
       # add_trace(y = ~pred_R$uprR, type = 'scatter', mode = 'lines', name = "Upper", showlegend = FALSE) %>% 
       # add_trace(y = ~pred_R$lwrR, type = 'scatter', mode = 'lines', fill = 'tonexty', name = "Lower", showlegend = FALSE)
       add_ribbons(ymin = ~pred_R_SIR$lwrR,
@@ -424,9 +424,9 @@ server <- function(input, output, session){
     
     plot_ly(mexicoSmall, x = ~date, y = ~I, type = "bar", name = "Actual",
             color = I("#60A5E8")) %>% 
-      add_trace(y = ~pred_I_SEIR_graph$loess, type = 'scatter', mode = 'lines', name = "Predicted", line = list(color = 'rgba(245, 121, 58,, 1)', width = 3)) %>%
-      add_trace(y = ~pred_I_SEIR_graph$upper, type = 'scatter', mode = 'lines', name = "Upper", line = list(color = 'rgba(245, 121, 58, 0.5)'), showlegend = FALSE) %>% 
-      add_trace(y = ~pred_I_SEIR_graph$lower, type = 'scatter', mode = 'lines', fill = 'tonexty', fillcolor = list(color = 'rgba(245, 121, 58, 0.5)'), name = "Lower", line = list(color = 'rgba(245, 121, 58, 0.5)'), showlegend = FALSE) %>% 
+      add_trace(y = ~pred_I_SEIR_graph$loess, type = 'scatter', mode = 'lines', name = "Model", line = list(color = 'rgba(245, 121, 58,, 1)', width = 3)) %>%
+      add_trace(y = ~pred_I_SEIR_graph$upper, type = 'scatter', mode = 'lines', name = "Upper", line = list(color = 'rgba(245, 121, 58, 0.5)'), showlegend = FALSE, hoverinfo = "none") %>% 
+      add_trace(y = ~pred_I_SEIR_graph$lower, type = 'scatter', mode = 'lines', fill = 'tonexty', fillcolor = list(color = 'rgba(245, 121, 58, 0.5)'), name = "Lower", line = list(color = 'rgba(245, 121, 58, 0.5)'), showlegend = FALSE, hoverinfo = "none") %>% 
       layout(
         xaxis = list(
           range=c(date_initial,date_final)),
@@ -443,7 +443,7 @@ server <- function(input, output, session){
   output$graphSEIRRem <- renderPlotly({
     
     plot_ly(mexicoSmall, x = ~date, y = ~R, type = "bar", name = "Actual", color = I("#A95AA1")) %>% 
-      add_trace(y = ~pred_R_SEIR$pred_R_med, type = 'scatter', mode = 'lines', name = "Predicted", color = I("rgba(245, 121, 58, 1.0)"), width = 3)%>%
+      add_trace(y = ~pred_R_SEIR$pred_R_med, type = 'scatter', mode = 'lines', name = "Model", color = I("rgba(245, 121, 58, 1.0)"), width = 3)%>%
       # add_trace(y = ~pred_R_SEIR$uprR, type = 'scatter', mode = 'lines', name = "Upper", showlegend = FALSE) %>%
       # add_trace(y = ~pred_R_SEIR$lwrR, type = 'scatter', mode = 'lines', fill = 'tonexty', name = "Lower", showlegend = FALSE) %>% 
       add_ribbons(ymin = ~pred_R_SEIR$lwrR,
