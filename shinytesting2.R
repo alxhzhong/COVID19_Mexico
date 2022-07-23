@@ -200,9 +200,9 @@ server <- function(input, output, session){
   output$mexicoFlag <- renderImage({
     
     filename <- "mexicoFlag.png"
-    list(src = filename, contentType = 'image/png', alt = paste("Mexico Flag"),
+    list(src = filename, contentType = 'image/png', alt = paste("Mexico Flag"), style="display: block; margin-left: auto; margin-right: auto;",
          width = 500,
-         height = 500
+         height = 500, deleteFile = FALSE
   
     )
   })
@@ -259,7 +259,7 @@ server <- function(input, output, session){
             color = I("#60A5E8")) %>%
       layout(barmode = "stack", title = list(xanchor = "left", x = 0), legend =
                list(font = list(size = 16)), hovermode = "x unified",
-             yaxis = list(title = 'Total Cases', hoverformat = ".2f"), 
+             yaxis = list(title = 'Total Cases'), #, hoverformat = ".2f"
              xaxis = list(title = 'Date'),
              paper_bgcolor='rgba(0,0,0,0)',
              plot_bgcolor='rgba(0,0,0,0)',
@@ -473,7 +473,6 @@ server <- function(input, output, session){
     
     plot_ly(plt_data, x = ~date, y = ~r, type = "scatter", mode = "lines",
             line = list(width = 3),
-            # add line color?
             hoverinfo = "text",
             text   = ~text) %>%
       add_markers(data = plt_data, x = ~date, y = ~r, mode = "marker",
