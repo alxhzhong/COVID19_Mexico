@@ -94,13 +94,13 @@ ui <- fluidPage(tags$head(tags$style(css)), theme = shinytheme("darkly"),
                   #   plotlyOutput("graph"),
                   #   plotlyOutput("graph2"),
                   # ),
-                  navbarPage("Tracking COVID-19 in Mexico",
+                  navbarPage("COVID-19 in Mexico",
                              
-                             tabPanel("Home", titlePanel("Tracking and Predicting COVID-19 in Mexico"),
+                             tabPanel("Home", titlePanel("Tracking and Modeling SARS-CoV-2 in Mexico"),
                                       br(),
                                       imageOutput("mexicoFlag"),
                                       br(),
-                                      p("Welcome to our web app for tracking and predicting COVID-19 pandemic in Mexico. Our aim is to provide a resource for individuals to visualize the COVID-19 trends in Mexico in order to better understand the situation. 
+                                      p("Welcome to our web app for tracking and modeling SARS-CoV-2 pandemic in Mexico. Our aim is to provide a resource for individuals to visualize the COVID-19 trends in Mexico in order to better understand the situation. 
                                         some text, image ??, info about time period, policy, how to use graphs ?"),
                                       br(),
                                       h4("Policy overview"),
@@ -202,10 +202,10 @@ server <- function(input, output, session){
     filename <- "mexicoFlag.png"
     list(src = filename, contentType = 'image/png', alt = paste("Mexico Flag"), style="display: block; margin-left: auto; margin-right: auto;",
          width = 500,
-         height = 500, deleteFile = FALSE
+         height = 500
   
     )
-  })
+  }, deleteFile = FALSE)
   
   
   
