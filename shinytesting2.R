@@ -102,9 +102,9 @@ ui <- fluidPage(tags$head(tags$style(css)), theme = shinytheme("darkly"),
                                       p("Welcome to our web app for tracking and modeling the COVID-19 pandemic in Mexico. Our aim is to provide a resource for individuals to understand COVID-19 trends and potential public health threats in Mexico. To accomplish this aim, we provide a brief policy explanation and numerous relevant graphs with descriptions. For more information on our group and this project, see the “About Us” tab."),
                                       br(),
                                       h4("Policy Overview"),
-                                      p("Mexico suspended all nonessential activities at the beginning of the pandemic, in March 2020. At the end of May 2020, the national government's sanitary emergency expired, and Mexico shifted towards a stoplight system that operated at the state level. This system remains in place today. Indicators of COVID-19 are assessed weekly, and each state is assigned a color - green, yellow, orange, or red - based on certain indicators. More information on the colors is given below."),
+                                      p("Mexico suspended all nonessential activities at the beginning of the pandemic, in March 2020. At the end of May 2020, the national government's sanitary emergency expired, and Mexico shifted towards a stoplight system that operated at the state level. This system remains in place today. Indicators of COVID-19 are assessed weekly, and each state is assigned a color–green, yellow, orange, or red–based on certain indicators. More information on the colors is given below."),
                                       br(),
-                                      h4("Stoplight policy information"),
+                                      h4("Stoplight Policy Information"),
                                       p("Red: stay at home if possible, masking is mandatory in all public spaces, economic and social restrictions activities are dictated by local and federal authorities"),
                                       p("Orange: reduction in community movement, masking is mandatory in all public spaces, economic and social activities at 50% capacity"),
                                       p("Yellow: slight decrease in community movement, masking is mandatory in indoor public spaces and public transportation and recommended in outdoor spaces in which social distancing is not possible, economic and social activities at 75% capacity"),
@@ -114,6 +114,8 @@ ui <- fluidPage(tags$head(tags$style(css)), theme = shinytheme("darkly"),
                                       p("The descriptive plots and statistics are displayed for the entirety of the pandemic until [date], when data from our primary source, JHU, stops reporting recovered individuals. The predictive models are performed on a specific timeframe- November 20, 2020 to March 1, 2021. FINISH!"),
                                       p("We provide estimations using three different epidemiological models–SIR, SEIR, and eSIR. SIR divides the population into three compartments, namely “Susceptible” individuals (S), “Infectious” individuals (I), and “Removed” individuals (R). SEIR adds a fourth compartment for “Exposed” individuals (E), which in SIR is included in the I compartment. Lastly, eSIR divides the population into the same three compartments as SIR but introduces a modifier to account for policy effects on transmission rates. SIR, SEIR, and eSIR have long been used by epidemiologists to model virus transmissions, and this web app allows you to compare the model-based predictions with the actual values in the time period we selected.
 "),
+                                      p("The descriptive plots and statistics are displayed from the beginning of the pandemic until 08/04/2021, when data from our primary source, JHU, stops reporting recovered individuals. The predictive models are performed on a specific timeframe: the training period is 11/24/2020 to 01/13/2021, and the testing period is 01/14/2021 to 01/26/2021."),
+                                      p("We provide estimations using three different epidemiological models–SIR, SEIR, and eSIR. SIR divides the population into three compartments, namely “Susceptible” individuals (S), “Infectious” individuals (I), and “Removed” individuals (R). SEIR adds a fourth compartment for “Exposed” individuals (E), which in SIR is included in the I compartment. Lastly, eSIR divides the population into the same three compartments as SIR but introduces a modifier to account for policy effects on transmission rates. SIR, SEIR, and eSIR have long been used by epidemiologists to model virus transmissions, and this web app allows you to compare the model-based predictions with the actual values in the time period we selected."),
                                       br(),
                                       h4("Data Sources"),
                                       p("PUT DATA SOURES HERE")
@@ -360,7 +362,7 @@ server <- function(input, output, session){
           range=c("2020-11-24", "2021-01-26")),
         yaxis = list(title = 'Active Infections'),
         xaxis = list(title = 'Date'),
-        hovermode = "x unified",
+        #hovermode = "x unified",
         hoverlabel = list(bgcolor = 'rgba(0,0,0,0.5)'),
         paper_bgcolor='rgba(0,0,0,0)',
         plot_bgcolor='rgba(0,0,0,0)',
@@ -395,8 +397,8 @@ server <- function(input, output, session){
     plot_ly(SIR_int, x = ~date, y = ~R, type = "bar", name = "Actual",
             color = I("#A95AA1")) %>% 
       add_trace(y = ~SIR_int$pred_R_med.x, type = 'scatter', mode = 'lines', line = list(color = 'rgb(245, 121, 58,, 1)', width = 3), name = "Model") %>%
-      add_trace(y = ~SIR_int$uprR.x, type = 'scatter', mode = 'lines', name = "Upper", color = I("rgba(245, 121, 58, 0.5)"), showlegend = FALSE) %>% 
-      add_trace(y = ~SIR_int$lwrR.x, type = 'scatter', mode = 'lines', fill = 'tonexty', color = I("rgba(245, 121, 58, 0.5)"), name = "Lower", showlegend = FALSE) %>% 
+      add_trace(y = ~SIR_int$uprR.x, type = 'scatter', mode = 'lines', name = "Upper", color = I("rgba(245, 121, 58, 0.5)"), showlegend = FALSE, hoverinfo = 'skip') %>% 
+      add_trace(y = ~SIR_int$lwrR.x, type = 'scatter', mode = 'lines', fill = 'tonexty', color = I("rgba(245, 121, 58, 0.5)"), name = "Lower", showlegend = FALSE, hoverinfo = 'skip') %>% 
       # add_ribbons(ymin = ~SIR_int$lwrR.x,
       #             ymax = ~SIR_int$uprR.x,
       #             line = list(color = 'rgb(245, 121, 58, 0.2)'),
@@ -417,7 +419,7 @@ server <- function(input, output, session){
           range=c("2020-11-24", "2021-01-26")),
         yaxis = list(title = 'Total Removed'),
         xaxis = list(title = 'Date'),
-        hovermode = "x unified",
+        #hovermode = "x unified",
         hoverlabel = list(bgcolor = 'rgba(0,0,0,0.5)'),
         paper_bgcolor='rgba(0,0,0,0)',
         plot_bgcolor='rgba(0,0,0,0)',
@@ -462,7 +464,7 @@ server <- function(input, output, session){
           range=c("2020-11-21", "2021-01-26")),
         yaxis = list(title = 'Active Infections'),
         xaxis = list(title = 'Date'),
-        hovermode = "x unified",
+        #hovermode = "x unified",
         hoverlabel = list(bgcolor = 'rgba(0,0,0,0.5)'),
         paper_bgcolor='rgba(0,0,0,0)',
         plot_bgcolor='rgba(0,0,0,0)',
@@ -496,8 +498,8 @@ server <- function(input, output, session){
     
     plot_ly(SEIR_int, x = ~date, y = ~R, type = "bar", name = "Actual", color = I("#A95AA1")) %>% 
       add_trace(y = ~SEIR_int$pred_R_med.x, type = 'scatter', mode = 'lines', name = "Model", color = I("rgba(245, 121, 58, 1.0)"), line = list(width = 3))%>%
-      add_trace(y = ~SEIR_int$uprR, type = 'scatter', mode = 'lines', name = "Upper",  color = I("rgba(245, 121, 58, 0.5)"), showlegend = FALSE) %>%
-      add_trace(y = ~SEIR_int$lwrR, type = 'scatter', mode = 'lines', fill = 'tonexty',  color = I("rgba(245, 121, 58, 0.5)"), name = "Lower", showlegend = FALSE) %>%
+      add_trace(y = ~SEIR_int$uprR, type = 'scatter', mode = 'lines', name = "Upper",  color = I("rgba(245, 121, 58, 0.5)"), showlegend = FALSE, hoverinfo = 'skip') %>%
+      add_trace(y = ~SEIR_int$lwrR, type = 'scatter', mode = 'lines', fill = 'tonexty',  color = I("rgba(245, 121, 58, 0.5)"), name = "Lower", showlegend = FALSE, hoverinfo = 'skip') %>%
       # add_ribbons(ymin = ~SEIR_R$lwrR,
       #             ymax = ~SEIR_R$uprR,
       #             # line = list(color = 'rgba(245, 121, 58, 0.1)'),
@@ -513,7 +515,7 @@ server <- function(input, output, session){
           range=c("2020-11-24", "2021-01-26")),
         yaxis = list(title = 'Total Removed'),
         xaxis = list(title = 'Date'),
-        hovermode = "x unified",
+        #hovermode = "x unified",
         hoverlabel = list(bgcolor = 'rgba(0,0,0,0.5)'),
         paper_bgcolor='rgba(0,0,0,0)',
         plot_bgcolor='rgba(0,0,0,0)',
