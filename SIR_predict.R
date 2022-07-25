@@ -72,7 +72,7 @@ last_pars = pred_SIR[[3]]
 beta = last_pars[1]
 gamma = last_pars[2]
 
-num_days = 15
+num_days = 30
 first_day = pred_I_SIR %>% 
   dplyr::select(date) %>%
   pull() %>% 
