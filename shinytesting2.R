@@ -116,9 +116,7 @@ ui <- fluidPage(tags$head(tags$style(css)), theme = shinytheme("darkly"),
 "),
                                       p("The descriptive plots and statistics are displayed from the beginning of the pandemic until 08/04/2021, when data from our primary source, JHU, stops reporting recovered individuals. The predictive models are performed on a specific timeframe: the training period is 11/24/2020 to 01/13/2021, and the testing period is 01/14/2021 to 01/26/2021."),
                                       p("We provide estimations using three different epidemiological models–SIR, SEIR, and eSIR. SIR divides the population into three compartments, namely “Susceptible” individuals (S), “Infectious” individuals (I), and “Removed” individuals (R). SEIR adds a fourth compartment for “Exposed” individuals (E), which in SIR is included in the I compartment. Lastly, eSIR divides the population into the same three compartments as SIR but introduces a modifier to account for policy effects on transmission rates. SIR, SEIR, and eSIR have long been used by epidemiologists to model virus transmissions, and this web app allows you to compare the model-based predictions with the actual values in the time period we selected."),
-                                      br(),
-                                      h4("Data Sources"),
-                                      p("PUT DATA SOURES HERE")
+                                      
                              ),
                              
                              
@@ -192,7 +190,11 @@ ui <- fluidPage(tags$head(tags$style(css)), theme = shinytheme("darkly"),
                              tabPanel("About Us",
                                       titlePanel("About Us"),
                                       br(),
-                                      p("Emily Bach is a rising senior at Georgetown University, Lauren He is a rising sophomore at Stanford University, and Alex Zhong is a rising senior at Emory University. We all participated in the 2022 Big Data Summer Institute (BDSI) run by the University of Michigan’s Department of Biostatistics. As part of our BDSI research project on infectious diseases, we created these interactive plots modeling the pandemic in Mexico."))
+                                      p("Emily Bach is a rising senior at Georgetown University, Lauren He is a rising sophomore at Stanford University, and Alex Zhong is a rising senior at Emory University. We all participated in the 2022 Big Data Summer Institute (BDSI) run by the University of Michigan’s Department of Biostatistics. As part of our BDSI research project on infectious diseases, we created these interactive plots modeling the pandemic in Mexico.")),
+                             tabPanel("References",
+                                      titlePanel("Data Sources:"),
+                                      br(),
+                                      p("HYPERLINKS TO DATA SOURCES!"))
                              
                   )
                   
