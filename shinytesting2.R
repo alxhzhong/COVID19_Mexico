@@ -7,14 +7,15 @@ source("data_read.R")
 source("SIR_intervals.R")
 source("estimate_tvr.R")
 source("mexicocity_dataread.R")
+source("prediction_graphs.R")
 
-pred_SIR = sir_intervals("SIR")
-pred_I_SIR = pred_SIR[[1]]
-pred_R_SIR = pred_SIR[[2]]
-
-pred_SEIR = sir_intervals("SEIR")
-pred_I_SEIR = pred_SEIR[[1]]
-pred_R_SEIR = pred_SEIR[[2]]
+# pred_SIR = sir_intervals("SIR")
+# pred_I_SIR = pred_SIR[[1]]
+# pred_R_SIR = pred_SIR[[2]]
+# 
+# pred_SEIR = sir_intervals("SEIR")
+# pred_I_SEIR = pred_SEIR[[1]]
+# pred_R_SEIR = pred_SEIR[[2]]
 
 # for descriptive plots, to truncate timeframe to where recoveries stop reporting
 mexicoDescriptives <- mexico %>% 
@@ -67,7 +68,6 @@ vaccinations <- vaccinations %>%
   mutate(prop_1dose = people_vaccinated / 128.9e6 *100)
 
 
-
 # general formatting
 base <- list(paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)')
 
@@ -97,25 +97,26 @@ ui <- fluidPage(tags$head(tags$style(css)), theme = shinytheme("darkly"),
                   navbarPage("COVID-19 in Mexico",
                              
                              tabPanel("Home", titlePanel("Tracking and Modeling SARS-CoV-2 in Mexico"),
-                                      br(),
                                       imageOutput("mexicoFlag"),
                                       br(),
-                                      p("Welcome to our web app for tracking and modeling SARS-CoV-2 pandemic in Mexico. Our aim is to provide a resource for individuals to visualize the COVID-19 trends in Mexico in order to better understand the situation. 
-                                        some text, image ??, info about time period, policy, how to use graphs ?"),
+                                      p("Welcome to our web app for tracking and modeling SARS-CoV-2 pandemic in Mexico. Our aim is to provide a resource for individuals to visualize the COVID-19 trends in Mexico in order to better understand the situation."),
                                       br(),
-                                      h4("Policy overview"),
+                                      h4("Policy Overview"),
                                       p("Mexico suspended all nonessential activities at the beginning of the pandemic, in March 2020. At the end of May 2020, the national government's sanitary emergency expired, and Mexico shifted towards a stoplight system that operated at the state level. This is still the system that is currently in place. Indicators of COVID-19 are assessed weekly, and each state is assigned a color - green, yellow, orange, or red - based on the indicators."),
                                       br(),
                                       h4("Stoplight policy information"),
                                       p("Red: stay at home if possible, masking is mandatory in all public spaces, economic and social restrictions activities are dictated by local and federal authorities"),
-                                      p("orange: reduction in community movement, masking is mandatory in all public spaces, economic and social activities at 50% capacity"),
+                                      p("Orange: reduction in community movement, masking is mandatory in all public spaces, economic and social activities at 50% capacity"),
                                       p("Yellow: slight decrease in community movement, masking is mandatory in indoor public spaces and public transportation and recommended in outdoor spaces in which social distancing is not possible, economic and social activities at 75% capacity"),
                                       p("Green: no movement restrictions, masking is recommended in indoor public spaces and mandatory on public transportation"),
                                       br(),
                                       h4("Web app overview"),
-                                      p("The descriptive plots and statistics are displayed for the entirety of the pandemic until [date], when data from our primary source, JHU, stops reporting recovered individuals. The predictive models are performed on a specific timeframe- November 20, 2020 to March 1, 2021."),
+                                      p("The descriptive plots and statistics are displayed from the beginning of the pandemic until 08/04/2021, when data from our primary source, JHU, stops reporting recovered individuals. The predictive models are performed on a specific timeframe: the training period is 11/24/2020 to 01/13/2021, and the testing period is 01/14/2021 to 01/26/2021."),
                                       br(),
-                                      p("Information about datasources can be found at the bottom of the 'About us' page.")
+                                      p("Information about datasources can be found at the bottom of the 'About us' page."),
+                                      br(),
+                                      h4("Data Sources"),
+                                      p("PUT DATA SOURES HERE")
                              ),
                              
                              
@@ -123,17 +124,17 @@ ui <- fluidPage(tags$head(tags$style(css)), theme = shinytheme("darkly"),
                              navbarMenu("Descriptive Graphs",
                                         tabPanel("Cumulative Cases", titlePanel("Cumulative Reported Cases"), plotlyOutput("graphCumulativeI"),
                                                  br(),
-                                                 p("This graph displays the cumulative number of infections individuals since the start of the pandemic.")),
+                                                 p("This graph displays the cumulative number of positive COVID-19 tests since the start of the pandemic. You can hover your cursor over the graph to see the exact count on a particular day.")),
                                         tabPanel("Cumulative Removed", titlePanel("Cumulative Removed"), plotlyOutput("graphCumulativeR"),
                                                  br(),
-                                                 p("This graph displays the cumulative number of removed individuals, which encompasses deaths and recoveries, since the start of the pandemic.")),
+                                                 p("This graph displays the cumulative number of individuals who have either recovered from COVID-19 or died while infected with COVID-19. You can hover your cursor over the graph to see the exact count on a particular day.")),
                                         tabPanel("Daily Active Cases", titlePanel("Daily Active Cases"), plotlyOutput("graphActiveI"),
                                                  br(),
-                                                 p("This graph displays the daily number of active cases, which is obtained by subtracting the total number of removed by the total number of cases.")),
-                                        tabPanel("Stacked", titlePanel("Stacked Plot"),
+                                                 p("This graph displays the daily number of active COVID-19 cases in Mexico. You can hover your cursor over the graph to see the exact count on a particular day.")),
+                                        tabPanel("Stacked", titlePanel("Daily Recoveries, Infections, and Deaths"),
                                                  plotlyOutput("graphStacked"),
                                                  br(),
-                                                 p("This graph displays the daily number of infections, deaths, and recoveries.")
+                                                 p("This graph displays the daily numbers of COVID-19 infections (positive tests), deaths, and recoveries in Mexico. You can hover your cursor over the graph to see the exact counts on a particular day.")
                                                  
                                                  # sidebarPanel(
                                                  #   # selectInput(inputId =  "y", label = "label",
@@ -143,7 +144,10 @@ ui <- fluidPage(tags$head(tags$style(css)), theme = shinytheme("darkly"),
                                                  #   id = "sidebar"
                                                  # )
                                         ),
-                                        tabPanel("Mexico City Comparison", titlePanel("Mexico City Compared with National"), plotlyOutput("graphMXC"))
+                                        tabPanel("Mexico City Comparison", titlePanel("National Active Cases vs. Mexico City’s Active Cases"),
+                                                 plotlyOutput("graphMXC"),
+                                                 br(),
+                                                 p("This graph displays the daily numbers of COVID-19 infections (positive tests) in both Mexico City and Mexico as a whole. You can hover your cursor over the graph to see the exact counts on a particular day."))
                              ),
                              
                              navbarMenu("Descriptive Statistics",
@@ -151,15 +155,15 @@ ui <- fluidPage(tags$head(tags$style(css)), theme = shinytheme("darkly"),
                                                  titlePanel("Test Positivity Rate (TPR)"),
                                                  plotlyOutput("TPRgraph"),
                                                  br(),
-                                                 p("This graph displays the TPR in Mexico. TPR is calculated by dividing the number of positive COVID-19 tests by the total number of COVID-19 tests performed.")),
-                                        tabPanel("Vaccinations", titlePanel("Proportion of Population Vaccinated"),
+                                                 p("This graph displays the TPR in Mexico over the course of the pandemic. TPR represents the percentage of daily reported COVID-19 tests that come back positive. You can hover your cursor over the graph to see the TPR on a particular day.")),
+                                        tabPanel("Vaccinations", titlePanel("Percentage of Population Vaccinated for COVID-19"),
                                                  plotlyOutput("graphVax"),
                                                  br(),
-                                                 p("This graph displays the proportion of vaccinated individuals, which is calculated by dividing the number of individuals who have received 1 or 2 doses by the total population in Mexico.")),
+                                                 p("This graph displays the vaccination rates in Mexico since the start of its COVID-19 vaccination campaign. The orange plot represents the percentage of the population that has received one dose of a two-dose vaccine. The blue plot represents the percentage of the population that is fully vaccinated (i.e. the percentage that has received either both doses of a two-dose vaccine or one dose of a single-dose vaccine). You can hover your cursor over the graph to see the percentages on a particular day.")),
                                         tabPanel("R Estimation", titlePanel("R Estimation"),
                                                  plotlyOutput("graphR0"),
                                                  br(),
-                                                 p("This graph displays an estimation of the time varying reproduction number (Rt) over time using EpiEstim. Rt is a measure of the expected number of secondary cases produced by a single infection at a specific point in time."))
+                                                 p("This graph displays an estimation of the time varying reproduction number, R(t), calculated using EpiEstim. R(t) is a measure of the expected number of secondary cases produced by a single infection at a specific point in time. You can hover your cursor over the graph to see the R(t) value and 95% confidence interval on a particular day."))
                                         
                              ),
                              
@@ -167,28 +171,26 @@ ui <- fluidPage(tags$head(tags$style(css)), theme = shinytheme("darkly"),
                                         tabPanel("SIR Active", titlePanel("SIR Active Cases Estimation"),
                                                  plotlyOutput("graphSIRActive"),
                                                  br(),
-                                                 p("This graph displays the SIR prediction for active cases (the 'I' compartment in SIR), which is displayed as the orange line. The blue bars represent the actual number of active cases.")),
+                                                 p("This graph displays the SIR model for active cases (the 'I' compartment in SIR), which is displayed as the orange line. The blue bars represent the actual number of active cases. The green line after the horizontal white line displays the model's predictions.")),
                                         tabPanel("SIR Removed", titlePanel("SIR Removed Cases Estimation"),
                                                  plotlyOutput("graphSIRRem"),
                                                  br(),
-                                                 p("This graph displays the SIR prediction for recovered cases (the 'R' compartment in SIR), which is displayed as the orange line. The blue bars represent the actual number of recovered cases."))
+                                                 p("This graph displays the SIR model for recovered cases (the 'R' compartment in SIR), which is displayed as the orange line. The purple bars represent the actual number of recovered cases. The green line after the horizontal white line displays the model's predictions."))
                              ),
                              
                              navbarMenu("SEIR Estimations",
                                         tabPanel("SEIR Active", titlePanel("SEIR Active Cases Estimation"),
                                                  plotlyOutput("graphSEIRActive"),
                                                  br(),
-                                                 p("This graph displays the SEIR prediction for active cases (the 'I' compartment in SEIR), which is displayed as the orange line. The blue bars represent the actual number of active cases.")),
+                                                 p("This graph displays the SEIR model for active cases (the 'I' compartment in SEIR), which is displayed as the orange line. The blue bars represent the actual number of active cases. The green line after the horizontal white line displays the model's predictions.")),
                                         tabPanel("SEIR Removed", titlePanel("SEIR Removed Cases Estimation"),
                                                  plotlyOutput("graphSEIRRem"),
                                                  br(),
-                                                 p("This graph displays the SEIR prediction for recovered cases (the 'R' compartment in SIR), which is displayed as the orange line. The blue bars represent the actual number of recovered cases."))),
+                                                 p("This graph displays the SEIR model for recovered cases (the 'R' compartment in SIR), which is displayed as the orange line. The purple bars represent the actual number of recovered cases. The green line after the horizontal white line displays the model's predictions."))),
                              tabPanel("About Us",
                                       titlePanel("About Us"),
                                       br(),
-                                      p("text about us"),
-                                      br(),
-                                      p("info about data/sources"))
+                                      p("Emily Bach is a rising senior at Georgetown University, Lauren He is a rising sophomore at Stanford University, and Alex Zhong is a rising senior at Emory University. We all participated in the 2022 Big Data Summer Institute (BDSI) run by the University of Michigan’s Department of Biostatistics. As part of our BDSI research project on infectious diseases, we created these interactive plots modeling the pandemic in Mexico."))
                              
                   )
                   
@@ -310,8 +312,8 @@ server <- function(input, output, session){
   
   
   output$graphVax <- renderPlotly({
-    plot_ly(vaccinations, x = ~date, y = ~prop_1dose, type = "scatter", mode = "line", name = "1 dose", color = I("#F5793A"), fill = 'tozeroy', line = list(width = 3), hovertemplate = "%{y} %") %>%
-      add_trace(y = ~vaccinations$prop_2doses, type = "scatter", mode = "line", name = "2 doses", color = I("#60A5E8"), line = list(width = 3), hovertemplate = "%{y} %") %>% 
+    plot_ly(vaccinations, x = ~date, y = ~prop_1dose, type = "scatter", mode = "line", name = "1 of 2 doses", color = I("#F5793A"), fill = 'tozeroy', line = list(width = 3), hovertemplate = "%{y} %") %>%
+      add_trace(y = ~vaccinations$prop_2doses, type = "scatter", mode = "line", name = "fully vaccinated", color = I("#60A5E8"), line = list(width = 3), hovertemplate = "%{y} %") %>% 
       layout(
         yaxis = list(title = "Percentage of vaccinated population", range = c(0,100), hoverformat = "0.2f"),
         paper_bgcolor='rgba(0,0,0,0)',
@@ -325,52 +327,40 @@ server <- function(input, output, session){
   
   
   output$graphSIRActive <- renderPlotly({
-    # date_breaks = "1 month"
-    # 
-    # base = ggplot() +
-    #   xlab("") +
-    #   scale_x_date(
-    #     date_breaks = date_breaks,
-    #     labels = scales::date_format("%e %b")
-    #   ) +
-    #   theme_bw() +
-    #   theme(
-    #     axis.text.x = element_text(angle = 45, hjust = 1),
-    #     axis.text = element_text(size = 12),
-    #     axis.title = element_text(size = 12)
-    #   ) +
-    #   theme(legend.position = "right")
-    
-    # p1 <- #base +
-    #   ggplot() +
-    #   geom_smooth(mapping = aes(x = date, y = pred_I_med),
-    #               data = pred_I, size = 0.5, span = 0.3) +
-    #   # geom_ribbon(
-    #   #   aes(x = date, ymin = lwrI, ymax = uprI),
-    #   # data = pred_I,
-    #   #   #size = 1, fill = ci, alpha = 0.8,
-    #   # ) +
-    #   geom_bar(mapping = aes(x = date, y = I), stat = "identity",
-    #            data = mexico, width = 0.5, fill = 'steelblue', alpha = 0.7,
-    #   ) +
-    #   xlim(date_initial, date_final)
-    # 
-    # p1 <- p1 + labs(y = "Active Cases", x = "Date")
-    # ggplotly(p1) %>% 
+    # plot_ly(mexicoSmall, x = ~date, y = ~I, type = "bar", name = "Actual",
+    #         color = I("#60A5E8")) %>% 
+    #   add_trace(y = ~pred_I_SIR_graph$loess, type = 'scatter', mode = 'lines', line = list(color = "rgba(245, 121, 58, 1)", width = 3), name = "Model") %>%
+    #   add_trace(y = ~pred_I_SIR_graph$upper, type = 'scatter', mode = 'lines', name = "Upper", line = list(color = "rgba(245, 121, 58, 0.2)"), showlegend = FALSE, hoverinfo = 'skip') %>% 
+    #   add_trace(y = ~pred_I_SIR_graph$lower, type = 'scatter', mode = 'lines', fill = 'tonexty', fillcolor = list(color = 'rgba(245, 121, 58, 0.2)'), name = "Lower", line = list(color = "rgba(245, 121, 58, 0.2)"), hoverinfo = 'skip', showlegend = FALSE) %>% 
     #   layout(
-    #     hovermode = "x unified")
+    #     xaxis = list(
+    #       range=c(date_initial, date_final)),
+    #     yaxis = list(title = 'Active Infections'),
+    #     xaxis = list(title = 'Date'),
+    #     hovermode = "x unified",
+    #     hoverlabel = list(bgcolor = 'rgba(0,0,0,0.5)'),
+    #     paper_bgcolor='rgba(0,0,0,0)',
+    #     plot_bgcolor='rgba(0,0,0,0)',
+    #     font = t
+    #   )
     
-    plot_ly(mexicoSmall, x = ~date, y = ~I, type = "bar", name = "Actual",
+    plot_ly(SIR_int, x = ~date, y = ~I, type = "bar", name = "Actual",
             color = I("#60A5E8")) %>% 
-      add_trace(y = ~pred_I_SIR_graph$loess, type = 'scatter', mode = 'lines', line = list(color = "rgba(245, 121, 58, 1)", width = 3), name = "Model") %>%
-      add_trace(y = ~pred_I_SIR_graph$upper, type = 'scatter', mode = 'lines', name = "Upper", line = list(color = "rgba(245, 121, 58, 0.2)"), showlegend = FALSE, hoverinfo = 'skip') %>% 
-      add_trace(y = ~pred_I_SIR_graph$lower, type = 'scatter', mode = 'lines', fill = 'tonexty', fillcolor = list(color = 'rgba(245, 121, 58, 0.2)'), name = "Lower", line = list(color = "rgba(245, 121, 58, 0.2)"), hoverinfo = 'skip', showlegend = FALSE) %>% 
+      add_trace(y = ~SIR_int$pred_I_med.y, type = 'scatter', mode = 'lines', line = list(color = "rgba(100, 225, 0, 1)", width = 3), name = "Prediction") %>%
+      add_trace(y = ~SIR_int$uprI.y, type = 'scatter', mode = 'lines', name = "Upper", line = list(color = "rgba(100, 225, 0, 0.2)"), showlegend = FALSE, hoverinfo = 'skip') %>% 
+      add_trace(y = ~SIR_int$lwrI.y, type = 'scatter', mode = 'lines', fill = 'tonexty', fillcolor = list(color = 'rgba(100, 225, 0, 0.2)'), name = "Lower", line = list(color = "rgba(100, 225, 0, 0.2)"), hoverinfo = 'skip', showlegend = FALSE) %>% 
+      add_trace(y = ~SIR_int$loess_m, type = 'scatter', mode = 'lines', line = list(color = "rgba(245, 121, 58, 1)", width = 3), name = "Model") %>%
+      add_trace(y = ~SIR_int$upper_m, type = 'scatter', mode = 'lines', name = "Upper", line = list(color = "rgba(245, 121, 58, 0.2)"), showlegend = FALSE, hoverinfo = 'skip') %>% 
+      add_trace(y = ~SIR_int$lower_m, type = 'scatter', mode = 'lines', fill = 'tonexty', fillcolor = list(color = 'rgba(245, 121, 58, 0.2)'), name = "Lower", line = list(color = "rgba(245, 121, 58, 0.2)"), hoverinfo = 'skip', showlegend = FALSE) %>%
+      add_lines(
+        y = range(0:max(SIR_int$pred_I_med.y, na.rm = TRUE)), x = "2021-01-12",
+        line = list(color = "white", width = 3), hoverinfo = "skip", showlegend = FALSE) %>% 
       layout(
         xaxis = list(
-          range=c(date_initial, date_final)),
+          range=c("2020-11-24", "2021-01-26")),
         yaxis = list(title = 'Active Infections'),
         xaxis = list(title = 'Date'),
-        hovermode = "x unified",
+        #hovermode = "x unified",
         hoverlabel = list(bgcolor = 'rgba(0,0,0,0.5)'),
         paper_bgcolor='rgba(0,0,0,0)',
         plot_bgcolor='rgba(0,0,0,0)',
@@ -380,37 +370,54 @@ server <- function(input, output, session){
   
   output$graphSIRRem <- renderPlotly({
     
-    # p = ggplot() +
-    #   geom_line(mapping = aes(x = date, y = pred_R_med),
-    #             data = pred_R, size = 1) +
-    #   # ggplot2::geom_ribbon(
-    #   #   mapping = ggplot2::aes(x = date, ymin = lwrR, ymax=uprR),
-    #   #   data = pred_R,
-    #   #   size = 1,fill=ci,alpha=0.8,
-    #   # ) +
-    #   geom_bar(mapping = aes(x = date, y = R), stat = "identity",
-    #            data = mexico, width = 0.5, fill = 'steelblue', alpha = 0.7,
-    #   ) +
-    #   xlim(date_initial, date_final) +
-    #   labs(y = "Removed")
-    # ggplotly(p)
+    # plot_ly(mexicoSmall, x = ~date, y = ~R, type = "bar", name = "Actual",
+    #         color = I("#A95AA1")) %>% 
+    #   add_trace(y = ~pred_R_SIR$pred_R_med, type = 'scatter', mode = 'lines', line = list(color = 'rgb(245, 121, 58,, 1)', width = 3), name = "Model") %>%
+    #   # add_trace(y = ~pred_R$uprR, type = 'scatter', mode = 'lines', name = "Upper", showlegend = FALSE) %>% 
+    #   # add_trace(y = ~pred_R$lwrR, type = 'scatter', mode = 'lines', fill = 'tonexty', name = "Lower", showlegend = FALSE)
+    #   add_ribbons(ymin = ~pred_R_SIR$lwrR,
+    #               ymax = ~pred_R_SIR$uprR,
+    #               line = list(color = 'rgb(245, 121, 58, 0.2)'),
+    #               fillcolor = 'rgba(245, 121, 58, 0.2)',
+    #               showlegend = FALSE) %>% 
+    #   layout(
+    #     xaxis = list(
+    #       range=c(date_initial,date_final)),
+    #     yaxis = list(title = 'Total Removed'),
+    #     xaxis = list(title = 'Date'),
+    #     hovermode = "x unified",
+    #     hoverlabel = list(bgcolor = 'rgba(0,0,0,0.5)'),
+    #     paper_bgcolor='rgba(0,0,0,0)',
+    #     plot_bgcolor='rgba(0,0,0,0)',
+    #     font = t
+    #   )
     
-    plot_ly(mexicoSmall, x = ~date, y = ~R, type = "bar", name = "Actual",
+    plot_ly(SIR_int, x = ~date, y = ~R, type = "bar", name = "Actual",
             color = I("#A95AA1")) %>% 
-      add_trace(y = ~pred_R_SIR$pred_R_med, type = 'scatter', mode = 'lines', line = list(color = 'rgb(245, 121, 58,, 1)', width = 3), name = "Model") %>%
-      # add_trace(y = ~pred_R$uprR, type = 'scatter', mode = 'lines', name = "Upper", showlegend = FALSE) %>% 
-      # add_trace(y = ~pred_R$lwrR, type = 'scatter', mode = 'lines', fill = 'tonexty', name = "Lower", showlegend = FALSE)
-      add_ribbons(ymin = ~pred_R_SIR$lwrR,
-                  ymax = ~pred_R_SIR$uprR,
-                  line = list(color = 'rgb(245, 121, 58, 0.2)'),
-                  fillcolor = 'rgba(245, 121, 58, 0.2)',
-                  showlegend = FALSE) %>% 
+      add_trace(y = ~SIR_int$pred_R_med.x, type = 'scatter', mode = 'lines', line = list(color = 'rgb(245, 121, 58,, 1)', width = 3), name = "Model") %>%
+      add_trace(y = ~SIR_int$uprR.x, type = 'scatter', mode = 'lines', name = "Upper", color = I("rgba(245, 121, 58, 0.5)"), showlegend = FALSE, hoverinfo = 'skip') %>% 
+      add_trace(y = ~SIR_int$lwrR.x, type = 'scatter', mode = 'lines', fill = 'tonexty', color = I("rgba(245, 121, 58, 0.5)"), name = "Lower", showlegend = FALSE, hoverinfo = 'skip') %>% 
+      # add_ribbons(ymin = ~SIR_int$lwrR.x,
+      #             ymax = ~SIR_int$uprR.x,
+      #             line = list(color = 'rgb(245, 121, 58, 0.2)'),
+      #             fillcolor = 'rgba(245, 121, 58, 0.2)',
+      #             showlegend = FALSE) %>% 
+      add_trace(y = ~SIR_int$pred_R_med.y, type = 'scatter', mode = 'lines', line = list(color = "rgba(100, 225, 0, 1)", width = 3), name = "Prediction") %>%
+      add_ribbons(ymin = ~SIR_int$lwrR.y,
+                  ymax = ~SIR_int$uprR.y,
+                  line = list(color = 'rgb(100, 225, 0, 0.2)'),
+                  fillcolor = 'rgba(100, 225, 0, 0.2)',
+                  showlegend = FALSE,
+                  hoverinfo = "skip") %>% 
+      add_lines(
+        y = range(0:max(SIR_int$pred_R_med.y, na.rm = TRUE)), x = "2021-01-12",
+        line = list(color = "white", width = 3), hoverinfo = "skip", showlegend = FALSE) %>% 
       layout(
         xaxis = list(
-          range=c(date_initial,date_final)),
+          range=c("2020-11-24", "2021-01-26")),
         yaxis = list(title = 'Total Removed'),
         xaxis = list(title = 'Date'),
-        hovermode = "x unified",
+        #hovermode = "x unified",
         hoverlabel = list(bgcolor = 'rgba(0,0,0,0.5)'),
         paper_bgcolor='rgba(0,0,0,0)',
         plot_bgcolor='rgba(0,0,0,0)',
@@ -422,17 +429,40 @@ server <- function(input, output, session){
   
   output$graphSEIRActive <- renderPlotly({
     
-    plot_ly(mexicoSmall, x = ~date, y = ~I, type = "bar", name = "Actual",
+    # plot_ly(mexicoSmall, x = ~date, y = ~I, type = "bar", name = "Actual",
+    #         color = I("#60A5E8")) %>% 
+    #   add_trace(y = ~pred_I_SEIR_graph$loess, type = 'scatter', mode = 'lines', name = "Model", line = list(color = 'rgba(245, 121, 58,, 1)', width = 3)) %>%
+    #   add_trace(y = ~pred_I_SEIR_graph$upper, type = 'scatter', mode = 'lines', name = "Upper", line = list(color = 'rgba(245, 121, 58, 0.5)'), showlegend = FALSE, hoverinfo = "none") %>% 
+    #   add_trace(y = ~pred_I_SEIR_graph$lower, type = 'scatter', mode = 'lines', fill = 'tonexty', fillcolor = list(color = 'rgba(245, 121, 58, 0.5)'), name = "Lower", line = list(color = 'rgba(245, 121, 58, 0.5)'), showlegend = FALSE, hoverinfo = "none") %>% 
+    #   layout(
+    #     xaxis = list(
+    #       range=c(date_initial,date_final)),
+    #     yaxis = list(title = 'Active Infections'),
+    #     xaxis = list(title = 'Date'),
+    #     hovermode = "x unified",
+    #     hoverlabel = list(bgcolor = 'rgba(0,0,0,0.5)'),
+    #     paper_bgcolor='rgba(0,0,0,0)',
+    #     plot_bgcolor='rgba(0,0,0,0)',
+    #     font = t
+    #   )
+    
+    plot_ly(SEIR_int, x = ~date, y = ~I, type = "bar", name = "Actual",
             color = I("#60A5E8")) %>% 
-      add_trace(y = ~pred_I_SEIR_graph$loess, type = 'scatter', mode = 'lines', name = "Model", line = list(color = 'rgba(245, 121, 58,, 1)', width = 3)) %>%
-      add_trace(y = ~pred_I_SEIR_graph$upper, type = 'scatter', mode = 'lines', name = "Upper", line = list(color = 'rgba(245, 121, 58, 0.5)'), showlegend = FALSE, hoverinfo = "none") %>% 
-      add_trace(y = ~pred_I_SEIR_graph$lower, type = 'scatter', mode = 'lines', fill = 'tonexty', fillcolor = list(color = 'rgba(245, 121, 58, 0.5)'), name = "Lower", line = list(color = 'rgba(245, 121, 58, 0.5)'), showlegend = FALSE, hoverinfo = "none") %>% 
+      add_trace(y = ~SEIR_int$pred_I_med.y, type = 'scatter', mode = 'lines', line = list(color = "rgba(100, 225, 0, 1)", width = 3), name = "Prediction") %>%
+      # add_trace(y = ~SEIR_I$uprI, type = 'scatter', mode = 'lines', name = "Upper", line = list(color = "rgba(44, 237, 0, 0.2)"), showlegend = FALSE, hoverinfo = 'skip') %>% 
+      # add_trace(y = ~SEIR_I$lwrI, type = 'scatter', mode = 'lines', fill = 'tonexty', fillcolor = list(color = 'rgba(44, 237, 0, 0.2)'), name = "Lower", line = list(color = "rgba(44, 237, 0, 0.2)"), hoverinfo = 'skip', showlegend = FALSE) %>% 
+      add_trace(y = ~SEIR_int$loess, type = 'scatter', mode = 'lines', line = list(color = "rgba(245, 121, 58, 1)", width = 3), name = "Model") %>%
+      add_trace(y = ~SEIR_int$upper, type = 'scatter', mode = 'lines', name = "Upper", line = list(color = "rgba(245, 121, 58, 0.2)"), showlegend = FALSE, hoverinfo = 'skip') %>% 
+      add_trace(y = ~SEIR_int$lower, type = 'scatter', mode = 'lines', fill = 'tonexty', fillcolor = list(color = 'rgba(245, 121, 58, 0.2)'), name = "Lower", line = list(color = "rgba(245, 121, 58, 0.2)"), hoverinfo = 'skip', showlegend = FALSE) %>% 
+      add_lines(
+        y = range(0:max(SEIR_int$pred_I_med.y, na.rm = TRUE)), x = "2021-01-12",
+        line = list(color = "white", width = 3), hoverinfo = "skip", showlegend = FALSE) %>% 
       layout(
         xaxis = list(
-          range=c(date_initial,date_final)),
+          range=c("2020-11-21", "2021-01-26")),
         yaxis = list(title = 'Active Infections'),
         xaxis = list(title = 'Date'),
-        hovermode = "x unified",
+        #hovermode = "x unified",
         hoverlabel = list(bgcolor = 'rgba(0,0,0,0.5)'),
         paper_bgcolor='rgba(0,0,0,0)',
         plot_bgcolor='rgba(0,0,0,0)',
@@ -442,22 +472,48 @@ server <- function(input, output, session){
   
   output$graphSEIRRem <- renderPlotly({
     
-    plot_ly(mexicoSmall, x = ~date, y = ~R, type = "bar", name = "Actual", color = I("#A95AA1")) %>% 
-      add_trace(y = ~pred_R_SEIR$pred_R_med, type = 'scatter', mode = 'lines', name = "Model", color = I("rgba(245, 121, 58, 1.0)"), width = 3)%>%
-      # add_trace(y = ~pred_R_SEIR$uprR, type = 'scatter', mode = 'lines', name = "Upper", showlegend = FALSE) %>%
-      # add_trace(y = ~pred_R_SEIR$lwrR, type = 'scatter', mode = 'lines', fill = 'tonexty', name = "Lower", showlegend = FALSE) %>% 
-      add_ribbons(ymin = ~pred_R_SEIR$lwrR,
-                  ymax = ~pred_R_SEIR$uprR,
-                  # line = list(color = 'rgba(245, 121, 58, 0.1)'),
-                  # fillcolor = 'rgba(245, 121, 58, 0.3)',
-                  color = I('rgba(245, 121, 58, 0.5)'),
-                  showlegend = FALSE, hoverinfo = "none") %>% 
+    # plot_ly(mexicoSmall, x = ~date, y = ~R, type = "bar", name = "Actual", color = I("#A95AA1")) %>% 
+    #   add_trace(y = ~pred_R_SEIR$pred_R_med, type = 'scatter', mode = 'lines', name = "Model", color = I("rgba(245, 121, 58, 1.0)"), width = 3)%>%
+    #   # add_trace(y = ~pred_R_SEIR$uprR, type = 'scatter', mode = 'lines', name = "Upper", showlegend = FALSE) %>%
+    #   # add_trace(y = ~pred_R_SEIR$lwrR, type = 'scatter', mode = 'lines', fill = 'tonexty', name = "Lower", showlegend = FALSE) %>% 
+    #   add_ribbons(ymin = ~pred_R_SEIR$lwrR,
+    #               ymax = ~pred_R_SEIR$uprR,
+    #               # line = list(color = 'rgba(245, 121, 58, 0.1)'),
+    #               # fillcolor = 'rgba(245, 121, 58, 0.3)',
+    #               color = I('rgba(245, 121, 58, 0.5)'),
+    #               showlegend = FALSE, hoverinfo = "none") %>% 
+    #   layout(
+    #     xaxis = list(
+    #       range=c(date_initial,date_final)),
+    #     yaxis = list(title = 'Total Removed'),
+    #     xaxis = list(title = 'Date'),
+    #     hovermode = "x unified",
+    #     hoverlabel = list(bgcolor = 'rgba(0,0,0,0.5)'),
+    #     paper_bgcolor='rgba(0,0,0,0)',
+    #     plot_bgcolor='rgba(0,0,0,0)',
+    #     font = t
+    #   )
+    
+    plot_ly(SEIR_int, x = ~date, y = ~R, type = "bar", name = "Actual", color = I("#A95AA1")) %>% 
+      add_trace(y = ~SEIR_int$pred_R_med.x, type = 'scatter', mode = 'lines', name = "Model", color = I("rgba(245, 121, 58, 1.0)"), line = list(width = 3))%>%
+      add_trace(y = ~SEIR_int$uprR, type = 'scatter', mode = 'lines', name = "Upper",  color = I("rgba(245, 121, 58, 0.5)"), showlegend = FALSE, hoverinfo = 'skip') %>%
+      add_trace(y = ~SEIR_int$lwrR, type = 'scatter', mode = 'lines', fill = 'tonexty',  color = I("rgba(245, 121, 58, 0.5)"), name = "Lower", showlegend = FALSE, hoverinfo = 'skip') %>%
+      # add_ribbons(ymin = ~SEIR_R$lwrR,
+      #             ymax = ~SEIR_R$uprR,
+      #             # line = list(color = 'rgba(245, 121, 58, 0.1)'),
+      #             # fillcolor = 'rgba(245, 121, 58, 0.3)',
+      #             color = I('rgba(245, 121, 58, 0.5)'),
+      #             showlegend = FALSE, hoverinfo = "none") %>% 
+      add_trace(y = ~SEIR_int$pred_R_med.y, type = 'scatter', mode = 'lines', line = list(color = "rgba(100, 225, 0, 1)", width = 3), name = "Prediction") %>%
+      add_lines(
+        y = range(0:max(SEIR_int$pred_R_med.y, na.rm = TRUE)), x = "2021-01-12",
+        line = list(color = "white", width = 3), hoverinfo = "skip", showlegend = FALSE) %>% 
       layout(
         xaxis = list(
-          range=c(date_initial,date_final)),
+          range=c("2020-11-24", "2021-01-26")),
         yaxis = list(title = 'Total Removed'),
         xaxis = list(title = 'Date'),
-        hovermode = "x unified",
+        #hovermode = "x unified",
         hoverlabel = list(bgcolor = 'rgba(0,0,0,0.5)'),
         paper_bgcolor='rgba(0,0,0,0)',
         plot_bgcolor='rgba(0,0,0,0)',
