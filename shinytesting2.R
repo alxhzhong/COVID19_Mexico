@@ -97,13 +97,12 @@ ui <- fluidPage(tags$head(tags$style(css)), theme = shinytheme("darkly"),
                   navbarPage("COVID-19 in Mexico",
                              
                              tabPanel("Home", titlePanel("Tracking and Modeling SARS-CoV-2 in Mexico"),
-                                      br(),
                                       imageOutput("mexicoFlag"),
                                       br(),
                                       p("Welcome to our web app for tracking and modeling SARS-CoV-2 pandemic in Mexico. Our aim is to provide a resource for individuals to visualize the COVID-19 trends in Mexico in order to better understand the situation. 
                                         some text, image ??, info about time period, policy, how to use graphs ?"),
                                       br(),
-                                      h4("Policy overview"),
+                                      h4("Policy Overview"),
                                       p("Mexico suspended all nonessential activities at the beginning of the pandemic, in March 2020. At the end of May 2020, the national government's sanitary emergency expired, and Mexico shifted towards a stoplight system that operated at the state level. This is still the system that is currently in place. Indicators of COVID-19 are assessed weekly, and each state is assigned a color - green, yellow, orange, or red - based on the indicators."),
                                       br(),
                                       h4("Stoplight policy information"),
@@ -115,7 +114,10 @@ ui <- fluidPage(tags$head(tags$style(css)), theme = shinytheme("darkly"),
                                       h4("Web app overview"),
                                       p("The descriptive plots and statistics are displayed for the entirety of the pandemic until [date], when data from our primary source, JHU, stops reporting recovered individuals. The predictive models are performed on a specific timeframe- November 20, 2020 to March 1, 2021."),
                                       br(),
-                                      p("Information about datasources can be found at the bottom of the 'About us' page.")
+                                      p("Information about datasources can be found at the bottom of the 'About us' page."),
+                                      br(),
+                                      h4("Data Sources"),
+                                      p("PUT DATA SOURES HERE")
                              ),
                              
                              
@@ -189,9 +191,7 @@ ui <- fluidPage(tags$head(tags$style(css)), theme = shinytheme("darkly"),
                              tabPanel("About Us",
                                       titlePanel("About Us"),
                                       br(),
-                                      p("text about us"),
-                                      br(),
-                                      p("info about data/sources"))
+                                      p("Emily Bach is a rising senior at Georgetown University, Lauren He is a rising sophomore at Stanford University, and Alex Zhong is a rising senior at Emory University. We all participated in the 2022 Big Data Summer Institute (BDSI) run by the University of Michigan’s Department of Biostatistics. As part of our BDSI research project on infectious diseases, we created these interactive plots modeling the pandemic in Mexico."))
                              
                   )
                   
