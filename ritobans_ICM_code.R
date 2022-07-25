@@ -1,4 +1,4 @@
-devtools::install_github('ImperialCollegeLondon/epidemia', ref='exponential_new')
+# devtools::install_github('ImperialCollegeLondon/epidemia', ref='exponential_new')
 library(here)
 library(epidemia)
 library(tidyverse)
@@ -14,8 +14,8 @@ library(arm)
 data_world_confirmed = read.csv(url("https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv"))
 data_world_recovered = read.csv(url("https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_recovered_global.csv"))
 data_world_deaths = read.csv(url("https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_deaths_global.csv"))
-date_initial = as.Date("2020-03-30")
-date_final = as.Date("2020-05-30")
+date_initial = as.Date("2020-11-24")
+date_final = as.Date("2021-03-01")
 name_countries = unique(data_world_confirmed$Country.Region)
 data<-function(country,date_initial,date_final){
   data_country_deaths = colSums((data_world_deaths %>% filter(Country.Region == country))[, 5:ncol(data_world_deaths)])
@@ -70,7 +70,7 @@ args$sampling_args <- list(iter=1000, seed=12345, control=list(adapt_delta=0.95,
 # for rt just using a weekly random walk for each country with a separate R0
 args$rt <- epirt(
   formula = R(country, date) ~ 0 + rw(time = week,prior_scale = 0.1),
-  prior = rstanarm::normal(log(1.92), 0.1)
+  prior = rstanarm::normal(log(1), 0.1)
 )
 args$prior_tau = rstanarm::exponential(rate = 1)
 # make sure for peridod before week of 13th March has same weekly index (same Rt)
@@ -90,3 +90,5 @@ args$pop=popu
 args$pop_adjust <- F
 args$si=EuropeCovid$si
 fit <- do.call(epim, args)
+
+plot_obs(fit,type="deaths")
