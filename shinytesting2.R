@@ -72,7 +72,7 @@ vaccinations <- vaccinations %>%
 base <- list(paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)')
 
 t <- list(
-  color = "white"
+  color = "white" #, size = 18
   #, family = ""
 )
 
@@ -314,7 +314,8 @@ server <- function(input, output, session){
     plot_ly(vaccinations, x = ~date, y = ~prop_1dose, type = "scatter", mode = "line", name = "1 of 2 doses", color = I("#F5793A"), fill = 'tozeroy', line = list(width = 3), hovertemplate = "%{y} %") %>%
       add_trace(y = ~vaccinations$prop_2doses, type = "scatter", mode = "line", name = "fully vaccinated", color = I("#60A5E8"), line = list(width = 3), hovertemplate = "%{y} %") %>% 
       layout(
-        yaxis = list(title = "Percentage of vaccinated population", range = c(0,100), hoverformat = "0.2f"),
+        yaxis = list(title = "Percentage of Vaccinated Population", range = c(0,100), hoverformat = "0.2f"),
+        xaxis = list(title = "Date"),
         paper_bgcolor='rgba(0,0,0,0)',
         plot_bgcolor='rgba(0,0,0,0)',
         hoverlabel = list(bgcolor = 'rgba(0,0,0,0.5)'),
