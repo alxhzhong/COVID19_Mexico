@@ -98,7 +98,6 @@ ui <- fluidPage(tags$head(tags$style(css)), theme = shinytheme("darkly"),
                              
                              tabPanel("Home", titlePanel("Tracking and Modeling SARS-CoV-2 in Mexico"),
                                       imageOutput("mexicoFlag"),
-                                      br(),br(),
                                       p("Welcome to our web app for tracking and modeling the COVID-19 pandemic in Mexico. Our aim is to provide a resource for individuals to understand COVID-19 trends and potential public health threats in Mexico. To accomplish this aim, we provide a brief policy explanation and numerous relevant graphs with descriptions. For more information on our group and this project, see the “About Us” tab."),
                                       br(),
                                       h4("Policy Overview"),
@@ -204,8 +203,7 @@ server <- function(input, output, session){
     
     filename <- "mexicoFlag.png"
     list(src = filename, contentType = 'image/png', alt = paste("Mexico Flag"), style="display: block; margin-left: auto; margin-right: auto;",
-         width = 500,
-         height = 500
+         width = 500
   
     )
   }, deleteFile = FALSE)
@@ -358,9 +356,8 @@ server <- function(input, output, session){
         line = list(color = "white", width = 3), hoverinfo = "skip", showlegend = FALSE) %>% 
       layout(
         xaxis = list(
-          range=c("2020-11-24", "2021-01-26")),
+          range=c("2020-11-24", "2021-01-26"), title = 'Date'),
         yaxis = list(title = 'Active Infections'),
-        xaxis = list(title = 'Date'),
         #hovermode = "x unified",
         hoverlabel = list(bgcolor = 'rgba(0,0,0,0.5)'),
         paper_bgcolor='rgba(0,0,0,0)',
@@ -415,9 +412,8 @@ server <- function(input, output, session){
         line = list(color = "white", width = 3), hoverinfo = "skip", showlegend = FALSE) %>% 
       layout(
         xaxis = list(
-          range=c("2020-11-24", "2021-01-26")),
+          range=c("2020-11-24", "2021-01-26"), title = 'Date'),
         yaxis = list(title = 'Total Removed'),
-        xaxis = list(title = 'Date'),
         #hovermode = "x unified",
         hoverlabel = list(bgcolor = 'rgba(0,0,0,0.5)'),
         paper_bgcolor='rgba(0,0,0,0)',
@@ -455,14 +451,16 @@ server <- function(input, output, session){
       add_trace(y = ~SEIR_int$loess, type = 'scatter', mode = 'lines', line = list(color = "rgba(245, 121, 58, 1)", width = 3), name = "Model") %>%
       add_trace(y = ~SEIR_int$upper, type = 'scatter', mode = 'lines', name = "Upper", line = list(color = "rgba(245, 121, 58, 0.2)"), showlegend = FALSE, hoverinfo = 'skip') %>% 
       add_trace(y = ~SEIR_int$lower, type = 'scatter', mode = 'lines', fill = 'tonexty', fillcolor = list(color = 'rgba(245, 121, 58, 0.2)'), name = "Lower", line = list(color = "rgba(245, 121, 58, 0.2)"), hoverinfo = 'skip', showlegend = FALSE) %>% 
+      
+      add_trace(y = ~SEIR_int$pred_uprI, type = 'scatter', mode = 'lines', name = "Upper", line = list(color = "rgba(100, 225, 0, 0.2)"), showlegend = FALSE, hoverinfo = 'skip') %>% 
+      add_trace(y = ~SEIR_int$pred_lwrI, type = 'scatter', mode = 'lines', fill = 'tonexty', fillcolor = list(color = 'rgba(100, 225, 0, 0.2)'), name = "Lower", line = list(color = "rgba(100, 225, 0, 0.2)"), hoverinfo = 'skip', showlegend = FALSE) %>%
       add_lines(
         y = range(0:max(SEIR_int$pred_I_med.y, na.rm = TRUE)), x = "2021-01-12",
         line = list(color = "white", width = 3), hoverinfo = "skip", showlegend = FALSE) %>% 
       layout(
         xaxis = list(
-          range=c("2020-11-21", "2021-01-26")),
+          range=c("2020-11-21", "2021-01-26"), title = 'Date'),
         yaxis = list(title = 'Active Infections'),
-        xaxis = list(title = 'Date'),
         #hovermode = "x unified",
         hoverlabel = list(bgcolor = 'rgba(0,0,0,0.5)'),
         paper_bgcolor='rgba(0,0,0,0)',
@@ -506,14 +504,16 @@ server <- function(input, output, session){
       #             color = I('rgba(245, 121, 58, 0.5)'),
       #             showlegend = FALSE, hoverinfo = "none") %>% 
       add_trace(y = ~SEIR_int$pred_R_med.y, type = 'scatter', mode = 'lines', line = list(color = "rgba(100, 225, 0, 1)", width = 3), name = "Prediction") %>%
+      
+      add_trace(y = ~SEIR_int$pred_uprR, type = 'scatter', mode = 'lines', name = "Upper", line = list(color = "rgba(100, 225, 0, 0.2)"), showlegend = FALSE, hoverinfo = 'skip') %>% 
+      add_trace(y = ~SEIR_int$pred_lwrR, type = 'scatter', mode = 'lines', fill = 'tonexty', fillcolor = list(color = 'rgba(100, 225, 0, 0.2)'), name = "Lower", line = list(color = "rgba(100, 225, 0, 0.2)"), hoverinfo = 'skip', showlegend = FALSE) %>%
       add_lines(
         y = range(0:max(SEIR_int$pred_R_med.y, na.rm = TRUE)), x = "2021-01-12",
         line = list(color = "white", width = 3), hoverinfo = "skip", showlegend = FALSE) %>% 
       layout(
         xaxis = list(
-          range=c("2020-11-24", "2021-01-26")),
+          range=c("2020-11-24", "2021-01-26"), title = 'Date'),
         yaxis = list(title = 'Total Removed'),
-        xaxis = list(title = 'Date'),
         #hovermode = "x unified",
         hoverlabel = list(bgcolor = 'rgba(0,0,0,0.5)'),
         paper_bgcolor='rgba(0,0,0,0)',
