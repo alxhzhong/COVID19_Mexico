@@ -59,7 +59,7 @@ plt_data <- tibble(
   dplyr::select(
     date_num, t_start, r = `Mean(R)`, lower = `Quantile.0.025(R)`, upper = `Quantile.0.975(R)`
   ) %>%
-  add_column(date = mexico_filt$date) %>%
+  mutate(date = mexico_filt$date) %>%
   mutate(
     text = paste0("Date: ", format(date, format = '%b %d'), "<br>R: ",
                   format(round(r, 2), nsmall = 2), "<br>CI: ",

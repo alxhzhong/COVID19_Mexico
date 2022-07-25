@@ -1,5 +1,7 @@
-
+library(devtools)
+install("eSIR")
 library(eSIR)
+library(tibble)
 
 source("estimate_tvr.R")
 rm(plt_data)
@@ -15,15 +17,26 @@ plt_data <- tibble(
   mutate(date = mexico_filt$date) %>%
   filter(!is.na(r))
 
-test = plt_data %>% 
-  filter(date >= as.Date("2020-11-18") & date <= as.Date("2020-11-24"))
+# baseline_dates = plt_data %>% 
+#   filter(date >= as.Date("2020-11-18") & date <= as.Date("2020-11-24"))
+# 
+# baseline_r = baseline_dates %>% 
+#   dplyr::select(r) %>% 
+#   summarize(mean = mean(r)) %>% 
+#   pull()
 
-baseline_r = test %>% dplyr::select(r) %>%  summarize(mean = mean(r)) %>% pull()
+baseline_r = plt_data %>% 
+  filter(date >= as.Date("2020-10-07") & date <= as.Date("2021-01-13")) %>% 
+  arrange(desc(r)) %>% 
+  head(n = 1) %>% 
+  select(r) %>% 
+  pull()
+  
 
 pi = plt_data %>% 
   dplyr::select(r, date) %>% 
   mutate(pi_t = r / baseline_r) %>% 
-  filter(date >= as.Date("2020-11-25") & date <= as.Date("2021-01-10"))
+  filter(date >= as.Date("2020-10-07") & date <= as.Date("2021-01-13"))
 
 pi_2 = pi %>% 
   left_join(dplyr::select(mexico, date, I, R), by = "date") %>% 
@@ -51,11 +64,11 @@ change_time = pi %>%
   pull() %>% 
   format(format = "%m/%d/%Y")
 p0 <- c(1, pi$pi_t)
-p0[length(p0)] = 1
+# p0[length(p0)] = 1
 
 res.step <- tvt.eSIR(
-  Y = pi_2$I, R = pi_2$R, pi0 = p0, change_time = change_time, begin_str = "11/25/2020", death_in_R = 0.03,
-  R0 = 1, T_fin = 60, casename = "Mexico", save_files = F, M = 5e5, nburnin = 2e5
+  Y = pi_2$I, R = pi_2$R, pi0 = p0, change_time = change_time, begin_str = "10/07/2020", death_in_R = 0.03,
+  beta0 = 0.1065, gamma0 = 0.0707, T_fin = 112, casename = "Mexico", save_files = F, M = 50, nburnin = 20
 )
 
 # no pi(t)
@@ -63,6 +76,13 @@ res.step <- tvt.eSIR(
 #   Y = pi_2$I, R = pi_2$R, begin_str = "11/25/2020", death_in_R = 0.03,
 #   R0 = 1, T_fin = 120, casename = "Mexico", save_files = F, M = 5000, nburnin = 2000
 # )
+
+jags_sample = res.step$jags_sample
+theta_pp = res.step$theta_pp
+Y_mean = res.step$Y_mean
+Y_band = res.step$Y_band
+theta_p_mean = res.step$theta_p_mean
+theta_p_ci = res.step$theta_p_ci
 
 res.step$plot_infection
 res.step$plot_removed
