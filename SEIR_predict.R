@@ -6,6 +6,7 @@
 source("SEIR_function.R")
 source("SIR_intervals.R")
 source("SIR_SEIR_equations.R")
+source("predict_CI.R")
 
 date_initial = as.Date("2020-11-24")
 date_final = as.Date("2021-01-13")
@@ -95,21 +96,32 @@ predictions = seir_1(beta = exp(last_pars[1]), gamma = exp(last_pars[2]), sigma 
                      I0 = last_IR$I,R0 = last_IR$R, times = c(1:num_days), N = N, 
                      lambda = lambda, mu = mu, k = best_k[length(best_k)])
 
-pred_I_med = round(predictions$I)
-pred_R_med = round(predictions$R)
+sigma_l = 1/4.1
+sigma_u = 1/5.8
+sigma_m = 1/5.1
+rep = 500
+
+pred_I_med = cbind(pred_I_med = round(predictions$I), date) %>% 
+  as_tibble()
+pred_R_med = cbind(pred_R_med = round(predictions$R), date) %>% 
+  as_tibble()
+
+pred_SEIR_test = list(pred_I_med, pred_R_med)
+
+ci_pred_seir = ciband(pred_SEIR_test, sigma_l, sigma_u, sigma_m, last_pars[1], last_pars[2], mexico, rep)
 
 cl = 0.95
 cl = (1 - cl) / 2
-lwrI = qpois(p = cl, lambda = pred_I_med)
-uprI = qpois(p = 1 - cl, lambda = pred_I_med)
+lwrI = qpois(p = cl, lambda = pred_I_med$pred_I_med)
+uprI = qpois(p = 1 - cl, lambda = pred_I_med$pred_I_med)
 SEIR_pred_I=data.frame(date,pred_I_med,lwrI,uprI)
 
-lwrR = qpois(p = cl, lambda = pred_R_med)
-uprR = qpois(p = 1 - cl, lambda = pred_R_med)
+lwrR = qpois(p = cl, lambda = pred_R_med$pred_R_med)
+uprR = qpois(p = 1 - cl, lambda = pred_R_med$pred_R_med)
 SEIR_pred_R=data.frame(date,pred_R_med,lwrR,uprR)
 
-SEIR_pred_I=data.frame(date,pred_I_med)
-SEIR_pred_R=data.frame(date,pred_R_med)
+SEIR_pred_I=data.frame(date,pred_I_med, pred_lwrI = ci_pred_seir[[1]]$lwrI, pred_uprI = ci_pred_seir[[1]]$uprI)
+SEIR_pred_R=data.frame(date,pred_R_med, pred_lwrR = ci_pred_seir[[2]]$lwrR, pred_uprR = ci_pred_seir[[2]]$uprR)
 
 # ggplot() +
 #   geom_bar(data = mexico, mapping = aes(x = date, y = I), stat = "identity") +
