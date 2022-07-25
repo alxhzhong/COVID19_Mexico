@@ -1237,7 +1237,7 @@ tvt.eSIR <- function(Y,
     data_pre = data_pre,
     data_poly_R = data_poly_R,
     data_comp_R = data_comp_R,
-    data_pre_R = data_pre_R,
+    data_pre_R = data_pre_R
   )
   res
 }
