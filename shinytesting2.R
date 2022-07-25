@@ -360,7 +360,7 @@ server <- function(input, output, session){
           range=c("2020-11-24", "2021-01-26")),
         yaxis = list(title = 'Active Infections'),
         xaxis = list(title = 'Date'),
-        hovermode = "x unified",
+        #hovermode = "x unified",
         hoverlabel = list(bgcolor = 'rgba(0,0,0,0.5)'),
         paper_bgcolor='rgba(0,0,0,0)',
         plot_bgcolor='rgba(0,0,0,0)',
@@ -395,8 +395,8 @@ server <- function(input, output, session){
     plot_ly(SIR_int, x = ~date, y = ~R, type = "bar", name = "Actual",
             color = I("#A95AA1")) %>% 
       add_trace(y = ~SIR_int$pred_R_med.x, type = 'scatter', mode = 'lines', line = list(color = 'rgb(245, 121, 58,, 1)', width = 3), name = "Model") %>%
-      add_trace(y = ~SIR_int$uprR.x, type = 'scatter', mode = 'lines', name = "Upper", color = I("rgba(245, 121, 58, 0.5)"), showlegend = FALSE) %>% 
-      add_trace(y = ~SIR_int$lwrR.x, type = 'scatter', mode = 'lines', fill = 'tonexty', color = I("rgba(245, 121, 58, 0.5)"), name = "Lower", showlegend = FALSE) %>% 
+      add_trace(y = ~SIR_int$uprR.x, type = 'scatter', mode = 'lines', name = "Upper", color = I("rgba(245, 121, 58, 0.5)"), showlegend = FALSE, hoverinfo = 'skip') %>% 
+      add_trace(y = ~SIR_int$lwrR.x, type = 'scatter', mode = 'lines', fill = 'tonexty', color = I("rgba(245, 121, 58, 0.5)"), name = "Lower", showlegend = FALSE, hoverinfo = 'skip') %>% 
       # add_ribbons(ymin = ~SIR_int$lwrR.x,
       #             ymax = ~SIR_int$uprR.x,
       #             line = list(color = 'rgb(245, 121, 58, 0.2)'),
@@ -417,7 +417,7 @@ server <- function(input, output, session){
           range=c("2020-11-24", "2021-01-26")),
         yaxis = list(title = 'Total Removed'),
         xaxis = list(title = 'Date'),
-        hovermode = "x unified",
+        #hovermode = "x unified",
         hoverlabel = list(bgcolor = 'rgba(0,0,0,0.5)'),
         paper_bgcolor='rgba(0,0,0,0)',
         plot_bgcolor='rgba(0,0,0,0)',
@@ -462,7 +462,7 @@ server <- function(input, output, session){
           range=c("2020-11-21", "2021-01-26")),
         yaxis = list(title = 'Active Infections'),
         xaxis = list(title = 'Date'),
-        hovermode = "x unified",
+        #hovermode = "x unified",
         hoverlabel = list(bgcolor = 'rgba(0,0,0,0.5)'),
         paper_bgcolor='rgba(0,0,0,0)',
         plot_bgcolor='rgba(0,0,0,0)',
@@ -496,8 +496,8 @@ server <- function(input, output, session){
     
     plot_ly(SEIR_int, x = ~date, y = ~R, type = "bar", name = "Actual", color = I("#A95AA1")) %>% 
       add_trace(y = ~SEIR_int$pred_R_med.x, type = 'scatter', mode = 'lines', name = "Model", color = I("rgba(245, 121, 58, 1.0)"), line = list(width = 3))%>%
-      add_trace(y = ~SEIR_int$uprR, type = 'scatter', mode = 'lines', name = "Upper",  color = I("rgba(245, 121, 58, 0.5)"), showlegend = FALSE) %>%
-      add_trace(y = ~SEIR_int$lwrR, type = 'scatter', mode = 'lines', fill = 'tonexty',  color = I("rgba(245, 121, 58, 0.5)"), name = "Lower", showlegend = FALSE) %>%
+      add_trace(y = ~SEIR_int$uprR, type = 'scatter', mode = 'lines', name = "Upper",  color = I("rgba(245, 121, 58, 0.5)"), showlegend = FALSE, hoverinfo = 'skip') %>%
+      add_trace(y = ~SEIR_int$lwrR, type = 'scatter', mode = 'lines', fill = 'tonexty',  color = I("rgba(245, 121, 58, 0.5)"), name = "Lower", showlegend = FALSE, hoverinfo = 'skip') %>%
       # add_ribbons(ymin = ~SEIR_R$lwrR,
       #             ymax = ~SEIR_R$uprR,
       #             # line = list(color = 'rgba(245, 121, 58, 0.1)'),
@@ -513,7 +513,7 @@ server <- function(input, output, session){
           range=c("2020-11-24", "2021-01-26")),
         yaxis = list(title = 'Total Removed'),
         xaxis = list(title = 'Date'),
-        hovermode = "x unified",
+        #hovermode = "x unified",
         hoverlabel = list(bgcolor = 'rgba(0,0,0,0.5)'),
         paper_bgcolor='rgba(0,0,0,0)',
         plot_bgcolor='rgba(0,0,0,0)',
