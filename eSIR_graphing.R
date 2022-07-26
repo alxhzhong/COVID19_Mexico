@@ -21,7 +21,7 @@ theta_p_ci = esir_res$theta_p_ci
 # observed data to compare to eSIR fit
 mexico_esir = mexico_filt %>% 
   filter(date %in% all_dates) %>% 
-  select(date, I, R)
+  dplyr::select(date, I, R)
 
 # data for I graph
 data_comp <- data_comp %>% 

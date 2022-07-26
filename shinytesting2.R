@@ -91,13 +91,8 @@ url3 <- a("OWiD", href="https://github.com/owid/covid-19-data")
 
 ui <- fluidPage(tags$head(tags$style(css)), theme = shinytheme("darkly"),
                 
-                # titlePanel("graphZ"),
-                
                 fluidRow(
-                  # mainPanel(
-                  #   plotlyOutput("graph"),
-                  #   plotlyOutput("graph2"),
-                  # ),
+                  
                   navbarPage("COVID-19 in Mexico",
                              
                              tabPanel("Home", titlePanel("Tracking and Modeling SARS-CoV-2 in Mexico"),
@@ -115,12 +110,10 @@ ui <- fluidPage(tags$head(tags$style(css)), theme = shinytheme("darkly"),
                                       br(),
                                       h4("Web app overview"),
                                       p("We provide estimations using three different epidemiological models–SIR, SEIR, and eSIR. SIR divides the population into three compartments, namely “Susceptible” individuals (S), “Infectious” individuals (I), and “Removed” individuals (R). SEIR adds a fourth compartment for “Exposed” individuals (E), which in SIR is included in the I compartment. Lastly, eSIR divides the population into the same three compartments as SIR but introduces a modifier to account for policy effects on transmission rates. SIR, SEIR, and eSIR have long been used by epidemiologists to model virus transmissions, and this web app allows you to compare the model-based predictions with the actual values in the time period we selected."),
-                                      p("The descriptive plots and statistics are displayed from the beginning of the pandemic until 08/04/2021, when data from our primary source, JHU, stops reporting recovered individuals. The predictive models are performed on a specific timeframe: the training period is 11/24/2020 to 01/13/2021, and the testing period is 01/14/2021 to 01/26/2021. In the relevant plots, these time periods are separated by a vertical white bar."),
+                                      p("The descriptive plots and statistics are displayed from the beginning of the pandemic until 08/04/2021, when data from our primary source, JHU, stops reporting recovered individuals. The predictive models are performed on a specific timeframe: the training period is 11/24/2020 to 01/13/2021, and the testing period is 01/14/2021 to 01/26/2021. In the relevant plots, these time periods are separated by a vertical white bar.")
                 
                                       
                              ),
-                             
-                             
                              
                              navbarMenu("Descriptive Graphs",
                                         tabPanel("Cumulative Cases", titlePanel("Cumulative Reported Cases"), plotlyOutput("graphCumulativeI"),
@@ -195,7 +188,7 @@ ui <- fluidPage(tags$head(tags$style(css)), theme = shinytheme("darkly"),
                                                  br(),
                                                  p("This graph displays the SIR model for recovered cases (the 'R' compartment in SIR), which is displayed as the orange line. The purple bars represent the reported number of recovered cases. The green line after the horizontal white line displays the model's predictions."),
                                                  br(),
-                                                 p("Data Source: ", url1)),
+                                                 p("Data Source: ", url1))
                              ),
                              
                              navbarMenu("SEIR Estimations",
@@ -210,11 +203,10 @@ ui <- fluidPage(tags$head(tags$style(css)), theme = shinytheme("darkly"),
                                                  br(),
                                                  p("This graph displays the SEIR model for recovered cases (the 'R' compartment in SIR), which is displayed as the orange line. The purple bars represent the reported number of recovered cases. The green line after the horizontal white line displays the model's predictions. 95% confidence intervals are shown."),
                                                  br(),
-                                                 p("Data Source: ", url1))),
-                                        tabPanel("SEIR Removed", titlePanel("SEIR Removed Cases Estimation"),
-                                                 plotlyOutput("graphSEIRRem"),
-                                                 br(),
-                                                 p("This graph displays the SEIR model for recovered cases (the 'R' compartment in SIR), which is displayed as the orange line. The purple bars represent the actual number of recovered cases. The green line after the horizontal white line displays the model's predictions."))),
+                                                 p("Data Source: ", url1))
+                             ),
+                             
+                  
                              navbarMenu("eSIR Estimations",
                                         tabPanel("eSIR Active", titlePanel("eSIR Active Cases Estimation"),
                                                  plotlyOutput("grapheSIRActive"),
@@ -240,6 +232,8 @@ ui <- fluidPage(tags$head(tags$style(css)), theme = shinytheme("darkly"),
                              
                   )
                   
+                )
+                
                 )
                 
 )
