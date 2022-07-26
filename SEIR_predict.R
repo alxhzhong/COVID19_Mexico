@@ -8,7 +8,7 @@ source("SIR_intervals.R")
 source("SIR_SEIR_equations.R")
 source("predict_CI.R")
 
-date_initial = as.Date("2020-11-24")
+date_initial = as.Date("2020-10-07")
 date_final = as.Date("2021-01-13")
 f_days = as.Date(c("2020-11-24", "2020-12-15", "2021-01-04", "2021-01-13"))
 
@@ -16,9 +16,9 @@ f_days = as.Date(c("2020-11-24", "2020-12-15", "2021-01-04", "2021-01-13"))
 sir_intervals_predict = function(method){
   # run SIR fitting for 4 specified periods
   starting_param_val = c(-2.5, -3)
-  date_initial = as.Date("2020-11-24")
+  date_initial = as.Date("2020-10-07")
   date_final = as.Date("2021-01-13")
-  f_days = as.Date(c("2020-11-24", "2020-12-15", "2021-01-04", "2021-01-13"))
+  f_days = as.Date(c("2020-11-24", "2020-12-15", "2021-01-04", "2021-01-14"))
   
   # choose method
   if(method == "SIR"){
@@ -58,7 +58,6 @@ sir_intervals_predict = function(method){
     
     return(list(pred_I, pred_R, t3[[4]]))
   }
-  
   
 }
 
@@ -138,3 +137,13 @@ actual <- mexico %>%
 
 SEIR_I_smape <- smape(actual$I, SEIR_pred_I$pred_I_med)
 SEIR_R_smape <- smape(actual$R, SEIR_pred_R$pred_R_med)
+
+# changing things
+# actual_train = mexico %>% 
+#   filter(date >= "2020-10-07" & date <= "2021-01-13")
+
+# SEIR_I_smape_train <- smape(actual_train$I, pred_I_SEIR$pred_I_med)
+# SEIR_R_smape_train <- smape(actual_train$R, pred_R_SEIR$pred_R_med)
+# 
+# SEIR_I_smape_train
+# SEIR_R_smape_train

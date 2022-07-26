@@ -7,7 +7,7 @@ source("SIR_function.R")
 source("SIR_intervals.R")
 source("SIR_SEIR_equations.R")
 
-date_initial = as.Date("2020-11-24")
+date_initial = as.Date("2020-10-07")
 date_final = as.Date("2021-01-13")
 f_days = as.Date(c("2020-11-24", "2020-12-15", "2021-01-04", "2021-01-13"))
 
@@ -15,9 +15,9 @@ f_days = as.Date(c("2020-11-24", "2020-12-15", "2021-01-04", "2021-01-13"))
 sir_intervals_predict = function(method){
   # run SIR fitting for 4 specified periods
   starting_param_val = c(-2.5, -3)
-  date_initial = as.Date("2020-11-24")
+  date_initial = as.Date("2020-10-07")
   date_final = as.Date("2021-01-13")
-  f_days = as.Date(c("2020-11-24", "2020-12-15", "2021-01-04", "2021-01-13"))
+  f_days = as.Date(c("2020-11-24", "2020-12-15", "2021-01-04", "2021-01-14"))
   
   # choose method
   if(method == "SIR"){
@@ -28,6 +28,7 @@ sir_intervals_predict = function(method){
     pred_I <- rbind(t1[[1]], t2[[1]], t3[[1]]) ## bind by row
     pred_R <- rbind(t1[[2]], t2[[2]], t3[[2]])
     
+    return(list(pred_I, pred_R, t3[[3]]))
   }
   
   if(method == "SEIR"){
@@ -53,9 +54,9 @@ sir_intervals_predict = function(method){
     
     pred_I <- rbind(ci1[[1]], ci2[[1]], ci3[[1]]) ## bind by row
     pred_R <- rbind(ci1[[2]], ci2[[2]], ci3[[2]])
+    
+    return(list(pred_I, pred_R, t3[[4]]))
   }
-  
-  return(list(pred_I, pred_R, t3[[3]]))
   
 }
 
@@ -125,3 +126,12 @@ actual <- mexico %>%
 SIR_I_smape <- smape(actual$I, pred_I$pred_I_med)
 SIR_R_smape <- smape(actual$R, pred_R$pred_R_med)
 
+# changing things
+# actual_train = mexico %>% 
+#   filter(date >= "2020-10-07" & date <= "2021-01-13")
+# 
+# SIR_I_smape_train <- smape(actual_train$I, pred_I_SIR$pred_I_med)
+# SIR_R_smape_train <- smape(actual_train$R, pred_R_SIR$pred_R_med)
+# 
+# SIR_I_smape_train
+# SIR_R_smape_train
