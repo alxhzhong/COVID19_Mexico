@@ -8,6 +8,7 @@ source("SIR_intervals.R")
 source("estimate_tvr.R")
 source("mexicocity_dataread.R")
 source("prediction_graphs.R")
+source("eSIR_graphing.R")
 
 # pred_SIR = sir_intervals("SIR")
 # pred_I_SIR = pred_SIR[[1]]
@@ -81,10 +82,7 @@ css <- HTML(" body {
     background-color: #2a2a2b;
 }")
 
-# for hyperlinks
-url1 <- a("JHU CSSE", href="https://github.com/CSSEGISandData/COVID-19")
-url2 <- a("CONACYT", href="https://datos.covid-19.conacyt.mx/")
-url3 <- a("OWiD", href="https://github.com/owid/covid-19-data")
+
 
 # start of app
 
@@ -114,7 +112,7 @@ ui <- fluidPage(tags$head(tags$style(css)), theme = shinytheme("darkly"),
                                       br(),
                                       h4("Web app overview"),
                                       p("We provide estimations using three different epidemiological models–SIR, SEIR, and eSIR. SIR divides the population into three compartments, namely “Susceptible” individuals (S), “Infectious” individuals (I), and “Removed” individuals (R). SEIR adds a fourth compartment for “Exposed” individuals (E), which in SIR is included in the I compartment. Lastly, eSIR divides the population into the same three compartments as SIR but introduces a modifier to account for policy effects on transmission rates. SIR, SEIR, and eSIR have long been used by epidemiologists to model virus transmissions, and this web app allows you to compare the model-based predictions with the actual values in the time period we selected."),
-                                      p("The descriptive plots and statistics are displayed from the beginning of the pandemic until 08/04/2021, when data from our primary source, JHU, stops reporting recovered individuals. The predictive models are performed on a specific timeframe: the training period is 11/24/2020 to 01/13/2021, and the testing period is 01/14/2021 to 01/26/2021. In the relevant plots, these time periods are separated by a vertical white bar.")
+                                      p("The descriptive plots and statistics are displayed from the beginning of the pandemic until 08/04/2021, when data from our primary source, JHU, stops reporting recovered individuals. The predictive models are performed on a specific timeframe: the training period is 11/24/2020 to 01/13/2021, and the testing period is 01/14/2021 to 01/26/2021. In the relevant plots, these time periods are separated by a vertical white bar."),
                 
                                       
                              ),
@@ -171,38 +169,48 @@ ui <- fluidPage(tags$head(tags$style(css)), theme = shinytheme("darkly"),
                                         tabPanel("SIR Active", titlePanel("SIR Active Cases Estimation"),
                                                  plotlyOutput("graphSIRActive"),
                                                  br(),
-                                                 p("This graph displays the SIR model for active cases (the 'I' compartment in SIR), which is displayed as the orange line. The blue bars represent the reported number of active cases. The green line after the horizontal white line displays the model's predictions.")),
+                                                 p("This graph displays the SIR model for active cases (the 'I' compartment in SIR), which is displayed as the orange line. The blue bars represent the actual number of active cases. The green line after the horizontal white line displays the model's predictions.")),
                                         tabPanel("SIR Removed", titlePanel("SIR Removed Cases Estimation"),
                                                  plotlyOutput("graphSIRRem"),
                                                  br(),
-                                                 p("This graph displays the SIR model for recovered cases (the 'R' compartment in SIR), which is displayed as the orange line. The purple bars represent the reported number of recovered cases. The green line after the horizontal white line displays the model's predictions."))
+                                                 p("This graph displays the SIR model for recovered cases (the 'R' compartment in SIR), which is displayed as the orange line. The purple bars represent the actual number of recovered cases. The green line after the horizontal white line displays the model's predictions."))
                              ),
                              
                              navbarMenu("SEIR Estimations",
                                         tabPanel("SEIR Active", titlePanel("SEIR Active Cases Estimation"),
                                                  plotlyOutput("graphSEIRActive"),
                                                  br(),
-                                                 p("This graph displays the SEIR model for active cases (the 'I' compartment in SEIR), which is displayed as the orange line. The blue bars represent the reported number of active cases. The green line after the horizontal white line displays the model's predictions. 95% confidence intervals are shown.")),
+                                                 p("This graph displays the SEIR model for active cases (the 'I' compartment in SEIR), which is displayed as the orange line. The blue bars represent the actual number of active cases. The green line after the horizontal white line displays the model's predictions.")),
                                         tabPanel("SEIR Removed", titlePanel("SEIR Removed Cases Estimation"),
                                                  plotlyOutput("graphSEIRRem"),
                                                  br(),
-                                                 p("This graph displays the SEIR model for recovered cases (the 'R' compartment in SIR), which is displayed as the orange line. The purple bars represent the reported number of recovered cases. The green line after the horizontal white line displays the model's predictions. 95% confidence intervals are shown."))),
+                                                 p("This graph displays the SEIR model for recovered cases (the 'R' compartment in SIR), which is displayed as the orange line. The purple bars represent the actual number of recovered cases. The green line after the horizontal white line displays the model's predictions."))),
+                             navbarMenu("eSIR Estimations",
+                                        tabPanel("eSIR Active", titlePanel("eSIR Active Cases Estimation"),
+                                                 plotlyOutput("grapheSIRActive"),
+                                                 br(),
+                                                 p("descriptoin")),
+                                        tabPanel("eSIR Removed", titlePanel("eSIR Removed Cases Estimation"),
+                                                 plotlyOutput("grapheSIRRem"),
+                                                 br(),
+                                                 p("descriptoin"))
+                               
+                             ),
+                             
                              tabPanel("About Us",
                                       titlePanel("About Us"),
                                       br(),
-                                      p("Emily Bach is a rising senior at Georgetown University, Lauren He is a rising sophomore at Stanford University, and Alex Zhong is a rising senior at Emory University. We all participated in the 2022 Big Data Summer Institute (BDSI) run by the University of Michigan’s Department of Biostatistics. As part of our BDSI research project on infectious diseases, we created these interactive plots modeling the COVID-19 pandemic in Mexico.")),
+                                      p("Emily Bach is a rising senior at Georgetown University, Lauren He is a rising sophomore at Stanford University, and Alex Zhong is a rising senior at Emory University. We all participated in the 2022 Big Data Summer Institute (BDSI) run by the University of Michigan’s Department of Biostatistics. As part of our BDSI research project on infectious diseases, we created these interactive plots modeling the pandemic in Mexico.")),
                              tabPanel("References",
                                       titlePanel("Data Sources:"),
                                       br(),
-                                      p("(1)   ", url1),
-                                      p("(2)   ", url2),
-                                      p("(3)   ", url3)
+                                      p("HYPERLINKS TO DATA SOURCES!"))
                              
                   )
                   
                 )
                 
-))
+)
 server <- function(input, output, session){
   
   output$mexicoFlag <- renderImage({
@@ -214,7 +222,7 @@ server <- function(input, output, session){
     )
   }, deleteFile = FALSE)
   
-
+  
   
   output$graphStacked <- renderPlotly({
     plot_ly(stack, x = ~date, y =~val, color = ~name, colors = c("#F5793A", "#60A5E8", "#A95AA1"),
@@ -293,7 +301,7 @@ server <- function(input, output, session){
             color = I("#F5793A")) %>% 
       layout(barmode = "stack", title = list(xanchor = "left", x = 0), legend =
                list(font = list(size = 16)), hovermode = "x unified",
-             yaxis = list(title = 'Active Cases'), xaxis = list(title = 'Date'),
+             yaxis = list(title = 'Active Infections'), xaxis = list(title = 'Date'),
              paper_bgcolor='rgba(0,0,0,0)',
              plot_bgcolor='rgba(0,0,0,0)',
              hoverlabel = list(bgcolor = 'rgba(0,0,0,0.5)'),
@@ -307,7 +315,7 @@ server <- function(input, output, session){
       add_trace(y = ~mx_mxc$daily_deaths.y, color = I("#60A5E8"), name = "Mexico City") %>% 
       layout(barmode = "group", title = list(xanchor = "left", x = 0), legend =
                list(font = list(size = 16)), hovermode = "x unified",
-             yaxis = list(title = 'Active Cases'), xaxis = list(title = 'Date'),
+             yaxis = list(title = 'Active Infections'), xaxis = list(title = 'Date'),
              paper_bgcolor='rgba(0,0,0,0)',
              plot_bgcolor='rgba(0,0,0,0)',
              hoverlabel = list(bgcolor = 'rgba(0,0,0,0.5)'),
@@ -341,7 +349,7 @@ server <- function(input, output, session){
     #   layout(
     #     xaxis = list(
     #       range=c(date_initial, date_final)),
-    #     yaxis = list(title = 'Active Cases'),
+    #     yaxis = list(title = 'Active Infections'),
     #     xaxis = list(title = 'Date'),
     #     hovermode = "x unified",
     #     hoverlabel = list(bgcolor = 'rgba(0,0,0,0.5)'),
@@ -566,6 +574,63 @@ server <- function(input, output, session){
     
     
   })
+  
+  output$grapheSIRActive <- renderPlotly({
+    plot_ly(esir_graph, x = ~date, y = ~I, type = "bar", name = "Actual",
+            color = I("#60A5E8")) %>% 
+      add_trace(y = ~esir_graph$median.x, type = 'scatter', mode = 'lines', line = list(color = 'rgb(245, 121, 58,, 1)', width = 3), name = "Model") %>%
+      add_trace(y = ~esir_graph$upper.x, type = 'scatter', mode = 'lines', name = "Upper", color = I("rgba(245, 121, 58, 0.5)"), showlegend = FALSE, hoverinfo = 'skip') %>%
+      add_trace(y = ~esir_graph$lower.x, type = 'scatter', mode = 'lines', fill = 'tonexty', color = I("rgba(245, 121, 58, 0.5)"), name = "Lower", showlegend = FALSE, hoverinfo = 'skip') %>%
+      add_trace(y = ~esir_graph$median.y, type = 'scatter', mode = 'lines', line = list(color = "rgba(100, 225, 0, 1)", width = 3), name = "Prediction") %>%
+      add_ribbons(ymin = ~esir_graph$lower.y,
+                  ymax = ~esir_graph$upper.y,
+                  line = list(color = 'rgb(100, 225, 0, 0.5)'),
+                  fillcolor = 'rgba(100, 225, 0, 0.5)',
+                  showlegend = FALSE,
+                  hoverinfo = "skip") %>%
+      add_lines(
+        y = range(0:max(esir_graph$upper.y, na.rm = TRUE)), x = range("2021-01-13 12:00:00"),
+        line = list(color = "white", width = 3), hoverinfo = "skip", showlegend = FALSE) %>% 
+      layout(
+        xaxis = list(
+          range=c("2020-10-07", "2021-01-26"), title = 'Date'),
+        yaxis = list(title = 'Active Infections'),
+        #hovermode = "x unified",
+        hoverlabel = list(bgcolor = 'rgba(0,0,0,0.5)'),
+        paper_bgcolor='rgba(0,0,0,0)',
+        plot_bgcolor='rgba(0,0,0,0)',
+        font = t
+      )
+  })
+  
+  output$grapheSIRRem <- renderPlotly({
+    plot_ly(esir_graph_R, x = ~date, y = ~R, type = "bar", name = "Actual",
+            color = I("#A95AA1")) %>% 
+      add_trace(y = ~esir_graph_R$median.x, type = 'scatter', mode = 'lines', line = list(color = 'rgb(245, 121, 58,, 1)', width = 3), name = "Model") %>%
+      add_trace(y = ~esir_graph_R$upper.x, type = 'scatter', mode = 'lines', name = "Upper", color = I("rgba(245, 121, 58, 0.5)"), showlegend = FALSE, hoverinfo = 'skip') %>%
+      add_trace(y = ~esir_graph_R$lower.x, type = 'scatter', mode = 'lines', fill = 'tonexty', color = I("rgba(245, 121, 58, 0.5)"), name = "Lower", showlegend = FALSE, hoverinfo = 'skip') %>%
+      add_trace(y = ~esir_graph_R$median.y, type = 'scatter', mode = 'lines', line = list(color = "rgba(100, 225, 0, 1)", width = 3), name = "Prediction") %>%
+      add_ribbons(ymin = ~esir_graph_R$lower.y,
+                  ymax = ~esir_graph_R$upper.y,
+                  line = list(color = 'rgb(100, 225, 0, 0.5)'),
+                  fillcolor = 'rgba(100, 225, 0, 0.5)',
+                  showlegend = FALSE,
+                  hoverinfo = "skip") %>%
+      add_lines(
+        y = range(0:max(esir_graph_R$upper.y, na.rm = TRUE)), x = "2021-01-13 12:00:00",
+        line = list(color = "white", width = 3), hoverinfo = "skip", showlegend = FALSE) %>% 
+      layout(
+        xaxis = list(
+          range=c("2020-10-07", "2021-01-26"), title = 'Date'),
+        yaxis = list(title = 'Active Infections'),
+        #hovermode = "x unified",
+        hoverlabel = list(bgcolor = 'rgba(0,0,0,0.5)'),
+        paper_bgcolor='rgba(0,0,0,0)',
+        plot_bgcolor='rgba(0,0,0,0)',
+        font = t
+      )  
+  })
+  
   
 }
 
