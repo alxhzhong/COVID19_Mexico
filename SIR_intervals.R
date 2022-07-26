@@ -4,7 +4,7 @@ source("optimize_k.R")
 source("predict_CI.R")
 # test
 
-date_initial = as.Date("2020-11-24")
+date_initial = as.Date("2020-10-07")
 date_final = as.Date("2021-03-01")
 f_days = as.Date(c("2020-11-24", "2020-12-15", "2021-01-04", "2021-01-25"))
 
