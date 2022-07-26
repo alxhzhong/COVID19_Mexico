@@ -136,4 +136,5 @@ smape <- function(actual, pred){
 actual <- mexico %>% 
   filter(date >= "2021-01-12" & date <= "2021-01-26")
 
-SEIR_smape <- smape(actual$I, SEIR_pred_I$pred_I_med)
+SEIR_I_smape <- smape(actual$I, SEIR_pred_I$pred_I_med)
+SEIR_R_smape <- smape(actual$R, SEIR_pred_R$pred_R_med)
