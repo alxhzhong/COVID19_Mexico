@@ -67,7 +67,7 @@ plt_data <- tibble(
                          format(round(upper, 2), nsmall = 2), "]"))
   ) %>%
   filter(!is.na(r)) %>% 
-  filter(date >= "2020-11-22" & date <= "2021-03-01")
+  filter(date >= "2020-10-07" & date <= "2021-01-26")
 
 # cap <- paste0("Mexico. Last updated: ",
 #                format(Sys.Date(), format = "%b %e"), sep = ' ')
