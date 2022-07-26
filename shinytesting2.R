@@ -108,8 +108,14 @@ ui <- fluidPage(tags$head(tags$style(css)), theme = shinytheme("darkly"),
                                       p("Yellow: slight decrease in community movement; masking is mandatory in indoor public spaces and public transportation and recommended in outdoor spaces in which social distancing is not possible; economic and social activities at 75% capacity"),
                                       p("Green: no movement restrictions; masking is recommended in indoor public spaces and mandatory on public transportation"),
                                       br(),
-                                      h4("Web app overview"),
+                                      h4("Overview of Epidemiological Modeling"),
                                       p("We provide estimations using three different epidemiological models–SIR, SEIR, and eSIR. SIR divides the population into three compartments, namely “Susceptible” individuals (S), “Infectious” individuals (I), and “Removed” individuals (R). SEIR adds a fourth compartment for “Exposed” individuals (E), which in SIR is included in the I compartment. Lastly, eSIR divides the population into the same three compartments as SIR but introduces a modifier to account for policy effects on transmission rates. SIR, SEIR, and eSIR have long been used by epidemiologists to model virus transmissions, and this web app allows you to compare the model-based predictions with the actual values in the time period we selected."),
+                                      br(),
+                                      p("• Susceptible: individuals who have no immunity to virus"),
+                                      p("• Exposed: individuals who have been infected but are not yet infectious"),
+                                      p("• Infectious: individuals who are currently infected and can transmit the virus to susceptible individuals"),
+                                      p("• Removed: individuals who cannot become infected or transmit the virus; namely recovered or dead individuals"),
+                                      br(),
                                       p("The descriptive plots and statistics are displayed from the beginning of the pandemic until 08/04/2021, when data from our primary source, JHU, stops reporting recovered individuals. The predictive models are performed on a specific timeframe: the training period is 11/24/2020 to 01/13/2021, and the testing period is 01/14/2021 to 01/26/2021. In the relevant plots, these time periods are separated by a vertical white bar.")
                 
                                       
@@ -186,7 +192,7 @@ ui <- fluidPage(tags$head(tags$style(css)), theme = shinytheme("darkly"),
                                         tabPanel("SIR Removed", titlePanel("SIR Removed Cases Estimation"),
                                                  plotlyOutput("graphSIRRem"),
                                                  br(),
-                                                 p("This graph displays the SIR model for recovered cases (the 'R' compartment in SIR), which is displayed as the orange line. The purple bars represent the reported number of recovered cases. The green line after the horizontal white line displays the model's predictions."),
+                                                 p("This graph displays the SIR model for removed cases (the 'R' compartment in SIR), which is displayed as the orange line. The purple bars represent the reported number of removed cases. The green line after the horizontal white line displays the model's predictions."),
                                                  br(),
                                                  p("Data Source: ", url1))
                              ),
@@ -201,7 +207,7 @@ ui <- fluidPage(tags$head(tags$style(css)), theme = shinytheme("darkly"),
                                         tabPanel("SEIR Removed", titlePanel("SEIR Removed Cases Estimation"),
                                                  plotlyOutput("graphSEIRRem"),
                                                  br(),
-                                                 p("This graph displays the SEIR model for recovered cases (the 'R' compartment in SIR), which is displayed as the orange line. The purple bars represent the reported number of recovered cases. The green line after the horizontal white line displays the model's predictions. 95% confidence intervals are shown."),
+                                                 p("This graph displays the SEIR model for removed cases (the 'R' compartment in SIR), which is displayed as the orange line. The purple bars represent the reported number of removed cases. The green line after the horizontal white line displays the model's predictions. 95% confidence intervals are shown."),
                                                  br(),
                                                  p("Data Source: ", url1))
                              ),
@@ -211,11 +217,15 @@ ui <- fluidPage(tags$head(tags$style(css)), theme = shinytheme("darkly"),
                                         tabPanel("eSIR Active", titlePanel("eSIR Active Cases Estimation"),
                                                  plotlyOutput("grapheSIRActive"),
                                                  br(),
-                                                 p("descriptoin")),
+                                                 p("This graph displays the eSIR model for active cases (the ‘I’ compartment in eSIR), which is displayed as the orange line. The blue bars represent the reported number of active cases. The green line after the horizontal white line displays the model’s predictions. 95% confidence intervals are shown."),
+                                                 br(),
+                                                 p("Data Source: ", url1)),
                                         tabPanel("eSIR Removed", titlePanel("eSIR Removed Cases Estimation"),
                                                  plotlyOutput("grapheSIRRem"),
                                                  br(),
-                                                 p("descriptoin"))
+                                                 p("This graph displays the eSIR model for removed cases (the ‘R’ compartment in eSIR), which is displayed as the orange line. The purple bars represent the reported number of removed cases. The green line after the horizontal white line displays the model’s predictions. 95% confidence intervals are shown."),
+                                                 br(),
+                                                 p("Data Source: ", url1))
                                
                              ),
                              
@@ -226,9 +236,9 @@ ui <- fluidPage(tags$head(tags$style(css)), theme = shinytheme("darkly"),
                              tabPanel("References",
                                       titlePanel("Data Sources:"),
                                       br(),
-                                      p("(1) ", url1),
-                                      p("(2) ", url2),
-                                      p("(3) ", url3)
+                                      p("(1) ", url1, ": daily case and death data"),
+                                      p("(2) ", url2, ": daily Mexico City case data, daily COVID-19 test data"),
+                                      p("(3) ", url3, ": daily vaccination data")
                              
                   )
                   
@@ -327,7 +337,7 @@ server <- function(input, output, session){
             color = I("#F5793A")) %>% 
       layout(barmode = "stack", title = list(xanchor = "left", x = 0), legend =
                list(font = list(size = 16)), hovermode = "x unified",
-             yaxis = list(title = 'Active Infections'), xaxis = list(title = 'Date'),
+             yaxis = list(title = 'Active Cases'), xaxis = list(title = 'Date'),
              paper_bgcolor='rgba(0,0,0,0)',
              plot_bgcolor='rgba(0,0,0,0)',
              hoverlabel = list(bgcolor = 'rgba(0,0,0,0.5)'),
@@ -341,7 +351,7 @@ server <- function(input, output, session){
       add_trace(y = ~mx_mxc$daily_deaths.y, color = I("#60A5E8"), name = "Mexico City") %>% 
       layout(barmode = "group", title = list(xanchor = "left", x = 0), legend =
                list(font = list(size = 16)), hovermode = "x unified",
-             yaxis = list(title = 'Active Infections'), xaxis = list(title = 'Date'),
+             yaxis = list(title = 'Active Cases'), xaxis = list(title = 'Date'),
              paper_bgcolor='rgba(0,0,0,0)',
              plot_bgcolor='rgba(0,0,0,0)',
              hoverlabel = list(bgcolor = 'rgba(0,0,0,0.5)'),
@@ -375,7 +385,7 @@ server <- function(input, output, session){
     #   layout(
     #     xaxis = list(
     #       range=c(date_initial, date_final)),
-    #     yaxis = list(title = 'Active Infections'),
+    #     yaxis = list(title = 'Active Cases'),
     #     xaxis = list(title = 'Date'),
     #     hovermode = "x unified",
     #     hoverlabel = list(bgcolor = 'rgba(0,0,0,0.5)'),
@@ -398,7 +408,7 @@ server <- function(input, output, session){
       layout(
         xaxis = list(
           range=c("2020-11-24", "2021-01-26"), title = 'Date'),
-        yaxis = list(title = 'Active Infections'),
+        yaxis = list(title = 'Active Cases'),
         #hovermode = "x unified",
         hoverlabel = list(bgcolor = 'rgba(0,0,0,0.5)'),
         paper_bgcolor='rgba(0,0,0,0)',
@@ -475,7 +485,7 @@ server <- function(input, output, session){
     #   layout(
     #     xaxis = list(
     #       range=c(date_initial,date_final)),
-    #     yaxis = list(title = 'Active Infections'),
+    #     yaxis = list(title = 'Active Cases'),
     #     xaxis = list(title = 'Date'),
     #     hovermode = "x unified",
     #     hoverlabel = list(bgcolor = 'rgba(0,0,0,0.5)'),
@@ -501,7 +511,7 @@ server <- function(input, output, session){
       layout(
         xaxis = list(
           range=c("2020-11-21", "2021-01-26"), title = 'Date'),
-        yaxis = list(title = 'Active Infections'),
+        yaxis = list(title = 'Active Cases'),
         #hovermode = "x unified",
         hoverlabel = list(bgcolor = 'rgba(0,0,0,0.5)'),
         paper_bgcolor='rgba(0,0,0,0)',
@@ -620,7 +630,7 @@ server <- function(input, output, session){
       layout(
         xaxis = list(
           range=c("2020-10-07", "2021-01-26"), title = 'Date'),
-        yaxis = list(title = 'Active Infections'),
+        yaxis = list(title = 'Active Cases'),
         #hovermode = "x unified",
         hoverlabel = list(bgcolor = 'rgba(0,0,0,0.5)'),
         paper_bgcolor='rgba(0,0,0,0)',
@@ -648,7 +658,7 @@ server <- function(input, output, session){
       layout(
         xaxis = list(
           range=c("2020-10-07", "2021-01-26"), title = 'Date'),
-        yaxis = list(title = 'Active Infections'),
+        yaxis = list(title = 'Total Removed'),
         #hovermode = "x unified",
         hoverlabel = list(bgcolor = 'rgba(0,0,0,0.5)'),
         paper_bgcolor='rgba(0,0,0,0)',
