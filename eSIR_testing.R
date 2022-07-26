@@ -68,27 +68,20 @@ p0 <- c(1, pi$pi_t)
 
 res.step <- tvt.eSIR(
   Y = pi_2$I, R = pi_2$R, pi0 = p0, change_time = change_time, begin_str = "10/07/2020", death_in_R = 0.03,
-  beta0 = 0.1065, gamma0 = 0.0707, T_fin = 112, casename = "Mexico", save_files = F, M = 50, nburnin = 20
+  beta0 = 0.1065, gamma0 = 0.0707, T_fin = 112, casename = "Mexico", save_files = F, M = 500, nburnin = 200
 )
+
+res.step %>% 
+  saveRDS(file = "eSIR_results.rds")
 
 # no pi(t)
 # res.step <- tvt.eSIR(
-#   Y = pi_2$I, R = pi_2$R, begin_str = "11/25/2020", death_in_R = 0.03,
-#   R0 = 1, T_fin = 120, casename = "Mexico", save_files = F, M = 5000, nburnin = 2000
+# Y = pi_2$I, R = pi_2$R, begin_str = "10/07/2020", death_in_R = 0.03,
+# beta0 = 0.1065, gamma0 = 0.0707, T_fin = 112, casename = "Mexico", save_files = F, M = 500, nburnin = 200
 # )
 
-jags_sample = res.step$jags_sample
-theta_pp = res.step$theta_pp
-Y_mean = res.step$Y_mean
-Y_band = res.step$Y_band
-theta_p_mean = res.step$theta_p_mean
-theta_p_ci = res.step$theta_p_ci
 
-res.step$plot_infection
-res.step$plot_removed
-res.step$spaghetti_plot
-
-
-
-
+# res.step$plot_infection
+# res.step$plot_removed
+# res.step$spaghetti_plot
 
