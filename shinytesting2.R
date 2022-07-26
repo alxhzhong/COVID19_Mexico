@@ -237,8 +237,8 @@ ui <- fluidPage(tags$head(tags$style(css)), theme = shinytheme("darkly"),
                                       titlePanel("Data Sources:"),
                                       br(),
                                       p("(1) ", url1, ": daily case and death data"),
-                                      p("(2) ", url2, ": daily Mexico city case data, daily COVID-19 test data"),
-                                      p("(3) ", url3, ": vaccination data")
+                                      p("(2) ", url2, ": daily Mexico City case data, daily COVID-19 test data"),
+                                      p("(3) ", url3, ": daily vaccination data")
                              
                   )
                   
