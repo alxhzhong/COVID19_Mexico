@@ -68,11 +68,27 @@ p0 <- c(1, pi$pi_t)
 
 res.step <- tvt.eSIR(
   Y = pi_2$I, R = pi_2$R, pi0 = p0, change_time = change_time, begin_str = "10/07/2020", death_in_R = 0.101,
+  beta0 = 0.1065, gamma0 = 0.0707, T_fin = 112, casename = "Mexico", save_files = F, M = 5e4, nburnin = 2e4
+)
+
+res.step_final <- tvt.eSIR(
+  Y = pi_2$I, R = pi_2$R, pi0 = p0, change_time = change_time, begin_str = "10/07/2020", death_in_R = 0.101,
   beta0 = 0.1065, gamma0 = 0.0707, T_fin = 112, casename = "Mexico", save_files = F, M = 5e5, nburnin = 2e5
 )
 
 res.step %>% 
   saveRDS(file = "eSIR_results.rds")
+
+res.step_final %>% 
+  saveRDS(file = "eSIR_results_final.rds")
+
+rds_output_final = res.step_final[c("data_comp", "data_comp_R")]
+
+rds_output_final %>% 
+  saveRDS(file = "eSIR_results_final.rds")
+
+
+
 
 # no pi(t)
 # res.step <- tvt.eSIR(
