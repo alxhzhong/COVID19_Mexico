@@ -211,11 +211,15 @@ ui <- fluidPage(tags$head(tags$style(css)), theme = shinytheme("darkly"),
                                         tabPanel("eSIR Active", titlePanel("eSIR Active Cases Estimation"),
                                                  plotlyOutput("grapheSIRActive"),
                                                  br(),
-                                                 p("descriptoin")),
+                                                 p("description"),
+                                                 br(),
+                                                 p("Data Source: ", url1)),
                                         tabPanel("eSIR Removed", titlePanel("eSIR Removed Cases Estimation"),
                                                  plotlyOutput("grapheSIRRem"),
                                                  br(),
-                                                 p("descriptoin"))
+                                                 p("description"),
+                                                 br(),
+                                                 p("Data Source: ", url1))
                                
                              ),
                              
@@ -226,9 +230,9 @@ ui <- fluidPage(tags$head(tags$style(css)), theme = shinytheme("darkly"),
                              tabPanel("References",
                                       titlePanel("Data Sources:"),
                                       br(),
-                                      p("(1) ", url1),
-                                      p("(2) ", url2),
-                                      p("(3) ", url3)
+                                      p("(1) ", url1, ": daily case and death data"),
+                                      p("(2) ", url2, ": daily Mexico city case data, daily COVID-19 test data"),
+                                      p("(3) ", url3, ": vaccination data")
                              
                   )
                   
@@ -375,7 +379,7 @@ server <- function(input, output, session){
     #   layout(
     #     xaxis = list(
     #       range=c(date_initial, date_final)),
-    #     yaxis = list(title = 'Active Infections'),
+    #     yaxis = list(title = 'Active Cases'),
     #     xaxis = list(title = 'Date'),
     #     hovermode = "x unified",
     #     hoverlabel = list(bgcolor = 'rgba(0,0,0,0.5)'),
@@ -398,7 +402,7 @@ server <- function(input, output, session){
       layout(
         xaxis = list(
           range=c("2020-11-24", "2021-01-26"), title = 'Date'),
-        yaxis = list(title = 'Active Infections'),
+        yaxis = list(title = 'Active Cases'),
         #hovermode = "x unified",
         hoverlabel = list(bgcolor = 'rgba(0,0,0,0.5)'),
         paper_bgcolor='rgba(0,0,0,0)',
@@ -475,7 +479,7 @@ server <- function(input, output, session){
     #   layout(
     #     xaxis = list(
     #       range=c(date_initial,date_final)),
-    #     yaxis = list(title = 'Active Infections'),
+    #     yaxis = list(title = 'Active Cases'),
     #     xaxis = list(title = 'Date'),
     #     hovermode = "x unified",
     #     hoverlabel = list(bgcolor = 'rgba(0,0,0,0.5)'),
@@ -501,7 +505,7 @@ server <- function(input, output, session){
       layout(
         xaxis = list(
           range=c("2020-11-21", "2021-01-26"), title = 'Date'),
-        yaxis = list(title = 'Active Infections'),
+        yaxis = list(title = 'Active Cases'),
         #hovermode = "x unified",
         hoverlabel = list(bgcolor = 'rgba(0,0,0,0.5)'),
         paper_bgcolor='rgba(0,0,0,0)',
@@ -620,7 +624,7 @@ server <- function(input, output, session){
       layout(
         xaxis = list(
           range=c("2020-10-07", "2021-01-26"), title = 'Date'),
-        yaxis = list(title = 'Active Infections'),
+        yaxis = list(title = 'Active Cases'),
         #hovermode = "x unified",
         hoverlabel = list(bgcolor = 'rgba(0,0,0,0.5)'),
         paper_bgcolor='rgba(0,0,0,0)',
@@ -648,7 +652,7 @@ server <- function(input, output, session){
       layout(
         xaxis = list(
           range=c("2020-10-07", "2021-01-26"), title = 'Date'),
-        yaxis = list(title = 'Active Infections'),
+        yaxis = list(title = 'Total Removed'),
         #hovermode = "x unified",
         hoverlabel = list(bgcolor = 'rgba(0,0,0,0.5)'),
         paper_bgcolor='rgba(0,0,0,0)',
