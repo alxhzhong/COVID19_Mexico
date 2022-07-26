@@ -67,8 +67,8 @@ p0 <- c(1, pi$pi_t)
 # p0[length(p0)] = 1
 
 res.step <- tvt.eSIR(
-  Y = pi_2$I, R = pi_2$R, pi0 = p0, change_time = change_time, begin_str = "10/07/2020", death_in_R = 0.03,
-  beta0 = 0.1065, gamma0 = 0.0707, T_fin = 112, casename = "Mexico", save_files = F, M = 500, nburnin = 200
+  Y = pi_2$I, R = pi_2$R, pi0 = p0, change_time = change_time, begin_str = "10/07/2020", death_in_R = 0.101,
+  beta0 = 0.1065, gamma0 = 0.0707, T_fin = 112, casename = "Mexico", save_files = F, M = 5e5, nburnin = 2e5
 )
 
 res.step %>% 
