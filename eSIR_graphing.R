@@ -65,59 +65,59 @@ esir_graph_R <- mexico_esir %>%
 #   geom_vline(xintercept = as.Date("2021-01-13"))
 
 
-# I prediction
-plot_ly(esir_graph, x = ~date, y = ~I, type = "bar", name = "Actual",
-        color = I("#A95AA1")) %>% 
-  add_trace(y = ~esir_graph$median.x, type = 'scatter', mode = 'lines', line = list(color = 'rgb(245, 121, 58,, 1)', width = 3), name = "Model") %>%
-  add_trace(y = ~esir_graph$upper.x, type = 'scatter', mode = 'lines', name = "Upper", color = I("rgba(245, 121, 58, 0.5)"), showlegend = FALSE, hoverinfo = 'skip') %>%
-  add_trace(y = ~esir_graph$lower.x, type = 'scatter', mode = 'lines', fill = 'tonexty', color = I("rgba(245, 121, 58, 0.5)"), name = "Lower", showlegend = FALSE, hoverinfo = 'skip') %>%
-  add_trace(y = ~esir_graph$median.y, type = 'scatter', mode = 'lines', line = list(color = "rgba(100, 225, 0, 1)", width = 3), name = "Prediction") %>%
-  add_ribbons(ymin = ~esir_graph$lower.y,
-              ymax = ~esir_graph$upper.y,
-              line = list(color = 'rgb(100, 225, 0, 0.2)'),
-              fillcolor = 'rgba(100, 225, 0, 0.2)',
-              showlegend = FALSE,
-              hoverinfo = "skip") %>%
-  add_lines(
-    y = range(0:max(esir_graph$median.y, na.rm = TRUE)), x = "2021-01-12",
-    line = list(color = "white", width = 3), hoverinfo = "skip", showlegend = FALSE) %>% 
-  layout(
-    xaxis = list(
-      range=c("2020-10-07", "2021-01-26"), title = 'Date'),
-    yaxis = list(title = 'Active Infections'),
-    #hovermode = "x unified",
-    hoverlabel = list(bgcolor = 'rgba(0,0,0,0.5)'),
-    paper_bgcolor='rgba(0,0,0,0)',
-    plot_bgcolor='rgba(0,0,0,0)',
-    font = t
-  )
-
-# R prediction
-
-plot_ly(esir_graph_R, x = ~date, y = ~R, type = "bar", name = "Actual",
-        color = I("#A95AA1")) %>% 
-  add_trace(y = ~esir_graph_R$median.x, type = 'scatter', mode = 'lines', line = list(color = 'rgb(245, 121, 58,, 1)', width = 3), name = "Model") %>%
-  add_trace(y = ~esir_graph_R$upper.x, type = 'scatter', mode = 'lines', name = "Upper", color = I("rgba(245, 121, 58, 0.5)"), showlegend = FALSE, hoverinfo = 'skip') %>%
-  add_trace(y = ~esir_graph_R$lower.x, type = 'scatter', mode = 'lines', fill = 'tonexty', color = I("rgba(245, 121, 58, 0.5)"), name = "Lower", showlegend = FALSE, hoverinfo = 'skip') %>%
-  add_trace(y = ~esir_graph_R$median.y, type = 'scatter', mode = 'lines', line = list(color = "rgba(100, 225, 0, 1)", width = 3), name = "Prediction") %>%
-  add_ribbons(ymin = ~esir_graph_R$lower.y,
-              ymax = ~esir_graph_R$upper.y,
-              line = list(color = 'rgb(100, 225, 0, 0.2)'),
-              fillcolor = 'rgba(100, 225, 0, 0.2)',
-              showlegend = FALSE,
-              hoverinfo = "skip") %>%
-  add_lines(
-    y = range(0:max(esir_graph_R$median.y, na.rm = TRUE)), x = "2021-01-12",
-    line = list(color = "white", width = 3), hoverinfo = "skip", showlegend = FALSE) %>% 
-  layout(
-    xaxis = list(
-      range=c("2020-10-07", "2021-01-26"), title = 'Date'),
-    yaxis = list(title = 'Active Infections'),
-    #hovermode = "x unified",
-    hoverlabel = list(bgcolor = 'rgba(0,0,0,0.5)'),
-    paper_bgcolor='rgba(0,0,0,0)',
-    plot_bgcolor='rgba(0,0,0,0)',
-    font = t
-  )  
-  
-
+# # I prediction
+# plot_ly(esir_graph, x = ~date, y = ~I, type = "bar", name = "Actual",
+#         color = I("#A95AA1")) %>% 
+#   add_trace(y = ~esir_graph$median.x, type = 'scatter', mode = 'lines', line = list(color = 'rgb(245, 121, 58,, 1)', width = 3), name = "Model") %>%
+#   add_trace(y = ~esir_graph$upper.x, type = 'scatter', mode = 'lines', name = "Upper", color = I("rgba(245, 121, 58, 0.5)"), showlegend = FALSE, hoverinfo = 'skip') %>%
+#   add_trace(y = ~esir_graph$lower.x, type = 'scatter', mode = 'lines', fill = 'tonexty', color = I("rgba(245, 121, 58, 0.5)"), name = "Lower", showlegend = FALSE, hoverinfo = 'skip') %>%
+#   add_trace(y = ~esir_graph$median.y, type = 'scatter', mode = 'lines', line = list(color = "rgba(100, 225, 0, 1)", width = 3), name = "Prediction") %>%
+#   add_ribbons(ymin = ~esir_graph$lower.y,
+#               ymax = ~esir_graph$upper.y,
+#               line = list(color = 'rgb(100, 225, 0, 0.2)'),
+#               fillcolor = 'rgba(100, 225, 0, 0.2)',
+#               showlegend = FALSE,
+#               hoverinfo = "skip") %>%
+#   add_lines(
+#     y = range(0:max(esir_graph$median.y, na.rm = TRUE)), x = "2021-01-12",
+#     line = list(color = "white", width = 3), hoverinfo = "skip", showlegend = FALSE) %>% 
+#   layout(
+#     xaxis = list(
+#       range=c("2020-10-07", "2021-01-26"), title = 'Date'),
+#     yaxis = list(title = 'Active Infections'),
+#     #hovermode = "x unified",
+#     hoverlabel = list(bgcolor = 'rgba(0,0,0,0.5)'),
+#     paper_bgcolor='rgba(0,0,0,0)',
+#     plot_bgcolor='rgba(0,0,0,0)',
+#     font = t
+#   )
+# 
+# # R prediction
+# 
+# plot_ly(esir_graph_R, x = ~date, y = ~R, type = "bar", name = "Actual",
+#         color = I("#A95AA1")) %>% 
+#   add_trace(y = ~esir_graph_R$median.x, type = 'scatter', mode = 'lines', line = list(color = 'rgb(245, 121, 58,, 1)', width = 3), name = "Model") %>%
+#   add_trace(y = ~esir_graph_R$upper.x, type = 'scatter', mode = 'lines', name = "Upper", color = I("rgba(245, 121, 58, 0.5)"), showlegend = FALSE, hoverinfo = 'skip') %>%
+#   add_trace(y = ~esir_graph_R$lower.x, type = 'scatter', mode = 'lines', fill = 'tonexty', color = I("rgba(245, 121, 58, 0.5)"), name = "Lower", showlegend = FALSE, hoverinfo = 'skip') %>%
+#   add_trace(y = ~esir_graph_R$median.y, type = 'scatter', mode = 'lines', line = list(color = "rgba(100, 225, 0, 1)", width = 3), name = "Prediction") %>%
+#   add_ribbons(ymin = ~esir_graph_R$lower.y,
+#               ymax = ~esir_graph_R$upper.y,
+#               line = list(color = 'rgb(100, 225, 0, 0.2)'),
+#               fillcolor = 'rgba(100, 225, 0, 0.2)',
+#               showlegend = FALSE,
+#               hoverinfo = "skip") %>%
+#   add_lines(
+#     y = range(0:max(esir_graph_R$median.y, na.rm = TRUE)), x = "2021-01-12",
+#     line = list(color = "white", width = 3), hoverinfo = "skip", showlegend = FALSE) %>% 
+#   layout(
+#     xaxis = list(
+#       range=c("2020-10-07", "2021-01-26"), title = 'Date'),
+#     yaxis = list(title = 'Active Infections'),
+#     #hovermode = "x unified",
+#     hoverlabel = list(bgcolor = 'rgba(0,0,0,0.5)'),
+#     paper_bgcolor='rgba(0,0,0,0)',
+#     plot_bgcolor='rgba(0,0,0,0)',
+#     font = t
+#   )  
+#   
+# 
