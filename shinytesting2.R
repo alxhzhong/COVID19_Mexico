@@ -168,22 +168,22 @@ ui <- fluidPage(tags$head(tags$style(css)), theme = shinytheme("darkly"),
                                         tabPanel("SIR Active", titlePanel("SIR Active Cases Estimation"),
                                                  plotlyOutput("graphSIRActive"),
                                                  br(),
-                                                 p("This graph displays the SIR model for active cases (the 'I' compartment in SIR), which is displayed as the orange line. The blue bars represent the actual number of active cases. The green line after the horizontal white line displays the model's predictions.")),
+                                                 p("This graph displays the SIR model for active cases (the 'I' compartment in SIR), which is displayed as the orange line. The blue bars represent the reported number of active cases. The green line after the horizontal white line displays the model's predictions.")),
                                         tabPanel("SIR Removed", titlePanel("SIR Removed Cases Estimation"),
                                                  plotlyOutput("graphSIRRem"),
                                                  br(),
-                                                 p("This graph displays the SIR model for recovered cases (the 'R' compartment in SIR), which is displayed as the orange line. The purple bars represent the actual number of recovered cases. The green line after the horizontal white line displays the model's predictions."))
+                                                 p("This graph displays the SIR model for recovered cases (the 'R' compartment in SIR), which is displayed as the orange line. The purple bars represent the reported number of recovered cases. The green line after the horizontal white line displays the model's predictions."))
                              ),
                              
                              navbarMenu("SEIR Estimations",
                                         tabPanel("SEIR Active", titlePanel("SEIR Active Cases Estimation"),
                                                  plotlyOutput("graphSEIRActive"),
                                                  br(),
-                                                 p("This graph displays the SEIR model for active cases (the 'I' compartment in SEIR), which is displayed as the orange line. The blue bars represent the actual number of active cases. The green line after the horizontal white line displays the model's predictions.")),
+                                                 p("This graph displays the SEIR model for active cases (the 'I' compartment in SEIR), which is displayed as the orange line. The blue bars represent the reported number of active cases. The green line after the horizontal white line displays the model's predictions. 95% confidence intervals are shown.")),
                                         tabPanel("SEIR Removed", titlePanel("SEIR Removed Cases Estimation"),
                                                  plotlyOutput("graphSEIRRem"),
                                                  br(),
-                                                 p("This graph displays the SEIR model for recovered cases (the 'R' compartment in SIR), which is displayed as the orange line. The purple bars represent the actual number of recovered cases. The green line after the horizontal white line displays the model's predictions."))),
+                                                 p("This graph displays the SEIR model for recovered cases (the 'R' compartment in SIR), which is displayed as the orange line. The purple bars represent the reported number of recovered cases. The green line after the horizontal white line displays the model's predictions. 95% confidence intervals are shown."))),
                              tabPanel("About Us",
                                       titlePanel("About Us"),
                                       br(),
@@ -288,7 +288,7 @@ server <- function(input, output, session){
             color = I("#F5793A")) %>% 
       layout(barmode = "stack", title = list(xanchor = "left", x = 0), legend =
                list(font = list(size = 16)), hovermode = "x unified",
-             yaxis = list(title = 'Active Infections'), xaxis = list(title = 'Date'),
+             yaxis = list(title = 'Active Cases'), xaxis = list(title = 'Date'),
              paper_bgcolor='rgba(0,0,0,0)',
              plot_bgcolor='rgba(0,0,0,0)',
              hoverlabel = list(bgcolor = 'rgba(0,0,0,0.5)'),
@@ -302,7 +302,7 @@ server <- function(input, output, session){
       add_trace(y = ~mx_mxc$daily_deaths.y, color = I("#60A5E8"), name = "Mexico City") %>% 
       layout(barmode = "group", title = list(xanchor = "left", x = 0), legend =
                list(font = list(size = 16)), hovermode = "x unified",
-             yaxis = list(title = 'Active Infections'), xaxis = list(title = 'Date'),
+             yaxis = list(title = 'Active Cases'), xaxis = list(title = 'Date'),
              paper_bgcolor='rgba(0,0,0,0)',
              plot_bgcolor='rgba(0,0,0,0)',
              hoverlabel = list(bgcolor = 'rgba(0,0,0,0.5)'),
@@ -336,7 +336,7 @@ server <- function(input, output, session){
     #   layout(
     #     xaxis = list(
     #       range=c(date_initial, date_final)),
-    #     yaxis = list(title = 'Active Infections'),
+    #     yaxis = list(title = 'Active Cases'),
     #     xaxis = list(title = 'Date'),
     #     hovermode = "x unified",
     #     hoverlabel = list(bgcolor = 'rgba(0,0,0,0.5)'),
