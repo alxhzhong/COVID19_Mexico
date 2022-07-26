@@ -81,7 +81,10 @@ css <- HTML(" body {
     background-color: #2a2a2b;
 }")
 
-
+# for hyperlinks
+url1 <- a("JHU CSSE", href="https://github.com/CSSEGISandData/COVID-19")
+url2 <- a("CONACYT", href="https://datos.covid-19.conacyt.mx/")
+url3 <- a("OWiD", href="https://github.com/owid/covid-19-data")
 
 # start of app
 
@@ -111,7 +114,7 @@ ui <- fluidPage(tags$head(tags$style(css)), theme = shinytheme("darkly"),
                                       br(),
                                       h4("Web app overview"),
                                       p("We provide estimations using three different epidemiological models–SIR, SEIR, and eSIR. SIR divides the population into three compartments, namely “Susceptible” individuals (S), “Infectious” individuals (I), and “Removed” individuals (R). SEIR adds a fourth compartment for “Exposed” individuals (E), which in SIR is included in the I compartment. Lastly, eSIR divides the population into the same three compartments as SIR but introduces a modifier to account for policy effects on transmission rates. SIR, SEIR, and eSIR have long been used by epidemiologists to model virus transmissions, and this web app allows you to compare the model-based predictions with the actual values in the time period we selected."),
-                                      p("The descriptive plots and statistics are displayed from the beginning of the pandemic until 08/04/2021, when data from our primary source, JHU, stops reporting recovered individuals. The predictive models are performed on a specific timeframe: the training period is 11/24/2020 to 01/13/2021, and the testing period is 01/14/2021 to 01/26/2021. In the relevant plots, these time periods are separated by a vertical white bar."),
+                                      p("The descriptive plots and statistics are displayed from the beginning of the pandemic until 08/04/2021, when data from our primary source, JHU, stops reporting recovered individuals. The predictive models are performed on a specific timeframe: the training period is 11/24/2020 to 01/13/2021, and the testing period is 01/14/2021 to 01/26/2021. In the relevant plots, these time periods are separated by a vertical white bar.")
                 
                                       
                              ),
@@ -191,13 +194,15 @@ ui <- fluidPage(tags$head(tags$style(css)), theme = shinytheme("darkly"),
                              tabPanel("References",
                                       titlePanel("Data Sources:"),
                                       br(),
-                                      p("HYPERLINKS TO DATA SOURCES!"))
+                                      p("(1)   ", url1),
+                                      p("(2)   ", url2),
+                                      p("(3)   ", url3)
                              
                   )
                   
                 )
                 
-)
+))
 server <- function(input, output, session){
   
   output$mexicoFlag <- renderImage({
@@ -209,7 +214,7 @@ server <- function(input, output, session){
     )
   }, deleteFile = FALSE)
   
-  
+
   
   output$graphStacked <- renderPlotly({
     plot_ly(stack, x = ~date, y =~val, color = ~name, colors = c("#F5793A", "#60A5E8", "#A95AA1"),
