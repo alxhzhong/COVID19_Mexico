@@ -72,7 +72,7 @@ last_pars = pred_SEIR[[3]]
 beta = last_pars[1]
 gamma = last_pars[2]
 
-num_days = 30
+num_days = 15
 first_day = pred_I_SEIR %>% 
   dplyr::select(date) %>%
   pull() %>% 
@@ -128,3 +128,12 @@ SEIR_pred_R=data.frame(date,pred_R_med, pred_lwrR = ci_pred_seir[[2]]$lwrR, pred
 #   geom_line(data = pred_I, mapping = aes(x = date, y = pred_I_med)) +
 #   xlim(first_day, last_day)
 
+
+# calculate SMAPE
+smape <- function(actual, pred){  
+  return (1/length(actual) * sum(2*abs(pred-actual) / (abs(actual) + abs(pred)) *100))
+}
+actual <- mexico %>% 
+  filter(date >= "2021-01-12" & date <= "2021-01-26")
+
+SEIR_smape <- smape(actual$I, SEIR_pred_I$pred_I_med)
