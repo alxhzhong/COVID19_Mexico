@@ -327,7 +327,7 @@ server <- function(input, output, session){
             color = I("#F5793A")) %>% 
       layout(barmode = "stack", title = list(xanchor = "left", x = 0), legend =
                list(font = list(size = 16)), hovermode = "x unified",
-             yaxis = list(title = 'Active Infections'), xaxis = list(title = 'Date'),
+             yaxis = list(title = 'Active Cases'), xaxis = list(title = 'Date'),
              paper_bgcolor='rgba(0,0,0,0)',
              plot_bgcolor='rgba(0,0,0,0)',
              hoverlabel = list(bgcolor = 'rgba(0,0,0,0.5)'),
@@ -341,7 +341,7 @@ server <- function(input, output, session){
       add_trace(y = ~mx_mxc$daily_deaths.y, color = I("#60A5E8"), name = "Mexico City") %>% 
       layout(barmode = "group", title = list(xanchor = "left", x = 0), legend =
                list(font = list(size = 16)), hovermode = "x unified",
-             yaxis = list(title = 'Active Infections'), xaxis = list(title = 'Date'),
+             yaxis = list(title = 'Active Cases'), xaxis = list(title = 'Date'),
              paper_bgcolor='rgba(0,0,0,0)',
              plot_bgcolor='rgba(0,0,0,0)',
              hoverlabel = list(bgcolor = 'rgba(0,0,0,0.5)'),
