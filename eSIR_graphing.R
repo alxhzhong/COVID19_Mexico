@@ -3,14 +3,14 @@ esir_res = readRDS("eSIR_results_final.rds")
 all_dates = seq(as.Date("2020-10-07"), as.Date("2021-01-26"), by = 1)
 data_comp = esir_res$data_comp
 data_comp_R = esir_res$data_comp_R
-data_poly = esir_res$data_poly
+# data_poly = esir_res$data_poly
 
 # jags_sample = esir_res$jags_sample
 # theta_pp = esir_res$theta_pp
-Y_mean = esir_res$Y_mean
-Y_band = esir_res$Y_band
-theta_p_mean = esir_res$theta_p_mean
-theta_p_ci = esir_res$theta_p_ci
+# Y_mean = esir_res$Y_mean
+# Y_band = esir_res$Y_band
+# theta_p_mean = esir_res$theta_p_mean
+# theta_p_ci = esir_res$theta_p_ci
   
 
 # data_comp %>% 
