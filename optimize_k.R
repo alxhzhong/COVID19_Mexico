@@ -10,7 +10,7 @@ if(!exists("mexico")){
 
 optimize_k = function(f_days, date_final){
   # setting up k value vector
-  k_choices = seq(0.1, 2, by = 0.1)
+  k_choices = seq(0.1, 2, by = 0.05)
   best_k = c()
   starting_param_val = c(-2.5, -3)
   
