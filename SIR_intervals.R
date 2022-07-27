@@ -5,8 +5,9 @@ source("predict_CI.R")
 # test
 
 date_initial = as.Date("2020-10-07")
-date_final = as.Date("2021-03-01")
-f_days = as.Date(c("2020-11-24", "2020-12-15", "2021-01-04", "2021-01-25"))
+date_final = as.Date("2021-01-13")
+# format: c(start 1st, start 2nd, etc.)
+f_days = as.Date(c(date_initial, "2020-11-07", "2020-12-15", "2021-01-05"))
 
 if(!exists("best_k")){
   best_k = optimize_k(f_days, date_final)
@@ -15,8 +16,9 @@ if(!exists("best_k")){
 sir_intervals = function(method){
   # run SIR fitting for 4 specified periods
   starting_param_val = c(-2.5, -3)
-  date_initial = as.Date("2020-11-24")
-  date_final = as.Date("2021-03-01")
+  # date_initial = as.Date("2020-10-07")
+  # date_final = as.Date("2021-01-13")
+  # f_days = as.Date(c(date_initial, "2020-11-08", "2020-12-15", "2021-01-05"))
   
   # choose method
   if(method == "SIR"){
@@ -27,6 +29,8 @@ sir_intervals = function(method){
     
     pred_I <- rbind(t1[[1]], t2[[1]], t3[[1]], t4[[1]]) ## bind by row
     pred_R <- rbind(t1[[2]], t2[[2]], t3[[2]], t4[[2]])
+    
+    return(list(pred_I, pred_R, t4[[3]]))
   }
   
   if(method == "SEIR"){
@@ -54,8 +58,10 @@ sir_intervals = function(method){
     
     pred_I <- rbind(ci1[[1]], ci2[[1]], ci3[[1]], ci4[[1]]) ## bind by row
     pred_R <- rbind(ci1[[2]], ci2[[2]], ci3[[2]], ci4[[2]])
+    
+    return(list(pred_I, pred_R, t4[[4]]))
   }
   
-  return(list(pred_I, pred_R, t4[[3]]))
+  
   
 }

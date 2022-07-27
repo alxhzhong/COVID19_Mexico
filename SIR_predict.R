@@ -7,65 +7,61 @@ source("SIR_function.R")
 source("SIR_intervals.R")
 source("SIR_SEIR_equations.R")
 
-date_initial = as.Date("2020-10-07")
-date_final = as.Date("2021-01-13")
-f_days = as.Date(c("2020-11-24", "2020-12-15", "2021-01-04", "2021-01-13"))
+# date_initial = as.Date("2020-10-07")
+# date_final = as.Date("2021-01-13")
+# f_days = as.Date(c(date_initial, "2020-11-24", "2020-12-15", "2021-01-04"))
 
 
-sir_intervals_predict = function(method){
-  # run SIR fitting for 4 specified periods
-  starting_param_val = c(-2.5, -3)
-  date_initial = as.Date("2020-10-07")
-  date_final = as.Date("2021-01-13")
-  f_days = as.Date(c("2020-11-24", "2020-12-15", "2021-01-04", "2021-01-14"))
-  
-  # choose method
-  if(method == "SIR"){
-    t1 <- sir_all(mexico, date_initial, f_days[2]-1, starting_param_val)
-    t2 <- sir_all(mexico, f_days[2], f_days[3]-1, t1[[3]]) 
-    t3 <- sir_all(mexico, f_days[3], f_days[4]-1, t2[[3]])
-    
-    pred_I <- rbind(t1[[1]], t2[[1]], t3[[1]]) ## bind by row
-    pred_R <- rbind(t1[[2]], t2[[2]], t3[[2]])
-    
-    return(list(pred_I, pred_R, t3[[3]]))
-  }
-  
-  if(method == "SEIR"){
-    N = 128900000
-    lambda = mu = 0
-    
-    # best_k = optimize_k(f_days, date_final)
-    
-    # incubation period (median + 95% CI) for original variant
-    sigma_l = 1/4.1
-    sigma_u = 1/5.8
-    sigma_m = 1/5.1
-    rep = 500
-    
-    t1 <- seir_all(mexico, date_initial, f_days[2]-1, starting_param_val, k = best_k[1])
-    t2 <- seir_all(mexico, f_days[2], f_days[3]-1, t1[[4]], k = best_k[2])
-    t3 <- seir_all(mexico, f_days[3], f_days[4]-1, t2[[4]], k = best_k[3])
-    
-    # for reference: ciband(pred, sigma_l, sigma_u, sigma_m, beta, gamma, data, rep)
-    ci1 <- ciband(t1, sigma_l, sigma_u, sigma_m, t1[[4]][1], t1[[4]][2], mexico, rep)
-    ci2 <- ciband(t2, sigma_l, sigma_u, sigma_m, t2[[4]][1], t2[[4]][2], mexico, rep)
-    ci3 <- ciband(t3, sigma_l, sigma_u, sigma_m, t3[[4]][1], t3[[4]][2], mexico, rep)
-    
-    pred_I <- rbind(ci1[[1]], ci2[[1]], ci3[[1]]) ## bind by row
-    pred_R <- rbind(ci1[[2]], ci2[[2]], ci3[[2]])
-    
-    return(list(pred_I, pred_R, t3[[4]]))
-  }
-  
-}
+# sir_intervals_predict = function(method){
+#   # run SIR fitting for 4 specified periods
+#   starting_param_val = c(-2.5, -3)
+#   date_initial = as.Date("2020-10-07")
+#   date_final = as.Date("2021-01-13")
+#   f_days = as.Date(c("2020-11-24", "2020-12-15", "2021-01-04", "2021-01-14"))
+#   
+#   # choose method
+#   if(method == "SIR"){
+#     t1 <- sir_all(mexico, date_initial, f_days[2]-1, starting_param_val)
+#     t2 <- sir_all(mexico, f_days[2], f_days[3]-1, t1[[3]]) 
+#     t3 <- sir_all(mexico, f_days[3], f_days[4]-1, t2[[3]])
+#     
+#     pred_I <- rbind(t1[[1]], t2[[1]], t3[[1]]) ## bind by row
+#     pred_R <- rbind(t1[[2]], t2[[2]], t3[[2]])
+#     
+#     return(list(pred_I, pred_R, t3[[3]]))
+#   }
+#   
+#   if(method == "SEIR"){
+#     N = 128900000
+#     lambda = mu = 0
+#     
+#     # best_k = optimize_k(f_days, date_final)
+#     
+#     # incubation period (median + 95% CI) for original variant
+#     sigma_l = 1/4.1
+#     sigma_u = 1/5.8
+#     sigma_m = 1/5.1
+#     rep = 500
+#     
+#     t1 <- seir_all(mexico, date_initial, f_days[2]-1, starting_param_val, k = best_k[1])
+#     t2 <- seir_all(mexico, f_days[2], f_days[3]-1, t1[[4]], k = best_k[2])
+#     t3 <- seir_all(mexico, f_days[3], f_days[4]-1, t2[[4]], k = best_k[3])
+#     
+#     # for reference: ciband(pred, sigma_l, sigma_u, sigma_m, beta, gamma, data, rep)
+#     ci1 <- ciband(t1, sigma_l, sigma_u, sigma_m, t1[[4]][1], t1[[4]][2], mexico, rep)
+#     ci2 <- ciband(t2, sigma_l, sigma_u, sigma_m, t2[[4]][1], t2[[4]][2], mexico, rep)
+#     ci3 <- ciband(t3, sigma_l, sigma_u, sigma_m, t3[[4]][1], t3[[4]][2], mexico, rep)
+#     
+#     pred_I <- rbind(ci1[[1]], ci2[[1]], ci3[[1]]) ## bind by row
+#     pred_R <- rbind(ci1[[2]], ci2[[2]], ci3[[2]])
+#     
+#     return(list(pred_I, pred_R, t3[[4]]))
+#   }
+#   
+# }
 
 
-
-
-
-
-pred_SIR = sir_intervals_predict("SIR")
+pred_SIR = sir_intervals("SIR")
 pred_I_SIR = pred_SIR[[1]]
 pred_R_SIR = pred_SIR[[2]]
 
@@ -110,28 +106,7 @@ lwrR = qpois(p = cl, lambda = pred_R_med)
 uprR = qpois(p = 1 - cl, lambda = pred_R_med)
 pred_R=data.frame(date,pred_R_med,lwrR,uprR)
 
-ggplot() +
-  geom_bar(data = mexico, mapping = aes(x = date, y = I), stat = "identity") +
-  geom_line(data = pred_I, mapping = aes(x = date, y = pred_I_med)) +
-  xlim(first_day, last_day)
-
-
-# calculate SMAPE
-smape <- function(actual, pred){  
-  return (1/length(actual) * sum(2*abs(pred-actual) / (abs(actual) + abs(pred)) *100))
-}
-actual <- mexico %>% 
-  filter(date >= "2021-01-12" & date <= "2021-01-26")
-
-SIR_I_smape <- smape(actual$I, pred_I$pred_I_med)
-SIR_R_smape <- smape(actual$R, pred_R$pred_R_med)
-
-# changing things
-# actual_train = mexico %>% 
-#   filter(date >= "2020-10-07" & date <= "2021-01-13")
-# 
-# SIR_I_smape_train <- smape(actual_train$I, pred_I_SIR$pred_I_med)
-# SIR_R_smape_train <- smape(actual_train$R, pred_R_SIR$pred_R_med)
-# 
-# SIR_I_smape_train
-# SIR_R_smape_train
+# ggplot() +
+#   geom_bar(data = mexico, mapping = aes(x = date, y = I), stat = "identity") +
+#   geom_line(data = pred_I, mapping = aes(x = date, y = pred_I_med)) +
+#   xlim(first_day, last_day)
