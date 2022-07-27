@@ -10,7 +10,7 @@ if(!exists("mexico")){
 
 optimize_k = function(f_days, date_final){
   # setting up k value vector
-  k_choices = seq(0.1, 2, by = 0.05)
+  k_choices = seq(0.01, 2, by = 0.01)
   best_k = c()
   starting_param_val = c(-2.5, -3)
   
@@ -38,4 +38,11 @@ optimize_k = function(f_days, date_final){
   
   return(best_k)
 }
+
+date_initial = as.Date("2020-10-07")
+date_final = as.Date("2021-01-13")
+f_days = as.Date(c(date_initial, "2020-11-07", "2020-12-15", "2021-01-05"))
+
+optimize_k(f_days, date_final) %>% 
+  saveRDS("best_k.rds")
 
