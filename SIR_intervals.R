@@ -1,6 +1,5 @@
 source("SIR_function.R")
 source("SEIR_function.R")
-source("optimize_k.R")
 source("predict_CI.R")
 # test
 
@@ -9,9 +8,11 @@ date_final = as.Date("2021-01-13")
 # format: c(start 1st, start 2nd, etc.)
 f_days = as.Date(c(date_initial, "2020-11-07", "2020-12-15", "2021-01-05"))
 
-if(!exists("best_k")){
-  best_k = optimize_k(f_days, date_final)
-}
+# if(!exists("best_k")){
+#   best_k = optimize_k(f_days, date_final)
+# }
+
+best_k = readRDS("best_k.rds")
 
 sir_intervals = function(method){
   # run SIR fitting for 4 specified periods

@@ -8,7 +8,7 @@ source("SIR_intervals.R")
 source("SIR_SEIR_equations.R")
 source("predict_CI.R")
 
-
+# Optimize beta, gamma for training interval
 pred_SEIR = sir_intervals("SEIR")
 pred_I_SEIR = pred_SEIR[[1]]
 pred_R_SEIR = pred_SEIR[[2]]
