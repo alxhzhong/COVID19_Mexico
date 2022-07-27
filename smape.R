@@ -1,4 +1,6 @@
+# Title: SMAPE error calculation
 
+# Authors: Emily Bach, Lauren He, Alex Zhong
 
 train_days = seq(as.Date("2020-10-07"), as.Date("2021-01-13"), by = 1)
 test_days = seq(as.Date("2021-01-14"), as.Date("2021-01-26"), by = 1)
