@@ -1,42 +1,58 @@
 
+
+train_days = seq(as.Date("2020-10-07"), as.Date("2021-01-13"), by = 1)
+test_days = seq(as.Date("2021-01-14"), as.Date("2021-01-26"), by = 1)
+
+# observed data
+actual_train <- mexico %>%
+  filter(date %in% train_days) %>% 
+  dplyr::select(I, R)
+actual_test <- mexico %>%
+  filter(date %in% test_days) %>% 
+  dplyr::select(I, R)
+
 # calculate SMAPE
-
-
-# SIR
 smape <- function(actual, pred){
   return (1/length(actual) * sum(2*abs(pred-actual) / (abs(actual) + abs(pred)) *100))
 }
-actual <- mexico %>%
-  filter(date >= "2021-01-14" & date <= "2021-01-26")
-SIR_I_smape_est <- SIR_int %>%
-  filter(date >= "2021-01-14" & date <= "2021-01-26")
 
-SIR_I_smape <- smape(actual$I, SIR_I_smape_est$pred_I_med.y)
-SIR_R_smape <- smape(actual$R, SIR_I_smape_est$pred_R_med.y)
+# SIR
+SIR_est_train <- SIR_int %>%
+  filter(date %in% train_days) %>% 
+  select(date, pred_I_med.x, pred_R_med.x)
+SIR_est_test <- SIR_int %>%
+  filter(date %in% test_days) %>% 
+  select(date, pred_I_med.y, pred_R_med.y)
+
+SIR_I_smape_train <- smape(actual_train$I, SIR_est_train$pred_I_med.x)
+SIR_R_smape_train <- smape(actual_train$R, SIR_est_train$pred_R_med.x)
+
+SIR_I_smape_test <- smape(actual_test$I, SIR_est_test$pred_I_med.y)
+SIR_R_smape_test <- smape(actual_test$R, SIR_est_test$pred_R_med.y)
 
 
 
 # SEIR
 # calculate SMAPE
-smape <- function(actual, pred){  
-  return (1/length(actual) * sum(2*abs(pred-actual) / (abs(actual) + abs(pred)) *100))
-}
 
-actual <- mexico %>% 
-  filter(date >= "2021-01-14" & date <= "2021-01-26")
-SEIR_I_smape_est <- SEIR_int %>% 
-  filter(date >= "2021-01-14" & date <= "2021-01-26")
+SEIR_est_train <- SEIR_int %>%
+  filter(date %in% train_days) %>% 
+  select(date, pred_I_med.x, pred_R_med.x)
+SEIR_est_test <- SEIR_int %>%
+  filter(date %in% test_days) %>% 
+  select(date, pred_I_med.y, pred_R_med.y)
 
-SEIR_I_smape <- smape(actual$I, SEIR_I_smape_est$pred_I_med.y)
-SEIR_R_smape <- smape(actual$R, SEIR_I_smape_est$pred_R_med.y)
+SEIR_I_smape_train <- smape(actual_train$I, SEIR_est_train$pred_I_med.x)
+SEIR_R_smape_train <- smape(actual_train$R, SEIR_est_train$pred_R_med.x)
 
+SEIR_I_smape_test <- smape(actual_test$I, SEIR_est_test$pred_I_med.y)
+SEIR_R_smape_test <- smape(actual_test$R, SEIR_est_test$pred_R_med.y)
 
 # eSIR
-eSIR_smape_est <- esir_graph %>% 
-  filter(date >= "2021-01-14" & date <= "2021-01-26")
-eSIR_smape_est_R <- esir_graph_R %>% 
-  filter(date >= "2021-01-14" & date <= "2021-01-26")
 
-eSIR_I_smape <- smape(actual$I, eSIR_smape_est$median.y)
-eSIR_R_smape <- smape(actual$R, eSIR_smape_est_R$median.y)
+eSIR_I_smape_train <- smape(actual_train$I, esir_pre$median)
+eSIR_R_smape_train <- smape(actual_train$R, esir_pre_R$median)
+
+eSIR_I_smape_test <- smape(actual_test$I, esir_post$median)
+eSIR_R_smape_test <- smape(actual_test$R, esir_post_R$median)
 
