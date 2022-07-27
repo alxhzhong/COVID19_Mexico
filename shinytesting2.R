@@ -53,8 +53,8 @@ stack = bind_rows(
 # for SIR graphs, to plot in correct timeframe
 mexicoSmall = mexico %>% 
   right_join(pred_I_SIR, by = "date")
-date_initial = "2020-11-22"
-date_final = "2021-03-01"
+date_initial = "2020-10-07"
+date_final = "2021-01-26"
 
 
 # for TPR graph
@@ -403,11 +403,11 @@ server <- function(input, output, session){
       add_trace(y = ~SIR_int$upper_m, type = 'scatter', mode = 'lines', name = "Upper", line = list(color = "rgba(245, 121, 58, 0.2)"), showlegend = FALSE, hoverinfo = 'skip') %>% 
       add_trace(y = ~SIR_int$lower_m, type = 'scatter', mode = 'lines', fill = 'tonexty', fillcolor = list(color = 'rgba(245, 121, 58, 0.2)'), name = "Lower", line = list(color = "rgba(245, 121, 58, 0.2)"), hoverinfo = 'skip', showlegend = FALSE) %>%
       add_lines(
-        y = range(0:max(SIR_int$pred_I_med.y, na.rm = TRUE)), x = "2021-01-12",
+        y = range(0:max(SIR_int$pred_I_med.y, na.rm = TRUE)), x = "2021-01-13",
         line = list(color = "white", width = 3), hoverinfo = "skip", showlegend = FALSE) %>% 
       layout(
         xaxis = list(
-          range=c("2020-11-24", "2021-01-26"), title = 'Date'),
+          range=c("2020-10-07", "2021-01-26"), title = 'Date'),
         yaxis = list(title = 'Active Cases'),
         #hovermode = "x unified",
         hoverlabel = list(bgcolor = 'rgba(0,0,0,0.5)'),
@@ -459,11 +459,11 @@ server <- function(input, output, session){
                   showlegend = FALSE,
                   hoverinfo = "skip") %>% 
       add_lines(
-        y = range(0:max(SIR_int$pred_R_med.y, na.rm = TRUE)), x = "2021-01-12",
+        y = range(0:max(SIR_int$pred_R_med.y, na.rm = TRUE)), x = "2021-01-13",
         line = list(color = "white", width = 3), hoverinfo = "skip", showlegend = FALSE) %>% 
       layout(
         xaxis = list(
-          range=c("2020-11-24", "2021-01-26"), title = 'Date'),
+          range=c("2020-10-07", "2021-01-26"), title = 'Date'),
         yaxis = list(title = 'Total Removed'),
         #hovermode = "x unified",
         hoverlabel = list(bgcolor = 'rgba(0,0,0,0.5)'),
@@ -506,11 +506,11 @@ server <- function(input, output, session){
       add_trace(y = ~SEIR_int$pred_uprI, type = 'scatter', mode = 'lines', name = "Upper", line = list(color = "rgba(100, 225, 0, 0.2)"), showlegend = FALSE, hoverinfo = 'skip') %>% 
       add_trace(y = ~SEIR_int$pred_lwrI, type = 'scatter', mode = 'lines', fill = 'tonexty', fillcolor = list(color = 'rgba(100, 225, 0, 0.2)'), name = "Lower", line = list(color = "rgba(100, 225, 0, 0.2)"), hoverinfo = 'skip', showlegend = FALSE) %>%
       add_lines(
-        y = range(0:max(SEIR_int$pred_I_med.y, na.rm = TRUE)), x = "2021-01-12",
+        y = range(0:max(SEIR_int$pred_I_med.y, na.rm = TRUE)), x = "2021-01-13",
         line = list(color = "white", width = 3), hoverinfo = "skip", showlegend = FALSE) %>% 
       layout(
         xaxis = list(
-          range=c("2020-11-21", "2021-01-26"), title = 'Date'),
+          range=c("2020-10-07", "2021-01-26"), title = 'Date'),
         yaxis = list(title = 'Active Cases'),
         #hovermode = "x unified",
         hoverlabel = list(bgcolor = 'rgba(0,0,0,0.5)'),
@@ -559,11 +559,11 @@ server <- function(input, output, session){
       add_trace(y = ~SEIR_int$pred_uprR, type = 'scatter', mode = 'lines', name = "Upper", line = list(color = "rgba(100, 225, 0, 0.2)"), showlegend = FALSE, hoverinfo = 'skip') %>% 
       add_trace(y = ~SEIR_int$pred_lwrR, type = 'scatter', mode = 'lines', fill = 'tonexty', fillcolor = list(color = 'rgba(100, 225, 0, 0.2)'), name = "Lower", line = list(color = "rgba(100, 225, 0, 0.2)"), hoverinfo = 'skip', showlegend = FALSE) %>%
       add_lines(
-        y = range(0:max(SEIR_int$pred_R_med.y, na.rm = TRUE)), x = "2021-01-12",
+        y = range(0:max(SEIR_int$pred_R_med.y, na.rm = TRUE)), x = "2021-01-13",
         line = list(color = "white", width = 3), hoverinfo = "skip", showlegend = FALSE) %>% 
       layout(
         xaxis = list(
-          range=c("2020-11-24", "2021-01-26"), title = 'Date'),
+          range=c("2020-10-07", "2021-01-26"), title = 'Date'),
         yaxis = list(title = 'Total Removed'),
         #hovermode = "x unified",
         hoverlabel = list(bgcolor = 'rgba(0,0,0,0.5)'),
