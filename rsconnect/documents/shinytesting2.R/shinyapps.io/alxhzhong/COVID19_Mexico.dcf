@@ -5,10 +5,10 @@ account: alxhzhong
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 6664197
-bundleId: 6131893
+bundleId: 6137208
 url: https://alxhzhong.shinyapps.io/COVID19_Mexico/
-when: 1658779374.77351
-lastSyncTime: 1658779374.77353
+when: 1658901380.42261
+lastSyncTime: 1658901380.42262
 asMultiple: FALSE
 asStatic: FALSE
-ignoredFiles: ritobans_ICM_code.R|testing_ICM.R
+ignoredFiles: %
