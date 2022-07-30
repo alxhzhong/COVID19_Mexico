@@ -3,10 +3,10 @@
 # Authors: Emily Bach, Lauren He, Alex Zhong
 
 # Packages ----
-source("SEIR_function.R")
-source("SIR_intervals.R")
-source("SIR_SEIR_equations.R")
-source("predict_CI.R")
+source("R/SEIR_function.R")
+source("R/SIR_intervals.R")
+source("R/SIR_SEIR_equations.R")
+source("R/predict_CI.R")
 
 # Optimize beta, gamma for training interval
 pred_SEIR = sir_intervals("SEIR")

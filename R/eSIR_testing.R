@@ -1,9 +1,9 @@
 library(devtools)
-install("eSIR")
+install("R/eSIR")
 library(eSIR)
 library(tibble)
 
-source("estimate_tvr.R")
+source("R/estimate_tvr.R")
 rm(plt_data)
 
 plt_data <- tibble(

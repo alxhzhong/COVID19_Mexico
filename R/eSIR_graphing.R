@@ -1,4 +1,4 @@
-esir_res = readRDS("eSIR_results_final.rds")
+esir_res = readRDS("R/eSIR_results_final.rds")
 
 all_dates = seq(as.Date("2020-10-07"), as.Date("2021-01-26"), by = 1)
 data_comp = esir_res$data_comp
@@ -11,14 +11,12 @@ data_comp_R = esir_res$data_comp_R
 # Y_band = esir_res$Y_band
 # theta_p_mean = esir_res$theta_p_mean
 # theta_p_ci = esir_res$theta_p_ci
-  
-
-# data_comp %>% 
-#   ggplot(mapping = aes(x = time, y = median)) +
-#   geom_polygon(data = data_poly, mapping = aes(x = x, y = y, fill = value, group = phase)) +
-#   geom_point()
 
 # observed data to compare to eSIR fit
+mexico_filt <<- mexico %>%
+  filter(date >= as.Date(date_initial),
+         date <= as.Date(date_final))
+
 mexico_esir = mexico_filt %>% 
   filter(date %in% all_dates) %>% 
   dplyr::select(date, I, R)

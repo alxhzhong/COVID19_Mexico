@@ -1,7 +1,7 @@
 
 
-source("estimate_tvr.R")
-source("mexicocity_dataread.R")
+source("R/estimate_tvr.R")
+source("R/mexicocity_dataread.R")
 
 vaccinations <- read_csv("https://raw.githubusercontent.com/owid/covid-19-data/master/public/data/vaccinations/country_data/Mexico.csv")
 

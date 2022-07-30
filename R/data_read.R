@@ -6,7 +6,6 @@
 library(readr)
 library(tidyr)
 library(dplyr)
-# librarian::shelf(readr, tidyr, dplyr)
 
 
 # confirmed
@@ -47,7 +46,7 @@ cl_all <- confirmed %>%
   left_join(recoveries, by = "date")
 
 
-mexico =
+mexico <-
   cl_all %>%
   mutate(daily_infected = cases_total - lag(cases_total),
          daily_deaths = deaths_total - lag(deaths_total),
@@ -84,7 +83,7 @@ mxfixed = mxfixed %>%
 
 
 # recalculate daily num, I, R on fixed values
-mexico =
+mexico <<-
   mxfixed %>%
   mutate(recoveries_total = cumsum(daily_recoveries),
          total_removed = deaths_total + recoveries_total,

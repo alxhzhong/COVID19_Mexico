@@ -3,20 +3,12 @@ library(plotly)
 library(dplyr)
 library(shinythemes)
 
-source("data_read.R")
-source("SIR_intervals.R")
-source("estimate_tvr.R")
-source("mexicocity_dataread.R")
-source("prediction_graphs.R")
-source("eSIR_graphing.R")
-
-# pred_SIR = sir_intervals("SIR")
-# pred_I_SIR = pred_SIR[[1]]
-# pred_R_SIR = pred_SIR[[2]]
-# 
-# pred_SEIR = sir_intervals("SEIR")
-# pred_I_SEIR = pred_SEIR[[1]]
-# pred_R_SEIR = pred_SEIR[[2]]
+source("R/data_read.R", local = TRUE)
+source("R/SIR_intervals.R", local = TRUE)
+source("R/estimate_tvr.R", local = TRUE)
+source("R/mexicocity_dataread.R", local = TRUE)
+source("R/prediction_graphs.R", local = TRUE)
+source("R/eSIR_graphing.R", local = TRUE)
 
 # for descriptive plots, to truncate timeframe to where recoveries stop reporting
 mexicoDescriptives <- mexico %>% 

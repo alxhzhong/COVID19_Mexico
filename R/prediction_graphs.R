@@ -1,5 +1,5 @@
-source("SIR_predict.R")
-source("SEIR_predict.R")
+source("R/SIR_predict.R")
+source("R/SEIR_predict.R")
 
 
 # SIR mutating

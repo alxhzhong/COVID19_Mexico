@@ -1,7 +1,10 @@
-source("SIR_function.R")
-source("SEIR_function.R")
-source("predict_CI.R")
-# test
+source("R/SIR_function.R")
+source("R/SEIR_function.R")
+source("R/predict_CI.R")
+
+if(!exists("mexico")){
+  source("R/data_read.R")
+}
 
 date_initial = as.Date("2020-10-07")
 date_final = as.Date("2021-01-13")
@@ -12,7 +15,7 @@ f_days = as.Date(c(date_initial, "2020-11-07", "2020-12-15", "2021-01-05"))
 #   best_k = optimize_k(f_days, date_final)
 # }
 
-best_k = readRDS("best_k.rds")
+best_k = readRDS("R/best_k.rds")
 
 sir_intervals = function(method){
   # run SIR fitting for 4 specified periods

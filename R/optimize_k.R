@@ -2,10 +2,10 @@
 
 # Authors: Emily Bach, Lauren He, Alex Zhong
 
-source("SEIR_function.R")
+source("R/SEIR_function.R")
 
 if(!exists("mexico")){
-  source("data_read.R")
+  source("R/data_read.R")
 }
 
 optimize_k = function(f_days, date_final){

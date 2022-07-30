@@ -3,7 +3,7 @@
 # Authors: Ritoban Kundu, Emily Bach, Lauren He, Alex Zhong
 
 # source SEIR function
-source("SIR_SEIR_equations.R")
+source("R/SIR_SEIR_equations.R")
 
 
 # confidence interval estimation
