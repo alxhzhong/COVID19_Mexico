@@ -3,12 +3,12 @@ library(plotly)
 library(dplyr)
 library(shinythemes)
 
-source("R/data_read.R", local = TRUE)
-source("R/SIR_intervals.R", local = TRUE)
-source("R/estimate_tvr.R", local = TRUE)
-source("R/mexicocity_dataread.R", local = TRUE)
-source("R/prediction_graphs.R", local = TRUE)
-source("R/eSIR_graphing.R", local = TRUE)
+source("R/data_read.R")
+source("R/SIR_intervals.R")
+source("R/estimate_tvr.R")
+source("R/mexicocity_dataread.R")
+source("R/prediction_graphs.R")
+source("R/eSIR_graphing.R")
 
 # for descriptive plots, to truncate timeframe to where recoveries stop reporting
 mexicoDescriptives <- mexico %>% 
