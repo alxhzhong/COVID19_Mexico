@@ -13,6 +13,8 @@ data_comp_R = esir_res$data_comp_R
 # theta_p_ci = esir_res$theta_p_ci
 
 # observed data to compare to eSIR fit
+date_initial = as.Date("2020-03-08")
+date_final = as.Date("2021-07-01")
 mexico_filt <<- mexico %>%
   filter(date >= as.Date(date_initial),
          date <= as.Date(date_final))

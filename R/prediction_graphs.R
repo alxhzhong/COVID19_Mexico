@@ -3,9 +3,11 @@ source("R/SEIR_predict.R")
 
 
 # SIR mutating
+print(head(mexico))
 SIR_int <- mexico %>% 
   filter(date >= "2020-10-07" & date <= "2021-01-26") %>% 
   dplyr::select(date, I, R)
+
 pred_I_SIR <- pred_I_SIR %>% 
   mutate(index = 1:n()) %>% 
   mutate(loess_m = fitted(loess(pred_I_med ~ index, data = pred_I_SIR, span = 0.3))) %>% 

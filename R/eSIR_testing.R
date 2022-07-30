@@ -3,7 +3,9 @@ install("R/eSIR")
 library(eSIR)
 library(tibble)
 
-source("R/estimate_tvr.R")
+if(!exists("plt_data")){
+  source("R/estimate_tvr.R")
+}
 rm(plt_data)
 
 plt_data <- tibble(

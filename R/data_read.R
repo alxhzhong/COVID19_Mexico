@@ -83,7 +83,7 @@ mxfixed = mxfixed %>%
 
 
 # recalculate daily num, I, R on fixed values
-mexico <<-
+mexico <-
   mxfixed %>%
   mutate(recoveries_total = cumsum(daily_recoveries),
          total_removed = deaths_total + recoveries_total,
