@@ -46,10 +46,8 @@ sigma_u = 1/5.8
 sigma_m = 1/5.1
 rep = 500
 
-pred_I_med = cbind(pred_I_med = round(predictions$I), date) %>% 
-  as_tibble()
-pred_R_med = cbind(pred_R_med = round(predictions$R), date) %>% 
-  as_tibble()
+pred_I_med = tibble(pred_I_med = round(predictions$I), date)
+pred_R_med = tibble(pred_R_med = round(predictions$R), date)
 
 pred_SEIR_test = list(pred_I_med, pred_R_med)
 
