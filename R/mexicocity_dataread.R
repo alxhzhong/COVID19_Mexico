@@ -14,7 +14,7 @@ library(zoo)
 # Note: dependent on CONACYT using a consistent url format
 find_mxdata = function(case_type){
   file_base = "https://datos.covid-19.conacyt.mx/Downloads/Files/Casos_Diarios_Estado_Nacional"
-  file_date = Sys.Date() #today's date
+  file_date = mdy("06-25-2023") #today's date
   
   # look for file from last 60 days
   for(i in 1:60){
